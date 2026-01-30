@@ -1,0 +1,310 @@
+{
+  "web": {
+    "sections": {
+      "hero": {
+        "badge": "Football Academy",
+        "title": "Where Football and Fun Meet",
+        "description": "Professional football training for children from 4 to 14 years old. We develop skills, confidence and love for the sport.",
+        "primaryCta": "Schedule Experimental Class",
+        "secondaryCta": "See Modalities"
+      },
+      "about": {
+        "title": "About Our Academy",
+        "description1": "For over 10 years training young athletes and cultivating a love for football. Our mission is to provide an enriching and fun sporting experience.",
+        "description2": "We believe that sport is a powerful tool for the integral development of children, promoting values such as respect, discipline and teamwork.",
+        "features": [
+          {
+            "number": "01",
+            "title": "Certified Coaches",
+            "description": "Team of professionals with training in children's sports pedagogy."
+          },
+          {
+            "number": "02",
+            "title": "Proven Methodology",
+            "description": "Structured training program that balances technique and fun."
+          },
+          {
+            "number": "03",
+            "title": "Integral Development",
+            "description": "We focus on the physical, emotional and social growth of each child."
+          },
+          {
+            "number": "04",
+            "title": "Safe Environment",
+            "description": "Adequate facilities and constant supervision during all activities."
+          }
+        ]
+      },
+      "stats": {
+        "items": [
+          {
+            "value": "10+",
+            "label": "Years of Experience"
+          },
+          {
+            "value": "500+",
+            "label": "Trained Students"
+          },
+          {
+            "value": "12",
+            "label": "Certified Coaches"
+          },
+          {
+            "value": "95%",
+            "label": "Satisfied Parents"
+          }
+        ]
+      },
+      "training": {
+        "title": "Modalities",
+        "description": "Programs adapted to each age group, respecting the natural development of each child and maximizing learning potential.",
+        "items": [
+          {
+            "title": "Mini Stars",
+            "age": "4-6 years",
+            "description": "Introduction to football through playful games. Development of motor coordination and first contacts with the ball.",
+            "schedule": "Saturdays 9am-10am"
+          },
+          {
+            "title": "Benjamins",
+            "age": "7-9 years",
+            "description": "Learning basic football techniques. Passing, receiving and ball control training in a fun environment.",
+            "schedule": "Tue/Thu 5pm-6:30pm"
+          },
+          {
+            "title": "Infants",
+            "age": "10-12 years",
+            "description": "Technical improvement and introduction to tactics. Participation in tournaments and friendly games with other academies.",
+            "schedule": "Mon/Wed/Fri 5pm-7pm"
+          },
+          {
+            "title": "Initiates",
+            "age": "13-14 years",
+            "description": "Intensive training with a focus on preparation for competition. Development of advanced tactics and physical preparation.",
+            "schedule": "Mon/Wed/Fri 6pm-8pm"
+          },
+          {
+            "title": "Goalkeepers",
+            "age": "7-14 years",
+            "description": "Specialized training for young goalkeepers. Defense techniques, positioning and ball distribution.",
+            "schedule": "Saturdays 10am-12pm"
+          },
+          {
+            "title": "Women's Football",
+            "age": "6-14 years",
+            "description": "Program dedicated to young athletes. Same technical rigor and fun in a welcoming and inclusive environment.",
+            "schedule": "Tue/Thu 5pm-6:30pm"
+          }
+        ]
+      },
+      "facilities": {
+        "title": "Our Facilities",
+        "description": "Modern and safe spaces designed for the development of young athletes.",
+        "items": [
+          {
+            "title": "Main Field",
+            "description": "State-of-the-art synthetic turf with LED lighting for night training."
+          },
+          {
+            "title": "Indoor Field",
+            "description": "Indoor space for training on rainy days, ensuring continuity throughout the year."
+          },
+          {
+            "title": "Modern Changing Rooms",
+            "description": "Clean and safe sanitary facilities, separated by gender and age group."
+          }
+        ]
+      },
+      "testimonials": {
+        "title": "What Parents Say",
+        "description": "Family satisfaction is our greatest pride.",
+        "items": [
+          {
+            "quote": "My son loves going to training. In a few months we saw an incredible evolution not only in football, but also in confidence and teamwork.",
+            "author": "Maria Silva",
+            "role": "Tomas' mother, 8 years old"
+          },
+          {
+            "quote": "Professionalism and fun in the right measure. The coaches are excellent and the facilities are top quality.",
+            "author": "Joao Pereira",
+            "role": "Beatriz's father, 10 years old"
+          },
+          {
+            "quote": "The best decision we made was to enroll our son in this academy. The environment is family-oriented and the values conveyed are extraordinary.",
+            "author": "Ana Rodrigues",
+            "role": "Miguel's mother, 6 years old"
+          }
+        ]
+      },
+      "coaches": {
+        "title": "Our Team",
+        "description": "Professionals passionate about football and dedicated to the development of each young athlete.",
+        "items": [
+          {
+            "name": "Ricardo Santos",
+            "role": "Technical Director",
+            "bio": "Former professional player with 15 years of experience in youth athlete training."
+          },
+          {
+            "name": "Ana Oliveira",
+            "role": "Head Coach",
+            "bio": "Licensed in Physical Education with specialization in child motor development."
+          },
+          {
+            "name": "Miguel Costa",
+            "role": "Goalkeeper Coach",
+            "bio": "Specialist in goalkeeper training with UEFA B certification."
+          },
+          {
+            "name": "Sofia Ferreira",
+            "role": "Assistant Coach",
+            "bio": "Trainer dedicated to women's football and development of social skills."
+          }
+        ]
+      },
+      "pricing": {
+        "title": "Plans and Pricing",
+        "description": "Choose the plan that best suits your child's needs. All plans include a free experimental class.",
+        "popularBadge": "Most Popular",
+        "perMonth": "/month",
+        "cta": "Enroll Now",
+        "footer": "Discounts available for siblings and annual payments. Contact us for more information.",
+        "items": [
+          {
+            "name": "Mini Stars",
+            "price": "35",
+            "description": "For the little ones (4-6 years old)",
+            "features": [
+              "1 training per week",
+              "Didactic material included",
+              "Sports insurance",
+              "Academy equipment"
+            ]
+          },
+          {
+            "name": "Standard",
+            "price": "55",
+            "description": "Benjamins and Infants (7-12 years old)",
+            "features": [
+              "2-3 trainings per week",
+              "Participation in tournaments",
+              "Sports insurance",
+              "Academy equipment",
+              "Quarterly progress report"
+            ]
+          },
+          {
+            "name": "Intensive",
+            "price": "75",
+            "description": "Initiates and dedicated athletes",
+            "features": [
+              "3-4 trainings per week",
+              "Federated competitions",
+              "Sports insurance",
+              "Full equipment",
+              "Nutritional monitoring",
+              "Monthly physical evaluation"
+            ]
+          }
+        ]
+      },
+      "gallery": {
+        "title": "Gallery",
+        "description": "Special moments from our trainings and competitions.",
+        "items": [
+          { "alt": "Individual technique training" },
+          { "alt": "Team play" },
+          { "alt": "Coordination exercises" },
+          { "alt": "Inter-academy tournament" },
+          { "alt": "Goal celebration" },
+          { "alt": "Academy group photo" }
+        ]
+      },
+      "faq": {
+        "title": "Frequently Asked Questions",
+        "description": "Find answers to the most common questions about our academy.",
+        "items": [
+          {
+            "question": "At what age can I enroll my child?",
+            "answer": "We accept children from 4 years old. We have specific programs adapted to each age group, ensuring the experience is suitable for each child's development."
+          },
+          {
+            "question": "Is previous football experience necessary?",
+            "answer": "No! We welcome children of all levels, from complete beginners to youth with some experience. Our coaches adapt exercises to each student's level."
+          },
+          {
+            "question": "What do I need to bring to training?",
+            "answer": "We recommend comfortable sports clothing, suitable soccer cleats or sneakers, shin guards and a water bottle. Academy equipment can be optionally purchased."
+          },
+          {
+            "question": "Can I do an experimental class before enrolling?",
+            "answer": "Of course! We offer a free experimental class so that child and parents can get to know our facilities, coaches and working methodology."
+          },
+          {
+            "question": "How does payment work?",
+            "answer": "We offer monthly payment by direct debit or bank transfer. We also have quarterly and annual payment options with a discount. Sports insurance is included in the monthly fee."
+          },
+          {
+            "question": "Are trainings cancelled when it rains?",
+            "answer": "We have an indoor field for bad weather days, ensuring training continuity throughout the year. In cases of extreme weather conditions, parents will be notified in advance."
+          }
+        ]
+      },
+      "cta": {
+        "title": "Ready to Start Your Child's Journey?",
+        "description": "Schedule a free experimental class and find out why we're the choice for hundreds of families. No commitment, just fun and football.",
+        "primaryCta": "Schedule Free Class",
+        "secondaryCta": "Call Now"
+      },
+      "contact": {
+        "title": "Get in Touch",
+        "description": "Have questions or want to enroll your child? Fill out the form or use one of our direct contacts.",
+        "info": {
+          "address": "Address",
+          "phone": "Phone",
+          "email": "Email",
+          "schedule": "Schedule"
+        },
+        "form": {
+          "name": "Full Name",
+          "namePlaceholder": "Your name",
+          "email": "Email",
+          "emailPlaceholder": "email@example.com",
+          "phone": "Phone",
+          "phonePlaceholder": "+351 912 345 678",
+          "childAge": "Child's Age",
+          "childAgePlaceholder": "E.g.: 8 years old",
+          "message": "Message",
+          "messagePlaceholder": "Tell us more about your child's interest in football...",
+          "submit": "Send Message",
+          "success": "Message sent successfully! We will get in touch shortly."
+        }
+      }
+    },
+    "header": {
+      "nav": [
+        { "label": "About", "href": "#about" },
+        { "label": "Team", "href": "#coaches" },
+        { "label": "Modalities", "href": "#training" },
+        { "label": "Gallery", "href": "#gallery" },
+        { "label": "Pricing", "href": "#pricing" },
+        { "label": "Contact", "href": "#contact" }
+      ],
+      "cta": "Enroll"
+    },
+    "footer": {
+      "tagline": "Training young athletes since 2014.",
+      "rights": "All rights reserved.",
+      "privacy": "Privacy Policy",
+      "terms": "Terms of Service",
+      "nav": [
+        { "label": "About", "href": "#about" },
+        { "label": "Team", "href": "#coaches" },
+        { "label": "Modalities", "href": "#training" },
+        { "label": "Gallery", "href": "#gallery" },
+        { "label": "Pricing", "href": "#pricing" },
+        { "label": "Contact", "href": "#contact" }
+      ]
+    }
+  }
+}

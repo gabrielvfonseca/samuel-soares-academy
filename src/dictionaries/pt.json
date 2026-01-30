@@ -1,0 +1,310 @@
+{
+  "web": {
+    "sections": {
+      "hero": {
+        "badge": "Academia de Futebol",
+        "title": "Onde o Futebol e a Diversão se Encontram",
+        "description": "Treinamento profissional de futebol para crianças dos 4 aos 14 anos. Desenvolvemos habilidades, confiança e amor pelo desporto.",
+        "primaryCta": "Agendar Aula Experimental",
+        "secondaryCta": "Ver Modalidades"
+      },
+      "about": {
+        "title": "Sobre a Nossa Academia",
+        "description1": "Há mais de 10 anos a formar jovens atletas e a cultivar o amor pelo futebol. A nossa missão é proporcionar uma experiência desportiva enriquecedora e divertida.",
+        "description2": "Acreditamos que o desporto é uma ferramenta poderosa para o desenvolvimento integral das crianças, promovendo valores como respeito, disciplina e trabalho em equipa.",
+        "features": [
+          {
+            "number": "01",
+            "title": "Treinadores Certificados",
+            "description": "Equipa de profissionais com formação em pedagogia desportiva infantil."
+          },
+          {
+            "number": "02",
+            "title": "Metodologia Comprovada",
+            "description": "Programa de treino estruturado que equilibra técnica e diversão."
+          },
+          {
+            "number": "03",
+            "title": "Desenvolvimento Integral",
+            "description": "Focamos no crescimento físico, emocional e social de cada criança."
+          },
+          {
+            "number": "04",
+            "title": "Ambiente Seguro",
+            "description": "Instalações adequadas e supervisão constante durante todas as atividades."
+          }
+        ]
+      },
+      "stats": {
+        "items": [
+          {
+            "value": "10+",
+            "label": "Anos de Experiência"
+          },
+          {
+            "value": "500+",
+            "label": "Alunos Formados"
+          },
+          {
+            "value": "12",
+            "label": "Treinadores Certificados"
+          },
+          {
+            "value": "95%",
+            "label": "Pais Satisfeitos"
+          }
+        ]
+      },
+      "training": {
+        "title": "Modalidades",
+        "description": "Programas adaptados a cada faixa etária, respeitando o desenvolvimento natural de cada criança e maximizando o potencial de aprendizagem.",
+        "items": [
+          {
+            "title": "Mini Craques",
+            "age": "4-6 anos",
+            "description": "Introdução ao futebol através de jogos lúdicos. Desenvolvimento da coordenação motora e primeiros contactos com a bola.",
+            "schedule": "Sábados 9h-10h"
+          },
+          {
+            "title": "Benjamins",
+            "age": "7-9 anos",
+            "description": "Aprendizagem das técnicas básicas do futebol. Treino de passe, recepção e condução de bola num ambiente divertido.",
+            "schedule": "Ter/Qui 17h-18h30"
+          },
+          {
+            "title": "Infantis",
+            "age": "10-12 anos",
+            "description": "Aperfeiçoamento técnico e introdução à tática. Participação em torneios e jogos amigáveis com outras academias.",
+            "schedule": "Seg/Qua/Sex 17h-19h"
+          },
+          {
+            "title": "Iniciados",
+            "age": "13-14 anos",
+            "description": "Treino intensivo com foco na preparação para competição. Desenvolvimento de tática avançada e preparação física.",
+            "schedule": "Seg/Qua/Sex 18h-20h"
+          },
+          {
+            "title": "Guarda-Redes",
+            "age": "7-14 anos",
+            "description": "Treino especializado para jovens guarda-redes. Técnicas de defesa, posicionamento e distribuição de bola.",
+            "schedule": "Sábados 10h-12h"
+          },
+          {
+            "title": "Futebol Feminino",
+            "age": "6-14 anos",
+            "description": "Programa dedicado às jovens atletas. Mesmo rigor técnico e diversão num ambiente acolhedor e inclusivo.",
+            "schedule": "Ter/Qui 17h-18h30"
+          }
+        ]
+      },
+      "facilities": {
+        "title": "As Nossas Instalações",
+        "description": "Espaços modernos e seguros projetados para o desenvolvimento dos jovens atletas.",
+        "items": [
+          {
+            "title": "Campo Principal",
+            "description": "Relvado sintético de última geração com iluminação LED para treinos noturnos."
+          },
+          {
+            "title": "Campo Coberto",
+            "description": "Espaço indoor para treinos em dias de chuva, garantindo continuidade durante todo o ano."
+          },
+          {
+            "title": "Balneários Modernos",
+            "description": "Instalações sanitárias limpas e seguras, separadas por género e faixa etária."
+          }
+        ]
+      },
+      "testimonials": {
+        "title": "O Que Dizem os Pais",
+        "description": "A satisfação das famílias é o nosso maior orgulho.",
+        "items": [
+          {
+            "quote": "O meu filho adora ir aos treinos. Em poucos meses vimos uma evolução incrível não só no futebol, mas também na confiança e trabalho em equipa.",
+            "author": "Maria Silva",
+            "role": "Mãe do Tomás, 8 anos"
+          },
+          {
+            "quote": "Profissionalismo e diversão na medida certa. Os treinadores são excelentes e as instalações são de primeira qualidade.",
+            "author": "João Pereira",
+            "role": "Pai da Beatriz, 10 anos"
+          },
+          {
+            "quote": "A melhor decisão que tomamos foi inscrever o nosso filho nesta academia. O ambiente é familiar e os valores transmitidos são extraordinários.",
+            "author": "Ana Rodrigues",
+            "role": "Mãe do Miguel, 6 anos"
+          }
+        ]
+      },
+      "coaches": {
+        "title": "A Nossa Equipa",
+        "description": "Profissionais apaixonados pelo futebol e dedicados ao desenvolvimento de cada jovem atleta.",
+        "items": [
+          {
+            "name": "Ricardo Santos",
+            "role": "Diretor Técnico",
+            "bio": "Ex-jogador profissional com 15 anos de experiência em formação de jovens atletas."
+          },
+          {
+            "name": "Ana Oliveira",
+            "role": "Treinadora Principal",
+            "bio": "Licenciada em Educação Física com especialização em desenvolvimento motor infantil."
+          },
+          {
+            "name": "Miguel Costa",
+            "role": "Treinador de Guarda-Redes",
+            "bio": "Especialista em treino de guarda-redes com certificação UEFA B."
+          },
+          {
+            "name": "Sofia Ferreira",
+            "role": "Treinadora Adjunta",
+            "bio": "Formadora dedicada ao futebol feminino e desenvolvimento de competências sociais."
+          }
+        ]
+      },
+      "pricing": {
+        "title": "Planos e Preços",
+        "description": "Escolha o plano que melhor se adapta às necessidades do seu filho. Todos os planos incluem aula experimental gratuita.",
+        "popularBadge": "Mais Popular",
+        "perMonth": "/mês",
+        "cta": "Inscrever Agora",
+        "footer": "Descontos disponíveis para irmãos e pagamentos anuais. Contacte-nos para mais informações.",
+        "items": [
+          {
+            "name": "Mini Craques",
+            "price": "35",
+            "description": "Para os mais pequenos (4-6 anos)",
+            "features": [
+              "1 treino por semana",
+              "Material didático incluído",
+              "Seguro desportivo",
+              "Equipamento da academia"
+            ]
+          },
+          {
+            "name": "Standard",
+            "price": "55",
+            "description": "Benjamins e Infantis (7-12 anos)",
+            "features": [
+              "2-3 treinos por semana",
+              "Participação em torneios",
+              "Seguro desportivo",
+              "Equipamento da academia",
+              "Relatório de evolução trimestral"
+            ]
+          },
+          {
+            "name": "Intensivo",
+            "price": "75",
+            "description": "Iniciados e atletas dedicados",
+            "features": [
+              "3-4 treinos por semana",
+              "Competições federadas",
+              "Seguro desportivo",
+              "Equipamento completo",
+              "Acompanhamento nutricional",
+              "Avaliação física mensal"
+            ]
+          }
+        ]
+      },
+      "gallery": {
+        "title": "Galeria",
+        "description": "Momentos especiais dos nossos treinos e competições.",
+        "items": [
+          { "alt": "Treino de técnica individual" },
+          { "alt": "Jogo de equipa" },
+          { "alt": "Exercícios de coordenação" },
+          { "alt": "Torneio entre academias" },
+          { "alt": "Celebração de golo" },
+          { "alt": "Foto de grupo da academia" }
+        ]
+      },
+      "faq": {
+        "title": "Perguntas Frequentes",
+        "description": "Encontre respostas às dúvidas mais comuns sobre a nossa academia.",
+        "items": [
+          {
+            "question": "A partir de que idade posso inscrever o meu filho?",
+            "answer": "Aceitamos crianças a partir dos 4 anos de idade. Temos programas específicos adaptados a cada faixa etária, garantindo que a experiência seja adequada ao desenvolvimento de cada criança."
+          },
+          {
+            "question": "É necessário ter experiência prévia em futebol?",
+            "answer": "Não! Recebemos crianças de todos os níveis, desde iniciantes completos até jovens com alguma experiência. Os nossos treinadores adaptam os exercícios ao nível de cada aluno."
+          },
+          {
+            "question": "O que preciso trazer para os treinos?",
+            "answer": "Recomendamos roupa desportiva confortável, chuteiras ou sapatilhas adequadas, caneleiras e uma garrafa de água. O equipamento da academia pode ser adquirido opcionalmente."
+          },
+          {
+            "question": "Posso fazer uma aula experimental antes de inscrever?",
+            "answer": "Claro! Oferecemos uma aula experimental gratuita para que a criança e os pais possam conhecer as nossas instalações, treinadores e metodologia de trabalho."
+          },
+          {
+            "question": "Como funciona o pagamento?",
+            "answer": "Oferecemos pagamento mensal por débito direto ou transferência bancária. Também temos opções de pagamento trimestral e anual com desconto. O seguro desportivo está incluído na mensalidade."
+          },
+          {
+            "question": "Os treinos são cancelados quando chove?",
+            "answer": "Dispomos de um campo coberto para os dias de mau tempo, garantindo a continuidade dos treinos durante todo o ano. Em casos de condições meteorológicas extremas, os pais serão notificados com antecedência."
+          }
+        ]
+      },
+      "cta": {
+        "title": "Pronto para Começar a Jornada do Seu Filho?",
+        "description": "Agende uma aula experimental gratuita e descubra porque somos a escolha de centenas de famílias. Sem compromisso, apenas diversão e futebol.",
+        "primaryCta": "Agendar Aula Gratuita",
+        "secondaryCta": "Ligar Agora"
+      },
+      "contact": {
+        "title": "Entre em Contacto",
+        "description": "Tem dúvidas ou quer inscrever o seu filho? Preencha o formulário ou utilize um dos nossos contactos diretos.",
+        "info": {
+          "address": "Morada",
+          "phone": "Telefone",
+          "email": "Email",
+          "schedule": "Horário"
+        },
+        "form": {
+          "name": "Nome Completo",
+          "namePlaceholder": "O seu nome",
+          "email": "Email",
+          "emailPlaceholder": "email@exemplo.com",
+          "phone": "Telefone",
+          "phonePlaceholder": "+351 912 345 678",
+          "childAge": "Idade da Criança",
+          "childAgePlaceholder": "Ex: 8 anos",
+          "message": "Mensagem",
+          "messagePlaceholder": "Conte-nos mais sobre o interesse do seu filho no futebol...",
+          "submit": "Enviar Mensagem",
+          "success": "Mensagem enviada com sucesso! Entraremos em contacto brevemente."
+        }
+      }
+    },
+    "header": {
+      "nav": [
+        { "label": "Sobre", "href": "#about" },
+        { "label": "Equipa", "href": "#coaches" },
+        { "label": "Modalidades", "href": "#training" },
+        { "label": "Galeria", "href": "#gallery" },
+        { "label": "Preços", "href": "#pricing" },
+        { "label": "Contactos", "href": "#contact" }
+      ],
+      "cta": "Inscrever"
+    },
+    "footer": {
+      "tagline": "Formando jovens atletas desde 2014.",
+      "rights": "Todos os direitos reservados.",
+      "privacy": "Política de Privacidade",
+      "terms": "Termos de Serviço",
+      "nav": [
+        { "label": "Sobre", "href": "#about" },
+        { "label": "Equipa", "href": "#coaches" },
+        { "label": "Modalidades", "href": "#training" },
+        { "label": "Galeria", "href": "#gallery" },
+        { "label": "Preços", "href": "#pricing" },
+        { "label": "Contactos", "href": "#contact" }
+      ]
+    }
+  }
+}

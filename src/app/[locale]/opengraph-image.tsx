@@ -1,0 +1,32 @@
+import { ImageResponse } from "next/og";
+import { BRAND_NAME } from "@/globals/constants";
+import { Logo } from "@/components/logo";
+
+export const runtime = "edge";
+
+export const alt = `${BRAND_NAME}`;
+export const size = {
+  width: 1200,
+  height: 630,
+};
+export const contentType = "image/png";
+
+export default async function Image(): Promise<ImageResponse> {
+  return new ImageResponse(
+    <div
+      style={{
+        height: "100%",
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        backgroundColor: "#fff",
+      }}
+    >
+      <Logo size={400} showBackground={false} />
+    </div>,
+    {
+      ...size,
+    },
+  );
+}
