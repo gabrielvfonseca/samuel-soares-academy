@@ -1,6 +1,7 @@
 import {
   Body,
   Container,
+  Font,
   Head,
   Hr,
   Html,
@@ -9,7 +10,6 @@ import {
   Section,
   Tailwind,
   Text,
-  Font,
 } from "@react-email/components";
 import { BRAND_NAME, CONTACT_INFO, SITE_URL } from "@/globals/constants";
 
@@ -30,12 +30,7 @@ export const RecipientTemplate = ({
 }: RecipientTemplateProps) => (
   <Html>
     <Head>
-      <Font
-        fontFamily="Inter"
-        fallbackFontFamily="Arial"
-        fontWeight={400}
-        fontStyle="normal"
-      />
+      <Font fontFamily="Inter" fallbackFontFamily="Arial" fontWeight={400} fontStyle="normal" />
     </Head>
     <Preview>Nova mensagem de contacto de {name}</Preview>
     <Tailwind>
@@ -54,7 +49,7 @@ export const RecipientTemplate = ({
             <Text className="text-lg font-medium text-zinc-900 mb-4 mt-0">
               Detalhes do Interessado
             </Text>
-            
+
             <div className="space-y-4">
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -75,11 +70,15 @@ export const RecipientTemplate = ({
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <Text className="text-xs uppercase tracking-wider text-zinc-500 mb-1">Telefone</Text>
+                  <Text className="text-xs uppercase tracking-wider text-zinc-500 mb-1">
+                    Telefone
+                  </Text>
                   <Text className="text-sm font-medium m-0">{phone}</Text>
                 </div>
                 <div>
-                  <Text className="text-xs uppercase tracking-wider text-zinc-500 mb-1">Idade da Criança</Text>
+                  <Text className="text-xs uppercase tracking-wider text-zinc-500 mb-1">
+                    Idade da Criança
+                  </Text>
                   <Text className="text-sm font-medium m-0">{childAge}</Text>
                 </div>
               </div>
@@ -87,7 +86,9 @@ export const RecipientTemplate = ({
               <Hr className="border-zinc-200 my-4" />
 
               <div>
-                <Text className="text-xs uppercase tracking-wider text-zinc-500 mb-1">Mensagem</Text>
+                <Text className="text-xs uppercase tracking-wider text-zinc-500 mb-1">
+                  Mensagem
+                </Text>
                 <Text className="text-sm text-zinc-700 leading-relaxed italic m-0">
                   "{message}"
                 </Text>
@@ -110,9 +111,7 @@ export const RecipientTemplate = ({
             <Text className="m-0">
               © {new Date().getFullYear()} {BRAND_NAME}. Todos os direitos reservados.
             </Text>
-            <Text className="mt-2 m-0">
-              {CONTACT_INFO.address}
-            </Text>
+            <Text className="mt-2 m-0">{CONTACT_INFO.address}</Text>
           </Section>
         </Container>
       </Body>
@@ -127,7 +126,8 @@ RecipientTemplate.PreviewProps = {
   email: "rafael.silva@example.com",
   phone: "+351 912 345 678",
   childAge: "8 anos",
-  message: "Gostaria de saber mais sobre os horários dos treinos para o escalão sub-10. O meu filho está muito motivado!",
+  message:
+    "Gostaria de saber mais sobre os horários dos treinos para o escalão sub-10. O meu filho está muito motivado!",
 } as RecipientTemplateProps;
 
 export default RecipientTemplate;

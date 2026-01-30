@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { fetchApi } from "@/lib/api-client";
-import type { GallerySection as GallerySectionData } from "@/models/gallery";
 import type { Locale } from "@/lib/i18n";
+import type { GallerySection as GallerySectionData } from "@/models/gallery";
 import type { SectionProps } from "@/types";
 
 export async function GallerySection({ lang = "pt" }: SectionProps) {
@@ -15,15 +15,16 @@ export async function GallerySection({ lang = "pt" }: SectionProps) {
             <h2 className="text-3xl sm:text-4xl font-semibold text-foreground tracking-tight">
               {data.title}
             </h2>
-            <p className="mt-4 text-muted-foreground">
-              {data.description}
-            </p>
+            <p className="mt-4 text-muted-foreground">{data.description}</p>
           </div>
         </div>
 
         <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-3">
           {data.items.map((image, index) => (
-            <div key={index} className={`${image.span} relative bg-muted rounded-lg overflow-hidden`}>
+            <div
+              key={index}
+              className={`${image.span} relative bg-muted rounded-lg overflow-hidden`}
+            >
               <Image
                 src={image.src || "/placeholder.svg"}
                 alt={image.alt}

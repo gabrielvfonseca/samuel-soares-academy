@@ -1,14 +1,16 @@
 import type { NextRequest } from "next/server";
-import { PricingSectionSchema } from "@/models/pricing";
 import { getDictionary, type Locale } from "@/lib/i18n";
-import { success, internalError } from "@/lib/response";
+import { internalError, success } from "@/lib/response";
+import { PricingSectionSchema } from "@/models/pricing";
 
 export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest): Promise<Response> {
   const { searchParams } = new URL(request.url);
-  const lang = (searchParams.get("lang") || request.headers.get("accept-language") || "en") as Locale;
-  
+  const lang = (searchParams.get("lang") ||
+    request.headers.get("accept-language") ||
+    "en") as Locale;
+
   const dictionary = await getDictionary(lang);
   const data = dictionary.web.sections.pricing;
 

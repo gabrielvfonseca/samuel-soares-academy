@@ -1,13 +1,9 @@
-import { internationalizationMiddleware } from "@/lib/i18n";
-import { parseError } from "@/lib/error";
-import { secure } from "@/lib/security";
-import {
-  noseconeOptionsWithToolbar,
-  securityMiddleware,
-} from "@/lib/security";
 import { createNEMO, type NextMiddleware } from "@rescale/nemo";
 import { type NextFetchEvent, type NextRequest, NextResponse } from "next/server";
 import { env } from "@/env";
+import { parseError } from "@/lib/error";
+import { internationalizationMiddleware } from "@/lib/i18n";
+import { noseconeOptionsWithToolbar, secure, securityMiddleware } from "@/lib/security";
 
 export const config = {
   // matcher tells Next.js which routes to run the middleware on. This runs the
@@ -31,7 +27,7 @@ const arcjetMiddleware = async (request: NextRequest) => {
         "CATEGORY:PREVIEW", // Allow preview links to show OG images
         "CATEGORY:MONITOR", // Allow uptime monitoring services
       ],
-      request
+      request,
     );
   } catch (error) {
     const message = parseError(error);
@@ -50,7 +46,7 @@ const composedMiddleware = createNEMO(
   {},
   {
     before: [i18nOrPass, arcjetMiddleware],
-  }
+  },
 );
 
 // Default locale: shown as / only (no /pt in the URL)
@@ -75,10 +71,7 @@ export async function proxy(request: NextRequest, event: NextFetchEvent) {
   const headersResponse = securityHeaders();
 
   // Then run composed middleware (i18n + arcjet)
-  const middlewareResponse = await composedMiddleware(
-    request as unknown as NextRequest,
-    event
-  );
+  const middlewareResponse = await composedMiddleware(request as unknown as NextRequest, event);
 
   // Return middleware response if it exists, otherwise headers response
   return middlewareResponse || headersResponse;

@@ -1,5 +1,5 @@
-import type { Locale } from "./i18n";
 import { env } from "@/env";
+import type { Locale } from "./i18n";
 
 const getBaseUrl = () => {
   if (typeof window !== "undefined") return ""; // use relative url on client

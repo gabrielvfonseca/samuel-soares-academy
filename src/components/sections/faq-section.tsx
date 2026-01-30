@@ -1,8 +1,8 @@
 import { FaqAccordionClient } from "@/components/sections/faq-accordion-client";
 import { fetchApi } from "@/lib/api-client";
-import type { FaqSection as FaqSectionData } from "@/models/faq";
-import { JsonLd } from "@/lib/json-ld";
 import type { Locale } from "@/lib/i18n";
+import { JsonLd } from "@/lib/json-ld";
+import type { FaqSection as FaqSectionData } from "@/models/faq";
 import type { SectionProps } from "@/types";
 
 export async function FaqSection({ lang = "pt" }: SectionProps) {
@@ -28,9 +28,7 @@ export async function FaqSection({ lang = "pt" }: SectionProps) {
         <h2 className="text-3xl sm:text-4xl font-semibold text-foreground tracking-tight">
           {data.title}
         </h2>
-        <p className="mt-4 text-muted-foreground">
-          {data.description}
-        </p>
+        <p className="mt-4 text-muted-foreground">{data.description}</p>
 
         <FaqAccordionClient items={data.items} />
       </div>

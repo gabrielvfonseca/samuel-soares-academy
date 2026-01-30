@@ -5,12 +5,12 @@ import arcjet, {
   request,
   shield,
 } from "@arcjet/next";
+import { defaults, type Options, withVercelToolbar } from "@nosecone/next";
 import { env } from "@/env";
-import { defaults, type Options, withVercelToolbar } from "@nosecone/next";;
 
 export const secure = async (
   allow: (ArcjetWellKnownBot | ArcjetBotCategory)[],
-  sourceRequest?: Request
+  sourceRequest?: Request,
 ) => {
   if (!env.ARCJET_KEY) {
     return;
@@ -59,7 +59,6 @@ export const noseconeOptions: Options = {
   contentSecurityPolicy: false,
 };
 
-export const noseconeOptionsWithToolbar: Options =
-  withVercelToolbar(noseconeOptions);
+export const noseconeOptionsWithToolbar: Options = withVercelToolbar(noseconeOptions);
 
 export { createMiddleware as securityMiddleware } from "@nosecone/next";

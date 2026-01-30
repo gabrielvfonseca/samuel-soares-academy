@@ -1,31 +1,25 @@
 import "server-only";
-import type en from "@/dictionaries/en.json";
-import languine from "@/languine.json" with { type: "json" };
 import { match as matchLocale } from "@formatjs/intl-localematcher";
 import Negotiator from "negotiator";
 import type { NextRequest } from "next/server";
 import { createI18nMiddleware } from "next-international/middleware";
+import type en from "@/dictionaries/en.json";
+import languine from "@/languine.json" with { type: "json" };
 
-export const locales = [
-  languine.locale.source,
-  ...languine.locale.targets,
-] as const;
+export const locales = [languine.locale.source, ...languine.locale.targets] as const;
 
 export type Locale = (typeof locales)[number];
 export type Dictionary = typeof en;
 
-const dictionaries: Record<string, () => Promise<Dictionary>> =
-  Object.fromEntries(
-    locales.map((locale) => [
-      locale,
-      () =>
-        import(`@/dictionaries/${locale}.json`)
-          .then((mod) => mod.default)
-          .catch((_err) =>
-            import("@/dictionaries/en.json").then((mod) => mod.default)
-          ),
-    ])
-  );
+const dictionaries: Record<string, () => Promise<Dictionary>> = Object.fromEntries(
+  locales.map((locale) => [
+    locale,
+    () =>
+      import(`@/dictionaries/${locale}.json`)
+        .then((mod) => mod.default)
+        .catch((_err) => import("@/dictionaries/en.json").then((mod) => mod.default)),
+  ]),
+);
 
 export const getDictionary = async (locale: string): Promise<Dictionary> => {
   const normalizedLocale = locale.split("-")[0];
@@ -74,7 +68,7 @@ const I18nMiddleware = createI18nMiddleware({
       const matchedLocale = matchLocale(
         validRequested.length > 0 ? validRequested : [defaultLocale],
         [...locales],
-        defaultLocale
+        defaultLocale,
       );
       return matchedLocale ?? defaultLocale;
     } catch {
@@ -83,8 +77,7 @@ const I18nMiddleware = createI18nMiddleware({
   },
 });
 
-export const internationalizationMiddleware = (request: NextRequest) =>
-  I18nMiddleware(request);
+export const internationalizationMiddleware = (request: NextRequest) => I18nMiddleware(request);
 
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],

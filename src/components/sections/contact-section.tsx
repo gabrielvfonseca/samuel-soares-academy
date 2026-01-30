@@ -1,8 +1,8 @@
-import { ContactForm } from "../forms/contact-form";
 import { fetchApi } from "@/lib/api-client";
-import type { ContactSection as ContactSectionData } from "@/models/contact";
 import type { Locale } from "@/lib/i18n";
+import type { ContactSection as ContactSectionData } from "@/models/contact";
 import type { SectionProps } from "@/types";
+import { ContactForm } from "../forms/contact-form";
 
 export async function ContactSection({ lang = "pt" }: SectionProps) {
   const data = await fetchApi<ContactSectionData>("/api/contact", lang as Locale);

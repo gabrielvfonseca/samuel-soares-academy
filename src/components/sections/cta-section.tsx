@@ -1,9 +1,9 @@
 import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 import { fetchApi } from "@/lib/api-client";
-import type { Cta } from "@/models/cta";
 import type { Locale } from "@/lib/i18n";
+import type { Cta } from "@/models/cta";
 import type { SectionProps } from "@/types";
 
 export async function CtaSection({ lang = "pt" }: SectionProps) {
@@ -26,7 +26,11 @@ export async function CtaSection({ lang = "pt" }: SectionProps) {
                   key={index}
                   size="lg"
                   variant={button.variant}
-                  className={button.variant === "ghost" ? "text-background hover:text-background hover:bg-background/10" : ""}
+                  className={
+                    button.variant === "ghost"
+                      ? "text-background hover:text-background hover:bg-background/10"
+                      : ""
+                  }
                   asChild
                 >
                   <a href={button.href} className="gap-2">

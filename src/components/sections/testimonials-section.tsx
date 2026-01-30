@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { fetchApi } from "@/lib/api-client";
-import type { TestimonialsSection as TestimonialsSectionData } from "@/models/testimonial";
 import type { Locale } from "@/lib/i18n";
+import type { TestimonialsSection as TestimonialsSectionData } from "@/models/testimonial";
 import type { SectionProps } from "@/types";
 
 export async function TestimonialsSection({ lang = "pt" }: SectionProps) {

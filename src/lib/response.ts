@@ -4,9 +4,9 @@ import { NextResponse } from "next/server";
  * Returns a successful JSON response.
  */
 export function success<T>(data: T, status = 200, headers?: HeadersInit) {
-  return NextResponse.json(data, { 
+  return NextResponse.json(data, {
     status,
-    headers 
+    headers,
   });
 }
 
@@ -24,23 +24,21 @@ export function error(message: string, status = 400, details?: unknown) {
 /**
  * Shortcut for 400 Bad Request
  */
-export const badRequest = (message = "Bad Request", details?: unknown) => 
+export const badRequest = (message = "Bad Request", details?: unknown) =>
   error(message, 400, details);
 
 /**
  * Shortcut for 401 Unauthorized
  */
-export const unauthorized = (message = "Unauthorized") => 
-  error(message, 401);
+export const unauthorized = (message = "Unauthorized") => error(message, 401);
 
 /**
  * Shortcut for 404 Not Found
  */
-export const notFound = (message = "Resource not found") => 
-  error(message, 404);
+export const notFound = (message = "Resource not found") => error(message, 404);
 
 /**
  * Shortcut for 500 Internal Server Error
  */
-export const internalError = (message = "Internal Server Error", details?: unknown) => 
+export const internalError = (message = "Internal Server Error", details?: unknown) =>
   error(message, 500, details);

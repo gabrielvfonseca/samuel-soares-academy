@@ -1,3 +1,3 @@
 export interface SectionProps {
-    lang: string;
+  lang: string;
 }

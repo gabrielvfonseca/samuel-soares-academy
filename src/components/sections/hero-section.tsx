@@ -1,9 +1,9 @@
 import { ArrowRight } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import Image from "next/image";
+import { Button } from "@/components/ui/button";
 import { fetchApi } from "@/lib/api-client";
-import type { Hero } from "@/models/hero";
 import type { Locale } from "@/lib/i18n";
+import type { Hero } from "@/models/hero";
 import type { SectionProps } from "@/types";
 
 export async function HeroSection({ lang = "pt" }: SectionProps) {

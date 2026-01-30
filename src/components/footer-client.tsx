@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, type JSX } from "react";
-import { BRAND_NAME } from "@/globals/constants";
 import Link from "next/link";
+import { type JSX, useState } from "react";
 import { ClientOnly } from "@/components/client-only";
+import { BRAND_NAME } from "@/globals/constants";
+import type { Footer as FooterData } from "@/models/footer";
 import { PrivacyDialog } from "./dialogs/privacy-dialog";
 import { TermsDialog } from "./dialogs/terms-dialog";
-import type { Footer as FooterData } from "@/models/footer";
 
 interface FooterClientProps {
   data: FooterData;

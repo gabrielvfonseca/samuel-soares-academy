@@ -1,10 +1,10 @@
 "use client";
 
 import { Menu, X } from "lucide-react";
-import { useState, type JSX } from "react";
+import Link from "next/link";
+import { type JSX, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { BRAND_NAME } from "@/globals/constants";
-import Link from "next/link";
 import type { Header as HeaderData } from "@/models/header";
 
 interface HeaderClientProps {

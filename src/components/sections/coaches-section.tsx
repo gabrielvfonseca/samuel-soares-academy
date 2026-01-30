@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { fetchApi } from "@/lib/api-client";
-import type { CoachesSection as CoachesSectionData } from "@/models/coach";
 import type { Locale } from "@/lib/i18n";
+import type { CoachesSection as CoachesSectionData } from "@/models/coach";
 import type { SectionProps } from "@/types";
 
 export async function CoachesSection({ lang = "pt" }: SectionProps) {

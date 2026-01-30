@@ -13,8 +13,8 @@ import { PricingSection } from "@/components/sections/pricing-section";
 import { StatsSection } from "@/components/sections/stats-section";
 import { TestimonialsSection } from "@/components/sections/testimonials-section";
 import { TrainingSection } from "@/components/sections/training-section";
-import { JsonLd } from "@/lib/json-ld";
 import { SITE_URL } from "@/globals/constants";
+import { JsonLd } from "@/lib/json-ld";
 
 interface HomePageProps {
   params: Promise<{ locale: string }>;

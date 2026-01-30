@@ -1,30 +1,68 @@
-# Beauty professional website
+# Samuel Soares Academy
 
-*Automatically synced with your [v0.app](https://v0.app) deployments*
-
-[![Deployed on Vercel](https://img.shields.io/badge/Deployed%20on-Vercel-black?style=for-the-badge&logo=vercel)](https://vercel.com/gabriel-fonseca/v0-beauty-professional-website)
-[![Built with v0](https://img.shields.io/badge/Built%20with-v0.app-black?style=for-the-badge)](https://v0.app/chat/pqYn3u9r4RI)
+A modern, responsive website for a local kids football school built with **Next.js** and **TypeScript**. The project follows the structure and conventions defined in `AGENTS.md` and is ready for development, testing, and deployment on Vercel.
 
 ## Overview
 
-This repository will stay in sync with your deployed chats on [v0.app](https://v0.app).
-Any changes you make to your deployed app will be automatically pushed to this repository from [v0.app](https://v0.app).
+The site showcases information about the school, coaches, training programs, facilities, and more. Content is served through a combination of static pages and API routes located under `src/app`.
 
-## Deployment
+## Tech Stack
 
-Your project is live at:
+- **Framework:** Next.js (React) with TypeScript
+- **Styling:** Tailwind CSS
+- **State / Forms:** React Hook Form, Zod for validation
+- **Utilities:** Radix UI, Sonner, Recharts, and other UI components in `src/components/ui`
+- **Environment:** Managed by `src/env.ts` using `@t3-oss/env-nextjs`
 
-**[https://vercel.com/gabriel-fonseca/v0-beauty-professional-website](https://vercel.com/gabriel-fonseca/v0-beauty-professional-website)**
+## Getting Started
 
-## Build your app
+```bash
+# Install dependencies
+npm install
 
-Continue building your app on:
+# Run locally in development mode (hot‑reload)
+npm run dev
 
-**[https://v0.app/chat/pqYn3u9r4RI](https://v0.app/chat/pqYn3u9r4RI)**
+# Build for production
+npm run build
 
-## How It Works
+# Start the production build
+npm run start
+```
 
-1. Create and modify your project using [v0.app](https://v0.app)
-2. Deploy your chats from the v0 interface
-3. Changes are automatically pushed to this repository
-4. Vercel deploys the latest version from this repository
+## Project Structure
+
+```
+src/                     # Application source
+├─ app/                 # Next.js pages & API routes
+├─ components/          # Re‑usable UI components
+├─ lib/                 # Helper libraries (API client, utils, etc.)
+├─ models/               # TypeScript data models
+├─ styles/               # Global CSS / Tailwind config
+└─ ...
+```
+
+All code lives under `src`. New modules should be placed in the most appropriate sub‑folder.
+
+## Scripts & Linting
+
+The repository includes Biome for linting and formatting:
+
+```bash
+npm run lint      # Run lint checks
+npm run format    # Auto‑format code
+npm run check     # Full type‑check + lint cycle
+```
+
+Ensure the linting passes before committing changes.
+
+## Deployments
+
+The site can be deployed to Vercel. After a successful `npm run build`, push the generated output to your Vercel project.
+
+## Contributing
+
+Please follow the guidelines in `AGENTS.md` for naming, formatting, and commit messages. Open issues or pull requests for new features, bug fixes, or improvements.
+
+---
+*This README was updated to reflect the actual project scope and structure.*

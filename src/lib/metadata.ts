@@ -7,8 +7,8 @@ interface MetadataGenerator {
   image?: string;
 }
 
-import { BRAND_NAME, SITE_URL, SOCIAL_HANDLES } from "@/globals/constants";
 import { env } from "@/env";
+import { BRAND_NAME, SITE_URL, SOCIAL_HANDLES } from "@/globals/constants";
 
 const applicationName = BRAND_NAME;
 const author: Metadata["authors"] = {

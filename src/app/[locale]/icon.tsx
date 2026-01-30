@@ -1,6 +1,6 @@
 import { ImageResponse } from "next/og";
-import { BRAND_SHORT_NAME } from "@/globals/constants";
 import { Logo } from "@/components/logo";
+import { BRAND_SHORT_NAME } from "@/globals/constants";
 
 export const runtime = "edge";
 

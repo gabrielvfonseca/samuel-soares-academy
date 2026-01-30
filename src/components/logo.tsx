@@ -5,10 +5,7 @@ interface LogoProps {
   showBackground?: boolean;
 }
 
-export function Logo({
-  size = 400,
-  showBackground = true,
-}: LogoProps): JSX.Element {
+export function Logo({ size = 400, showBackground = true }: LogoProps): JSX.Element {
   return (
     <svg
       width={size}
@@ -74,7 +71,8 @@ export function Logo({
         <linearGradient
           id="b"
           x1="796.912"
-          x2="404.507" y1="599.963"
+          x2="404.507"
+          y1="599.963"
           y2="599.965"
           gradientUnits="userSpaceOnUse"
         >

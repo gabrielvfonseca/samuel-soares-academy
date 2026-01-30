@@ -1,6 +1,6 @@
 import { fetchApi } from "@/lib/api-client";
-import type { Stats } from "@/models/stat";
 import type { Locale } from "@/lib/i18n";
+import type { Stats } from "@/models/stat";
 import type { SectionProps } from "@/types";
 
 export async function StatsSection({ lang = "pt" }: SectionProps) {
