@@ -10,9 +10,8 @@ import { FaqSection } from "@/components/sections/faq-section";
 import { GallerySection } from "@/components/sections/gallery-section";
 import { HeroSection } from "@/components/sections/hero-section";
 import { PricingSection } from "@/components/sections/pricing-section";
-import { StatsSection } from "@/components/sections/stats-section";
-import { TestimonialsSection } from "@/components/sections/testimonials-section";
-import { TrainingSection } from "@/components/sections/training-section";
+// NOTA: TestimonialsSection comentada temporariamente - para reativar, descomentar as linhas abaixo
+// import { TestimonialsSection } from "@/components/sections/testimonials-section";
 import { SITE_URL } from "@/globals/constants";
 import { JsonLd } from "@/lib/json-ld";
 
@@ -41,13 +40,12 @@ export default async function HomePage({ params }: HomePageProps): Promise<JSX.E
       />
       <Header lang={locale} />
       <HeroSection lang={locale} />
-      <StatsSection lang={locale} />
       <AboutSection lang={locale} />
       <CoachesSection lang={locale} />
-      <TrainingSection lang={locale} />
       <FacilitiesSection lang={locale} />
       <GallerySection lang={locale} />
-      <TestimonialsSection lang={locale} />
+      {/* NOTA: TestimonialsSection comentada temporariamente - para reativar, descomentar a linha abaixo */}
+      {/* <TestimonialsSection lang={locale} /> */}
       <FaqSection lang={locale} />
       <PricingSection lang={locale} />
       <CtaSection lang={locale} />
