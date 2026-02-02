@@ -1,11 +1,10 @@
 import type { NextRequest } from "next/server";
 import { BRAND_NAME, CONTACT_INFO } from "@/globals/constants";
-import { resend } from "@/lib/email";
+import { whatsapp } from "@/lib/whatsapp";
+import { env } from "@/env";
 import { getDictionary, type Locale } from "@/lib/i18n";
 import { badRequest, error, internalError, success } from "@/lib/response";
 import { ContactFormSchema, ContactSectionSchema } from "@/models/contact";
-import { RecipientTemplate } from "@/templates/recipient-template";
-import { SenderTemplate } from "@/templates/sender-template";
 
 export const dynamic = "force-dynamic";
 
@@ -17,18 +16,39 @@ export async function GET(request: NextRequest): Promise<Response> {
 
   const dictionary = await getDictionary(lang);
   const data = dictionary.web.sections.contact;
+  const values = data.values ?? {};
+
+  const addressValue = values.address ?? CONTACT_INFO.address;
+  const phoneValue = values.phone ?? CONTACT_INFO.phone;
+  const emailValue = values.email ?? CONTACT_INFO.email;
+  const scheduleValue = values.schedule ?? CONTACT_INFO.schedule;
 
   const contactData = {
     title: data.title,
     description: data.description,
     info: [
-      { label: data.info.address, value: CONTACT_INFO.address },
-      { label: data.info.phone, value: CONTACT_INFO.phone },
-      { label: data.info.email, value: CONTACT_INFO.email },
-      { label: data.info.schedule, value: CONTACT_INFO.schedule },
+      {
+        label: data.info.address,
+        value: addressValue,
+        href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressValue)}`,
+      },
+      {
+        label: data.info.schedule,
+        value: scheduleValue,
+      },
+      {
+        label: data.info.phone,
+        value: phoneValue,
+        href: `tel:${phoneValue.replace(/\s/g, "")}`,
+      },
+      {
+        label: data.info.email,
+        value: emailValue,
+        href: `mailto:${emailValue}`,
+      },
     ],
     form: {
-      title: "", // The section has a specific title for the form area in the design, but reusing section title/desc or leaving empty if not needed by component structure logic
+      title: "",
       description: "",
       nameLabel: data.form.name,
       namePlaceholder: data.form.namePlaceholder,
@@ -41,9 +61,9 @@ export async function GET(request: NextRequest): Promise<Response> {
       messageLabel: data.form.message,
       messagePlaceholder: data.form.messagePlaceholder,
       submitButton: data.form.submit,
-      submittingButton: "Enviando...",
+      submittingButton: data.form.submitting ?? "Enviando...",
       successMessage: data.form.success,
-      errorMessage: "Erro ao enviar mensagem. Por favor, tente novamente.",
+      errorMessage: data.form.error ?? "Erro ao enviar mensagem. Por favor, tente novamente.",
     },
   };
 
@@ -72,23 +92,51 @@ export async function POST(request: NextRequest) {
 
     const { name, email, phone, childAge, message } = result.data;
 
-    // 1. Send notification email to the School (Recipient of the form)
-    await resend.emails.send({
-      from: `${BRAND_NAME} <onboarding@resend.dev>`,
-      to: CONTACT_INFO.email,
-      subject: `Nova Inscrição: ${name} (${childAge})`,
-      react: RecipientTemplate({ name, email, phone, childAge, message }),
+    // 1. Send WhatsApp notification to the School (Recipient of the form)
+    const businessNotification = `📋 *Nova Inscrição*
+
+👤 *Nome:* ${name}
+📧 *Email:* ${email}
+📱 *Telefone:* ${phone}
+🎂 *Idade da Criança:* ${childAge}
+
+💬 *Mensagem:*
+${message}
+
+---
+_Recebido via formulário de contacto - ${BRAND_NAME}_`;
+
+    await whatsapp.sendTextMessage({
+      to: env.WHATSAPP_BUSINESS_PHONE,
+      message: businessNotification,
     });
 
-    // 2. Send confirmation email to the User (Sender of the form)
-    await resend.emails.send({
-      from: `${BRAND_NAME} <onboarding@resend.dev>`,
-      to: email,
-      subject: `Recebemos o seu contacto - ${BRAND_NAME}`,
-      react: SenderTemplate({ name }),
-    });
+    // 2. Send WhatsApp confirmation to the User (Sender of the form)
+    // Note: This requires the user to have initiated a conversation first,
+    // or you can use a pre-approved template for first-time messages
+    const userConfirmation = `Olá ${name}! 👋
 
-    return success({ message: successMessage }, 200, { "Cache-Control": "no-store, max-age=0" });
+Obrigado pelo seu contacto com a *${BRAND_NAME}*!
+
+Recebemos a sua mensagem e entraremos em contacto consigo brevemente.
+
+Se tiver alguma questão urgente, pode contactar-nos diretamente pelo número ${CONTACT_INFO.phone}.
+
+Cumprimentos,
+*${BRAND_NAME}*`;
+
+    // Try to send confirmation to user via WhatsApp (if they have WhatsApp)
+    try {
+      await whatsapp.sendTextMessage({
+        to: phone,
+        message: userConfirmation,
+      });
+    } catch (whatsappError) {
+      // If user doesn't have WhatsApp or hasn't opted in, log but don't fail
+      console.warn("Could not send WhatsApp confirmation to user:", whatsappError);
+    }
+
+    return success({ message: successMessage });
   } catch (err) {
     console.error("Error processing request:", err);
     return error("Erro ao processar o pedido.");
