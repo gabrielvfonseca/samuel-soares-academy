@@ -1,22 +1,20 @@
 export const BRAND_NAME = "Samuel Soares Academy";
 export const BRAND_SHORT_NAME = "Samuel Soares Academy";
-export const BRAND_DESCRIPTION =
-  "Academia de guarda redes para crianças e adolescentes. Treinos profissionais, diversão e desenvolvimento esportivo para todas as idades.";
+export const BRAND_DESCRIPTION = "Defende o teu futuro!";
 
 export const DOMAIN = "samuelsoares.academy";
 export const SITE_URL = `https://${DOMAIN}`;
 
 export const SOCIAL_HANDLES = {
-  twitter: "@samuelsoares",
-  instagram: "@academysamuelsoares",
-  facebook: "academysamuelsoares",
+  instagram: "@samuelsoares.academy",
+  facebook: "Escola de Guarda-Redes Samuel Soares",
 };
 
 export const CONTACT_INFO = {
-  email: "info@samuelsoares.academy",
-  phone: "+351 912 345 678",
-  address: "Rua do Desporto, 123 - 4000-001 Porto",
-  schedule: "Seg-Sex: 9h-20h | Sab: 9h-13h",
+  email: "geral@samuelsoares.academy",
+  phone: "+351 928353747",
+  address: "Rua do Campo de Futebol, 4 2785-609 São Domingos de Rana",
+  schedule: "Seg-Dom: 10h-20h",
 };
 
 export const COLORS = {

@@ -9,7 +9,7 @@ import { createMetadata } from "@/lib/metadata";
 import { createViewport } from "@/lib/viewport";
 
 export const metadata: Metadata = createMetadata({
-  title: `${BRAND_NAME} - Escola de Futebol`,
+  title: `${BRAND_NAME} - Defende o teu futuro!`,
   description: BRAND_DESCRIPTION,
 });
 
