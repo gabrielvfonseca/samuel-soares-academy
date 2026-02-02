@@ -3,6 +3,7 @@ import { z } from "zod";
 export const ContactInfoSchema = z.object({
   label: z.string(),
   value: z.string(),
+  href: z.string().optional(),
 });
 
 export const ContactInfoListSchema = z.array(ContactInfoSchema);

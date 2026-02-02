@@ -23,7 +23,18 @@ export async function ContactSection({ lang = "pt" }: SectionProps) {
               {data.info.map((info) => (
                 <div key={info.label}>
                   <p className="text-sm text-muted-foreground">{info.label}</p>
-                  <p className="text-foreground mt-1">{info.value}</p>
+                  {info.href ? (
+                    <a
+                      href={info.href}
+                      target={info.href.startsWith("http") ? "_blank" : undefined}
+                      rel={info.href.startsWith("http") ? "noopener noreferrer" : undefined}
+                      className="text-foreground mt-1 block hover:underline focus:underline focus:outline-none"
+                    >
+                      {info.value}
+                    </a>
+                  ) : (
+                    <p className="text-foreground mt-1">{info.value}</p>
+                  )}
                 </div>
               ))}
             </div>

@@ -23,21 +23,23 @@ export async function HeroSection({ lang = "pt" }: SectionProps) {
             {data.description}
           </p>
           <div className="mt-10 flex flex-col sm:flex-row items-start gap-4">
-            {data.buttons.map((button, index) => (
-              <Button key={index} size="lg" variant={button.variant} asChild>
-                <a href={button.href} className="gap-2">
-                  {button.label}
-                  {index === 0 && <ArrowRight className="size-4" />}
-                </a>
-              </Button>
-            ))}
+            {data.buttons
+              .filter((button) => button.label)
+              .map((button, index) => (
+                <Button key={index} size="lg" variant={button.variant} asChild>
+                  <a href={button.href} className="gap-2">
+                    {button.label}
+                    {index === 0 && <ArrowRight className="size-4" />}
+                  </a>
+                </Button>
+              ))}
           </div>
         </div>
 
         <div className="mt-20">
           <div className="relative aspect-[16/9] bg-muted rounded-lg overflow-hidden">
             <Image
-              src={data.image.src || "/placeholder.svg?height=600&width=1200"}
+              src={data.image.src}
               alt={data.image.alt}
               fill
               className="object-cover"

@@ -19,7 +19,7 @@ export async function CoachesSection({ lang = "pt" }: SectionProps) {
           </p>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-8">
           {data.items.map((coach) => (
             <div key={coach.name} className="group">
               <div className="relative aspect-square bg-muted rounded-lg overflow-hidden">
@@ -27,7 +27,7 @@ export async function CoachesSection({ lang = "pt" }: SectionProps) {
                   src={coach.image || "/placeholder.svg"}
                   alt={`Foto de ${coach.name} - ${coach.role}`}
                   fill
-                  className="object-cover grayscale group-hover:grayscale-0 transition-all duration-300"
+                  className="object-cover transition-all duration-300"
                 />
               </div>
               <div className="mt-4">

@@ -26,10 +26,10 @@ export async function PricingSection({ lang = "pt" }: SectionProps) {
               key={plan.name}
               className={`relative p-6 bg-background border ${plan.popular ? "border-foreground" : "border-border"} rounded-lg`}
             >
-              {plan.popular && (
+              {plan.popular && data.popularBadge && (
                 <span className="absolute -top-3 left-6 bg-foreground text-background text-xs font-medium px-3 py-1">
-                  <span className="sr-only">Plano recomendado:</span>
-                  Mais Popular
+                  <span className="sr-only">{data.popularBadge}</span>
+                  {data.popularBadge}
                 </span>
               )}
               <div>
@@ -39,7 +39,9 @@ export async function PricingSection({ lang = "pt" }: SectionProps) {
                   <span className="text-4xl font-semibold text-foreground tracking-tight">
                     {plan.price}
                   </span>
-                  <span className="text-muted-foreground text-sm">/mes</span>
+                  {!plan.hidePeriod && data.monthSuffix && (
+                    <span className="text-muted-foreground text-sm">{data.monthSuffix}</span>
+                  )}
                 </div>
               </div>
               <ul className="mt-6 space-y-3">
@@ -55,7 +57,7 @@ export async function PricingSection({ lang = "pt" }: SectionProps) {
                 variant={plan.popular ? "default" : "outline"}
                 asChild
               >
-                <a href="#contact">Inscrever Agora</a>
+                <a href="#contact">{data.cta}</a>
               </Button>
             </div>
           ))}

@@ -6,6 +6,7 @@ export const PricingPlanSchema = z.object({
   description: z.string(),
   features: z.array(z.string()),
   popular: z.boolean().default(false),
+  hidePeriod: z.boolean().default(false).optional(),
 });
 
 export const PricingPlansSchema = z.array(PricingPlanSchema);
@@ -20,6 +21,9 @@ export const PricingSectionSchema = z
     items: PricingPlansSchema,
     note: z.string().optional(),
     footer: z.string().optional(),
+    cta: z.string(),
+    popularBadge: z.string(),
+    monthSuffix: z.string().optional(),
   })
   .transform((data) => ({
     ...data,
