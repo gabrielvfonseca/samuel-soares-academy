@@ -7,8 +7,8 @@ import { noseconeOptionsWithToolbar, secure, securityMiddleware } from "@/lib/se
 
 export const config = {
   // matcher tells Next.js which routes to run the middleware on. This runs the
-  // middleware on all routes except for static assets and Posthog ingest
-  matcher: ["/((?!_next/static|_next/image|ingest|favicon.ico).*)"],
+  // middleware on all routes except for static assets, public images, and Posthog ingest
+  matcher: ["/((?!_next/static|_next/image|ingest|favicon.ico|images).*)"],
 };
 
 const securityHeaders = securityMiddleware(noseconeOptionsWithToolbar);
@@ -27,7 +27,7 @@ const arcjetMiddleware = async (request: NextRequest) => {
         "CATEGORY:PREVIEW", // Allow preview links to show OG images
         "CATEGORY:MONITOR", // Allow uptime monitoring services
       ],
-      request,
+      request
     );
   } catch (error) {
     const message = parseError(error);
@@ -46,7 +46,7 @@ const composedMiddleware = createNEMO(
   {},
   {
     before: [i18nOrPass, arcjetMiddleware],
-  },
+  }
 );
 
 // Default locale: shown as / only (no /pt in the URL)

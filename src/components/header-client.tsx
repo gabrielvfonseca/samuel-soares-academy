@@ -6,6 +6,7 @@ import { type JSX, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { BRAND_NAME } from "@/globals/constants";
 import type { Header as HeaderData } from "@/models/header";
+import { Logo } from "./logo";
 
 interface HeaderClientProps {
   data: HeaderData;
@@ -20,7 +21,7 @@ export function HeaderClient({ data }: HeaderClientProps): JSX.Element {
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
           <Link href="/" className="text-lg font-semibold tracking-tight text-foreground">
-            {BRAND_NAME}
+            <Logo size={45} />
           </Link>
 
           <nav className="hidden md:flex items-center gap-8">
