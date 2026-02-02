@@ -1,12 +1,22 @@
 import { NextResponse } from "next/server";
 
+const NO_CACHE_HEADERS: HeadersInit = {
+  "Cache-Control": "no-store, no-cache, must-revalidate, max-age=0",
+  Pragma: "no-cache",
+};
+
 /**
  * Returns a successful JSON response.
+ * Uses no-cache headers by default to prevent caching of API responses.
  */
 export function success<T>(data: T, status = 200, headers?: HeadersInit) {
+  const mergedHeaders: HeadersInit =
+    headers && typeof headers === "object" && !Array.isArray(headers)
+      ? { ...NO_CACHE_HEADERS, ...headers }
+      : NO_CACHE_HEADERS;
   return NextResponse.json(data, {
     status,
-    headers,
+    headers: mergedHeaders,
   });
 }
 

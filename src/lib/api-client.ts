@@ -16,9 +16,7 @@ export async function fetchApi<T>(path: string, lang: Locale = "pt"): Promise<T>
   const url = new URL(path, baseUrl);
   url.searchParams.set("lang", lang);
 
-  const res = await fetch(url.toString(), {
-    next: { revalidate: 3600 },
-  });
+  const res = await fetch(url.toString(), { cache: "no-store" });
 
   if (!res.ok) {
     throw new Error(`Failed to fetch API: ${path}`);
