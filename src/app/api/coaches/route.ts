@@ -18,8 +18,10 @@ export async function GET(request: NextRequest): Promise<Response> {
     title: data.title,
     description: data.description,
     items: data.items.map((item) => ({
-      ...item,
-      image: "/placeholder.svg?height=400&width=400",
+      name: item.name,
+      role: item.role,
+      bio: item.bio,
+      image: item.image,
     })),
   });
 

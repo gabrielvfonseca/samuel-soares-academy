@@ -22,10 +22,7 @@ export async function GET(request: NextRequest): Promise<Response> {
       { label: data.primaryCta, href: "#contact", variant: "default" },
       { label: data.secondaryCta, href: "#training", variant: "ghost" },
     ],
-    image: {
-      src: "/placeholder.svg?height=600&width=1200",
-      alt: data.title,
-    },
+    image: data.image,
   };
 
   const result = HeroSchema.safeParse(heroData);
