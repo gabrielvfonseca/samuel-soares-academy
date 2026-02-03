@@ -1,14 +1,22 @@
-import { env } from "@/env";
 import type { Locale } from "./i18n";
 
 const getBaseUrl = () => {
   if (typeof window !== "undefined") return ""; // use relative url on client
-  // In development, always use NEXT_PUBLIC_APP_URL (HTTP) to avoid SSL errors
-  if (env.NODE_ENV === "development") {
-    return env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+
+  const nodeEnv = process.env.NODE_ENV || "development";
+  const appUrl = process.env.NEXT_PUBLIC_APP_URL;
+  const vercelUrl = process.env.VERCEL_URL;
+
+  // In development, always use NEXT_PUBLIC_APP_URL (HTTP) or localhost to avoid SSL errors
+  if (nodeEnv === "development") {
+    return appUrl ?? "http://localhost:3000";
   }
-  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
-  return env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
+
+  // In production (Vercel), prioritize NEXT_PUBLIC_APP_URL if it exists
+  if (appUrl) return appUrl;
+  if (vercelUrl) return `https://${vercelUrl}`;
+
+  return "http://localhost:3000";
 };
 
 export async function fetchApi<T>(path: string, lang: Locale = "pt"): Promise<T> {
@@ -16,11 +24,17 @@ export async function fetchApi<T>(path: string, lang: Locale = "pt"): Promise<T>
   const url = new URL(path, baseUrl);
   url.searchParams.set("lang", lang);
 
-  const res = await fetch(url.toString(), { cache: "no-store" });
+  try {
+    const res = await fetch(url.toString(), { cache: "no-store" });
 
-  if (!res.ok) {
-    throw new Error(`Failed to fetch API: ${path}`);
+    if (!res.ok) {
+      console.error(`[fetchApi] Error ${res.status} fetching ${url.toString()}`);
+      throw new Error(`Failed to fetch API: ${path} (Status: ${res.status})`);
+    }
+
+    return res.json();
+  } catch (error) {
+    console.error(`[fetchApi] Exception fetching ${url.toString()}:`, error);
+    throw error;
   }
-
-  return res.json();
 }
