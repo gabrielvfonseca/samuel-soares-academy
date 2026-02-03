@@ -1,6 +1,5 @@
 import type { NextRequest } from "next/server";
 import { BRAND_NAME, CONTACT_INFO } from "@/globals/constants";
-import { whatsapp } from "@/lib/whatsapp";
 import { env } from "@/env";
 import { getDictionary, type Locale } from "@/lib/i18n";
 import { badRequest, error, internalError, success } from "@/lib/response";
@@ -58,12 +57,15 @@ export async function GET(request: NextRequest): Promise<Response> {
       phonePlaceholder: data.form.phonePlaceholder,
       ageLabel: data.form.childAge,
       agePlaceholder: data.form.childAgePlaceholder,
+      clubLabel: data.form.club,
+      clubPlaceholder: data.form.clubPlaceholder,
       messageLabel: data.form.message,
       messagePlaceholder: data.form.messagePlaceholder,
       submitButton: data.form.submit,
       submittingButton: data.form.submitting ?? "Enviando...",
       successMessage: data.form.success,
       errorMessage: data.form.error ?? "Erro ao enviar mensagem. Por favor, tente novamente.",
+      whatsappPhone: env.WHATSAPP_BUSINESS_PHONE,
     },
   };
 
@@ -84,57 +86,16 @@ export async function POST(request: NextRequest) {
     const successMessage = dictionary.web.sections.contact.form.success;
 
     const body = await request.json();
+    console.log("[API/Contact] Received request body:", body);
+
     const result = ContactFormSchema.safeParse(body);
 
     if (!result.success) {
+      console.error("[API/Contact] Validation failed:", result.error.flatten());
       return badRequest("Validation error", result.error.flatten());
     }
 
-    const { name, email, phone, childAge, message } = result.data;
-
-    // 1. Send WhatsApp notification to the School (Recipient of the form)
-    const businessNotification = `📋 *Nova Inscrição*
-
-👤 *Nome:* ${name}
-📧 *Email:* ${email}
-📱 *Telefone:* ${phone}
-🎂 *Idade da Criança:* ${childAge}
-
-💬 *Mensagem:*
-${message}
-
----
-_Recebido via formulário de contacto - ${BRAND_NAME}_`;
-
-    await whatsapp.sendTextMessage({
-      to: env.WHATSAPP_BUSINESS_PHONE,
-      message: businessNotification,
-    });
-
-    // 2. Send WhatsApp confirmation to the User (Sender of the form)
-    // Note: This requires the user to have initiated a conversation first,
-    // or you can use a pre-approved template for first-time messages
-    const userConfirmation = `Olá ${name}! 👋
-
-Obrigado pelo seu contacto com a *${BRAND_NAME}*!
-
-Recebemos a sua mensagem e entraremos em contacto consigo brevemente.
-
-Se tiver alguma questão urgente, pode contactar-nos diretamente pelo número ${CONTACT_INFO.phone}.
-
-Cumprimentos,
-*${BRAND_NAME}*`;
-
-    // Try to send confirmation to user via WhatsApp (if they have WhatsApp)
-    try {
-      await whatsapp.sendTextMessage({
-        to: phone,
-        message: userConfirmation,
-      });
-    } catch (whatsappError) {
-      // If user doesn't have WhatsApp or hasn't opted in, log but don't fail
-      console.warn("Could not send WhatsApp confirmation to user:", whatsappError);
-    }
+    const { name, email, phone, childAge, club, message } = result.data;
 
     return success({ message: successMessage });
   } catch (err) {

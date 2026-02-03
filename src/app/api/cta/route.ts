@@ -22,8 +22,8 @@ export async function GET(request: NextRequest): Promise<Response> {
       { label: data.secondaryCta, href: "tel:+351912345678", variant: "ghost" },
     ],
     image: {
-      src: "/placeholder.svg?height=400&width=600",
-      alt: data.title,
+      src: data.image?.src || "/images/team_cta.JPG",
+      alt: data.image?.alt || data.title,
     },
   };
 

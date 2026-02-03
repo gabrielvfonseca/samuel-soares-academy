@@ -17,9 +17,9 @@ export async function GET(request: NextRequest): Promise<Response> {
   const result = FacilitiesSectionSchema.safeParse({
     title: data.title,
     description: data.description,
-    items: data.items.map((item) => ({
+    items: data.items.map((item: any) => ({
       ...item,
-      image: "/placeholder.svg?height=400&width=600",
+      image: item.image || "/images/court.jpg",
     })),
   });
 
