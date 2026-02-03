@@ -3,13 +3,13 @@ import { match as matchLocale } from "@formatjs/intl-localematcher";
 import Negotiator from "negotiator";
 import type { NextRequest } from "next/server";
 import { createI18nMiddleware } from "next-international/middleware";
-import type en from "@/dictionaries/en.json";
+import type pt from "@/dictionaries/pt.json";
 import languine from "@/languine.json" with { type: "json" };
 
 export const locales = [languine.locale.source, ...languine.locale.targets] as const;
 
 export type Locale = (typeof locales)[number];
-export type Dictionary = typeof en;
+export type Dictionary = typeof pt;
 
 const dictionaries: Record<string, () => Promise<Dictionary>> = Object.fromEntries(
   locales.map((locale) => [
@@ -17,21 +17,21 @@ const dictionaries: Record<string, () => Promise<Dictionary>> = Object.fromEntri
     () =>
       import(`@/dictionaries/${locale}.json`)
         .then((mod) => mod.default)
-        .catch((_err) => import("@/dictionaries/en.json").then((mod) => mod.default)),
-  ]),
+        .catch((_err) => import("@/dictionaries/pt.json").then((mod) => mod.default)),
+  ])
 );
 
 export const getDictionary = async (locale: string): Promise<Dictionary> => {
   const normalizedLocale = locale.split("-")[0];
 
   if (!locales.includes(normalizedLocale as Locale)) {
-    return dictionaries.en();
+    return dictionaries.pt();
   }
 
   try {
     return await dictionaries[normalizedLocale as Locale]();
   } catch (_error) {
-    return dictionaries.en();
+    return dictionaries.pt();
   }
 };
 
@@ -68,7 +68,7 @@ const I18nMiddleware = createI18nMiddleware({
       const matchedLocale = matchLocale(
         validRequested.length > 0 ? validRequested : [defaultLocale],
         [...locales],
-        defaultLocale,
+        defaultLocale
       );
       return matchedLocale ?? defaultLocale;
     } catch {

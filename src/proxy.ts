@@ -49,28 +49,13 @@ const composedMiddleware = createNEMO(
   }
 );
 
-// Default locale: shown as / only (no /pt in the URL)
-const DEFAULT_LOCALE = "pt";
-
 export async function proxy(request: NextRequest, event: NextFetchEvent) {
-  const pathname = request.nextUrl.pathname;
-
-  // Default locale at / — rewrite so URL stays /
-  if (pathname === "/" || pathname === "") {
-    const url = request.nextUrl.clone();
-    url.pathname = `/${DEFAULT_LOCALE}`;
-    return NextResponse.rewrite(url);
-  }
-
-  // Don’t show /pt when it’s the default — redirect to /
-  if (pathname === `/${DEFAULT_LOCALE}`) {
-    return NextResponse.redirect(new URL("/", request.url));
-  }
-
   // Run security headers first
   const headersResponse = securityHeaders();
 
   // Then run composed middleware (i18n + arcjet)
+  // next-international handles locale rewriting with urlMappingStrategy: "rewriteDefault"
+  // This means: / -> rewrites to /pt (default locale), /en -> stays as /en
   const middlewareResponse = await composedMiddleware(request as unknown as NextRequest, event);
 
   // Return middleware response if it exists, otherwise headers response
