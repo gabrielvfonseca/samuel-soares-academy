@@ -1,13 +1,23 @@
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { fetchApi } from "@/lib/api-client";
-import type { Locale } from "@/lib/i18n";
-import type { Hero } from "@/models/hero";
+import { getDictionary, type Locale } from "@/lib/i18n";
 import type { SectionProps } from "@/types";
 
 export async function HeroSection({ lang = "pt" }: SectionProps) {
-  const data = await fetchApi<Hero>("/api/hero", lang as Locale);
+  const dictionary = await getDictionary(lang as Locale);
+  const rawData = dictionary.web.sections.hero;
+
+  const data = {
+    badge: rawData.badge,
+    title: rawData.title,
+    description: rawData.description,
+    buttons: [
+      { label: rawData.primaryCta, href: "#contact", variant: "default" as const },
+      { label: rawData.secondaryCta, href: "#training", variant: "ghost" as const },
+    ],
+    image: rawData.image,
+  };
 
   return (
     <section className="pt-28 pb-24 px-4 sm:px-6 lg:px-8 bg-background">

@@ -1,11 +1,10 @@
 import Image from "next/image";
-import { fetchApi } from "@/lib/api-client";
-import type { Locale } from "@/lib/i18n";
-import type { About } from "@/models/about";
+import { getDictionary, type Locale } from "@/lib/i18n";
 import type { SectionProps } from "@/types";
 
 export async function AboutSection({ lang = "pt" }: SectionProps) {
-  const data = await fetchApi<About>("/api/about", lang as Locale);
+  const dictionary = await getDictionary(lang as Locale);
+  const data = dictionary.web.sections.about;
 
   return (
     <section id="about" className="py-24 px-4 sm:px-6 lg:px-8 border-t border-border">

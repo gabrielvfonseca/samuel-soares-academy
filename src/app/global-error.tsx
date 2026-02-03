@@ -21,13 +21,13 @@ export default function GlobalError({
         style={{ fontFamily: "system-ui, sans-serif" }}
       >
         <main className="max-w-md w-full text-center space-y-6">
-          <p className="text-5xl font-bold text-red-600">Erro</p>
+          <p className="text-5xl font-bold">Erro</p>
           <h1 className="text-xl font-semibold tracking-tight">Algo correu mal</h1>
           <p className="text-slate-600 text-sm">Ocorreu um erro inesperado. Tente novamente.</p>
           <button
             type="button"
             onClick={() => reset()}
-            className="inline-flex items-center justify-center rounded-md bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 transition-colors"
+            className="inline-flex items-center justify-center"
           >
             Tentar novamente
           </button>

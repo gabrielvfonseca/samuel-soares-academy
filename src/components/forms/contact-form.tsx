@@ -5,6 +5,8 @@ import { useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { submitContactForm } from "@/app/actions/contact";
+import { getDictionary, type Locale } from "@/lib/i18n";
 
 interface ContactFormProps {
   title: string;
@@ -26,6 +28,7 @@ interface ContactFormProps {
   successMessage: string;
   errorMessage: string;
   whatsappPhone?: string;
+  lang?: Locale;
 }
 
 interface FormData {
@@ -53,25 +56,17 @@ export function ContactForm(props: ContactFormProps) {
     setIsSubmitting(true);
 
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const result = await submitContactForm(formData, props.lang);
 
-      const data = await response.json();
-
-      if (!response.ok) {
+      if (!result.success) {
         // If we have validation details, show them
-        if (data.details?.fieldErrors) {
-          const fieldErrors = data.details.fieldErrors;
+        if (result.details?.fieldErrors) {
+          const fieldErrors = result.details.fieldErrors as Record<string, string[]>;
           const firstErrorField = Object.keys(fieldErrors)[0];
           const firstErrorMessage = fieldErrors[firstErrorField]?.[0];
-          throw new Error(firstErrorMessage || data.error || "Algo correu mal.");
+          throw new Error(firstErrorMessage || result.error || "Algo correu mal.");
         }
-        throw new Error(data.error || "Algo correu mal.");
+        throw new Error(result.error || "Algo correu mal.");
       }
 
       toast.success(props.successMessage);

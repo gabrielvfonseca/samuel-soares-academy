@@ -1,10 +1,9 @@
 import { FooterClient } from "@/components/footer-client";
-import { fetchApi } from "@/lib/api-client";
-import type { Locale } from "@/lib/i18n";
-import type { Footer as FooterData } from "@/models/footer";
+import { getDictionary, type Locale } from "@/lib/i18n";
 import type { SectionProps } from "@/types";
 
 export async function Footer({ lang = "pt" }: SectionProps) {
-  const data = await fetchApi<FooterData>("/api/footer", lang as Locale);
+  const dictionary = await getDictionary(lang as Locale);
+  const data = dictionary.web.footer;
   return <FooterClient data={data} />;
 }

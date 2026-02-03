@@ -1,13 +1,25 @@
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { fetchApi } from "@/lib/api-client";
-import type { Locale } from "@/lib/i18n";
-import type { Cta } from "@/models/cta";
+import { getDictionary, type Locale } from "@/lib/i18n";
 import type { SectionProps } from "@/types";
 
 export async function CtaSection({ lang = "pt" }: SectionProps) {
-  const data = await fetchApi<Cta>("/api/cta", lang as Locale);
+  const dictionary = await getDictionary(lang as Locale);
+  const rawData = dictionary.web.sections.cta;
+
+  const data = {
+    title: rawData.title,
+    description: rawData.description,
+    buttons: [
+      { label: rawData.primaryCta, href: "#contact", variant: "secondary" as const },
+      { label: rawData.secondaryCta, href: "tel:+351912345678", variant: "ghost" as const },
+    ],
+    image: {
+      src: rawData.image?.src || "/images/team_cta.JPG",
+      alt: rawData.image?.alt || rawData.title,
+    },
+  };
 
   return (
     <section className="py-24 px-4 sm:px-6 lg:px-8 bg-foreground text-background">

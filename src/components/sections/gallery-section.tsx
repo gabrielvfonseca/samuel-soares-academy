@@ -1,11 +1,29 @@
 import Image from "next/image";
-import { fetchApi } from "@/lib/api-client";
-import type { Locale } from "@/lib/i18n";
-import type { GallerySection as GallerySectionData } from "@/models/gallery";
+import { getDictionary, type Locale } from "@/lib/i18n";
 import type { SectionProps } from "@/types";
 
+const gallerySpans = [
+  "col-span-2 row-span-2",
+  "col-span-1 row-span-1",
+  "col-span-1 row-span-1",
+  "col-span-1 row-span-1",
+  "col-span-1 row-span-1",
+  "col-span-2 row-span-1",
+];
+
 export async function GallerySection({ lang = "pt" }: SectionProps) {
-  const data = await fetchApi<GallerySectionData>("/api/gallery", lang as Locale);
+  const dictionary = await getDictionary(lang as Locale);
+  const rawData = dictionary.web.sections.gallery;
+
+  const data = {
+    title: rawData.title,
+    description: rawData.description,
+    items: rawData.items.map((item, index) => ({
+      src: item.src,
+      alt: item.alt,
+      span: gallerySpans[index] ?? "col-span-1 row-span-1",
+    })),
+  };
 
   return (
     <section id="gallery" className="py-24 px-4 sm:px-6 lg:px-8 bg-muted/50">

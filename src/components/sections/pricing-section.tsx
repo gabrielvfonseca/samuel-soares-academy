@@ -1,12 +1,19 @@
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { fetchApi } from "@/lib/api-client";
-import type { Locale } from "@/lib/i18n";
-import type { PricingSection as PricingSectionData } from "@/models/pricing";
+import { getDictionary, type Locale } from "@/lib/i18n";
 import type { SectionProps } from "@/types";
 
 export async function PricingSection({ lang = "pt" }: SectionProps) {
-  const data = await fetchApi<PricingSectionData>("/api/pricing", lang as Locale);
+  const dictionary = await getDictionary(lang as Locale);
+  const rawData = dictionary.web.sections.pricing;
+  const data = {
+    title: rawData.title,
+    description: rawData.description,
+    cta: rawData.cta,
+    monthSuffix: rawData.monthSuffix,
+    note: rawData.footer || "",
+    items: rawData.items,
+  };
 
   return (
     <section id="pricing" className="py-24 px-4 sm:px-6 lg:px-8 bg-muted/50">
@@ -21,17 +28,11 @@ export async function PricingSection({ lang = "pt" }: SectionProps) {
         </div>
 
         <div className="mt-12 grid grid-cols-1 md:grid-cols-3 gap-6">
-          {data.items.map((plan) => (
+          {data.items.map((plan: any) => (
             <div
               key={plan.name}
-              className={`relative p-6 bg-background border ${plan.popular ? "border-foreground" : "border-border"} rounded-lg`}
+              className="relative p-6 bg-background border border-border rounded-lg"
             >
-              {plan.popular && data.popularBadge && (
-                <span className="absolute -top-3 left-6 bg-foreground text-background text-xs font-medium px-3 py-1">
-                  <span className="sr-only">{data.popularBadge}</span>
-                  {data.popularBadge}
-                </span>
-              )}
               <div>
                 <h3 className="font-semibold text-foreground">{plan.name}</h3>
                 <p className="text-sm text-muted-foreground mt-1">{plan.description}</p>
@@ -45,18 +46,14 @@ export async function PricingSection({ lang = "pt" }: SectionProps) {
                 </div>
               </div>
               <ul className="mt-6 space-y-3">
-                {plan.features.map((feature) => (
+                {plan.features.map((feature: string) => (
                   <li key={feature} className="flex items-start gap-3 text-sm">
                     <Check className="size-4 text-foreground shrink-0 mt-0.5" aria-hidden="true" />
                     <span className="text-muted-foreground">{feature}</span>
                   </li>
                 ))}
               </ul>
-              <Button
-                className="w-full mt-8"
-                variant={plan.popular ? "default" : "outline"}
-                asChild
-              >
+              <Button className="w-full mt-8" variant="outline" asChild>
                 <a href="#contact">{data.cta}</a>
               </Button>
             </div>

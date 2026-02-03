@@ -1,11 +1,65 @@
-import { fetchApi } from "@/lib/api-client";
-import type { Locale } from "@/lib/i18n";
-import type { ContactSection as ContactSectionData } from "@/models/contact";
+import { CONTACT_INFO } from "@/globals/constants";
+import { env } from "@/env";
+import { getDictionary, type Locale } from "@/lib/i18n";
 import type { SectionProps } from "@/types";
 import { ContactForm } from "../forms/contact-form";
 
 export async function ContactSection({ lang = "pt" }: SectionProps) {
-  const data = await fetchApi<ContactSectionData>("/api/contact", lang as Locale);
+  const dictionary = await getDictionary(lang as Locale);
+  const rawData = dictionary.web.sections.contact;
+  const values = rawData.values ?? {};
+
+  const addressValue = values.address ?? CONTACT_INFO.address;
+  const phoneValue = values.phone ?? CONTACT_INFO.phone;
+  const emailValue = values.email ?? CONTACT_INFO.email;
+  const scheduleValue = values.schedule ?? CONTACT_INFO.schedule;
+
+  const data = {
+    title: rawData.title,
+    description: rawData.description,
+    info: [
+      {
+        label: rawData.info.address,
+        value: addressValue,
+        href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressValue)}`,
+      },
+      {
+        label: rawData.info.schedule,
+        value: scheduleValue,
+      },
+      {
+        label: rawData.info.phone,
+        value: phoneValue,
+        href: `tel:${phoneValue.replace(/\s/g, "")}`,
+      },
+      {
+        label: rawData.info.email,
+        value: emailValue,
+        href: `mailto:${emailValue}`,
+      },
+    ],
+    form: {
+      title: "",
+      description: "",
+      nameLabel: rawData.form.name,
+      namePlaceholder: rawData.form.namePlaceholder,
+      emailLabel: rawData.form.email,
+      emailPlaceholder: rawData.form.emailPlaceholder,
+      phoneLabel: rawData.form.phone,
+      phonePlaceholder: rawData.form.phonePlaceholder,
+      ageLabel: rawData.form.childAge,
+      agePlaceholder: rawData.form.childAgePlaceholder,
+      clubLabel: rawData.form.club,
+      clubPlaceholder: rawData.form.clubPlaceholder,
+      messageLabel: rawData.form.message,
+      messagePlaceholder: rawData.form.messagePlaceholder,
+      submitButton: rawData.form.submit,
+      submittingButton: rawData.form.submitting ?? "Enviando...",
+      successMessage: rawData.form.success,
+      errorMessage: rawData.form.error ?? "Erro ao enviar mensagem. Por favor, tente novamente.",
+      whatsappPhone: env.WHATSAPP_BUSINESS_PHONE,
+    },
+  };
 
   return (
     <section id="contact" className="py-24 px-4 sm:px-6 lg:px-8 border-t border-border">
@@ -40,7 +94,7 @@ export async function ContactSection({ lang = "pt" }: SectionProps) {
             </div>
           </div>
 
-          <ContactForm {...data.form} />
+          <ContactForm {...data.form} lang={lang as Locale} />
         </div>
       </div>
     </section>

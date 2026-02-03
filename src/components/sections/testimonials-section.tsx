@@ -1,11 +1,19 @@
 import Image from "next/image";
-import { fetchApi } from "@/lib/api-client";
-import type { Locale } from "@/lib/i18n";
-import type { TestimonialsSection as TestimonialsSectionData } from "@/models/testimonial";
+import { getDictionary, type Locale } from "@/lib/i18n";
 import type { SectionProps } from "@/types";
 
 export async function TestimonialsSection({ lang = "pt" }: SectionProps) {
-  const data = await fetchApi<TestimonialsSectionData>("/api/testimonials", lang as Locale);
+  const dictionary = await getDictionary(lang as Locale);
+  const rawData = dictionary.web.sections.testimonials;
+
+  const data = {
+    title: rawData.title,
+    description: rawData.description,
+    items: rawData.items.map((item) => ({
+      ...item,
+      image: "/placeholder.svg?height=80&width=80",
+    })),
+  };
 
   return (
     <section id="testimonials" className="py-24 px-4 sm:px-6 lg:px-8 border-t border-border">

@@ -1,10 +1,9 @@
-import { fetchApi } from "@/lib/api-client";
-import type { Locale } from "@/lib/i18n";
-import type { TrainingSection as TrainingSectionData } from "@/models/training";
+import { getDictionary, type Locale } from "@/lib/i18n";
 import type { SectionProps } from "@/types";
 
 export async function TrainingSection({ lang = "pt" }: SectionProps) {
-  const data = await fetchApi<TrainingSectionData>("/api/training", lang as Locale);
+  const dictionary = await getDictionary(lang as Locale);
+  const data = dictionary.web.sections.training;
 
   return (
     <section id="training" className="py-24 px-4 sm:px-6 lg:px-8 bg-muted/50">

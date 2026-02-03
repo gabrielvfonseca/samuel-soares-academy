@@ -1,10 +1,9 @@
-import { fetchApi } from "@/lib/api-client";
-import type { Locale } from "@/lib/i18n";
-import type { Stats } from "@/models/stat";
+import { getDictionary, type Locale } from "@/lib/i18n";
 import type { SectionProps } from "@/types";
 
 export async function StatsSection({ lang = "pt" }: SectionProps) {
-  const stats = await fetchApi<Stats>("/api/stats", lang as Locale);
+  const dictionary = await getDictionary(lang as Locale);
+  const stats = dictionary.web.sections.stats.items;
 
   return (
     <section className="py-20 px-4 sm:px-6 lg:px-8 bg-foreground text-background">

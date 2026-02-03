@@ -1,12 +1,11 @@
 import { FaqAccordionClient } from "@/components/sections/faq-accordion-client";
-import { fetchApi } from "@/lib/api-client";
-import type { Locale } from "@/lib/i18n";
+import { getDictionary, type Locale } from "@/lib/i18n";
 import { JsonLd } from "@/lib/json-ld";
-import type { FaqSection as FaqSectionData } from "@/models/faq";
 import type { SectionProps } from "@/types";
 
 export async function FaqSection({ lang = "pt" }: SectionProps) {
-  const data = await fetchApi<FaqSectionData>("/api/faq", lang as Locale);
+  const dictionary = await getDictionary(lang as Locale);
+  const data = dictionary.web.sections.faq;
 
   return (
     <section id="faq" className="py-24 px-4 sm:px-6 lg:px-8 border-t border-border">

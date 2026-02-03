@@ -1,11 +1,19 @@
 import Image from "next/image";
-import { fetchApi } from "@/lib/api-client";
-import type { Locale } from "@/lib/i18n";
-import type { FacilitiesSection as FacilitiesSectionData } from "@/models/facility";
+import { getDictionary, type Locale } from "@/lib/i18n";
 import type { SectionProps } from "@/types";
 
 export async function FacilitiesSection({ lang = "pt" }: SectionProps) {
-  const data = await fetchApi<FacilitiesSectionData>("/api/facilities", lang as Locale);
+  const dictionary = await getDictionary(lang as Locale);
+  const rawData = dictionary.web.sections.facilities;
+
+  const data = {
+    title: rawData.title,
+    description: rawData.description,
+    items: rawData.items.map((item: any) => ({
+      ...item,
+      image: item.image || "/images/court.jpg",
+    })),
+  };
 
   return (
     <section id="facilities" className="py-24 px-4 sm:px-6 lg:px-8 bg-muted/50">
