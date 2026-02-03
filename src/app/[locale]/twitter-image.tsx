@@ -23,10 +23,10 @@ export default async function Image(): Promise<ImageResponse> {
         backgroundColor: "#fff",
       }}
     >
-      <Logo size={400} showBackground={false} />
+      <Logo size={400} />
     </div>,
     {
       ...size,
-    },
+    }
   );
 }

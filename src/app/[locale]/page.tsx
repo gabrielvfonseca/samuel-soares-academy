@@ -7,7 +7,7 @@ import { ContactSection } from "@/components/sections/contact-section";
 import { CtaSection } from "@/components/sections/cta-section";
 import { FacilitiesSection } from "@/components/sections/facilities-section";
 import { FaqSection } from "@/components/sections/faq-section";
-import { GallerySection } from "@/components/sections/gallery-section";
+// import { GallerySection } from "@/components/sections/gallery-section";
 import { HeroSection } from "@/components/sections/hero-section";
 import { PricingSection } from "@/components/sections/pricing-section";
 // NOTA: TestimonialsSection comentada temporariamente - para reativar, descomentar as linhas abaixo
@@ -43,7 +43,6 @@ export default async function HomePage({ params }: HomePageProps): Promise<JSX.E
       <AboutSection lang={locale} />
       <CoachesSection lang={locale} />
       <FacilitiesSection lang={locale} />
-      <GallerySection lang={locale} />
       {/* NOTA: TestimonialsSection comentada temporariamente - para reativar, descomentar a linha abaixo */}
       {/* <TestimonialsSection lang={locale} /> */}
       <FaqSection lang={locale} />
