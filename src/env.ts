@@ -7,8 +7,6 @@ export const env = createEnv({
     UPSTASH_REDIS_REST_URL: z.string().url().optional(),
     UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
     ARCJET_KEY: z.string().startsWith("ajkey_").optional(),
-    VERCEL_PROJECT_PRODUCTION_URL: z.string().url().optional(),
-    VERCEL_URL: z.string().optional(),
   },
   client: {
     NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().startsWith("G-").optional(),
@@ -27,8 +25,6 @@ export const env = createEnv({
     UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
     UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
     ARCJET_KEY: process.env.ARCJET_KEY,
-    VERCEL_PROJECT_PRODUCTION_URL: process.env.VERCEL_PROJECT_PRODUCTION_URL,
-    VERCEL_URL: process.env.VERCEL_URL,
   },
   emptyStringAsUndefined: true,
 });

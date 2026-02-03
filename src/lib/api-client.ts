@@ -7,7 +7,7 @@ const getBaseUrl = () => {
   if (env.NODE_ENV === "development") {
     return env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
   }
-  if (env.VERCEL_URL) return `https://${env.VERCEL_URL}`;
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
   return env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 };
 

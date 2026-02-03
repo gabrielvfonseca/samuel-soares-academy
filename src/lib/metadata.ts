@@ -20,7 +20,7 @@ const publisher = BRAND_NAME;
 const twitterHandle = SOCIAL_HANDLES.twitter;
 
 const protocol = env.NODE_ENV === "production" ? "https" : "http";
-const productionUrl = env.VERCEL_PROJECT_PRODUCTION_URL;
+const productionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL;
 
 export const createMetadata = ({
   title,
