@@ -6,19 +6,20 @@ import arcjet, {
   shield,
 } from "@arcjet/next";
 import { defaults, type Options, withVercelToolbar } from "@nosecone/next";
-import { env } from "@/env";
 
 export const secure = async (
   allow: (ArcjetWellKnownBot | ArcjetBotCategory)[],
-  sourceRequest?: Request,
+  sourceRequest?: Request
 ) => {
-  if (!env.ARCJET_KEY) {
+  const arcjetKey = process.env.ARCJET_KEY;
+
+  if (!arcjetKey) {
     return;
   }
 
   const base = arcjet({
     // Get your site key from https://app.arcjet.com
-    key: env.ARCJET_KEY,
+    key: arcjetKey,
     // Identify the user by their IP address
     characteristics: ["ip.src"],
     rules: [
