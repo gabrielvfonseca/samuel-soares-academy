@@ -1,7 +1,6 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { parseError } from "@/lib/error";
 import { internationalizationMiddleware } from "@/lib/i18n";
-import { noseconeOptionsWithToolbar, secure, securityMiddleware } from "@/lib/security";
+import { noseconeOptions, secure, securityMiddleware } from "@/lib/security";
 
 export const config = {
   // matcher tells Next.js which routes to run the middleware on. This runs the
@@ -9,7 +8,7 @@ export const config = {
   matcher: ["/((?!api|_next/static|_next/image|ingest|favicon.ico|images|.*\\..*).*)"],
 };
 
-const securityHeaders = securityMiddleware(noseconeOptionsWithToolbar);
+const securityHeaders = securityMiddleware(noseconeOptions);
 
 export async function middleware(request: NextRequest) {
   // Apply security headers
@@ -29,11 +28,11 @@ export async function middleware(request: NextRequest) {
         ],
         request
       );
-    } catch (error) {
-      const message = parseError(error);
+    } catch (error: any) {
+      const message = error?.message || String(error);
       const errorResponse = NextResponse.json({ error: message }, { status: 403 });
       // Add security headers to error response
-      response.headers.forEach((value, key) => {
+      response.headers.forEach((value: any, key: any) => {
         errorResponse.headers.set(key, value);
       });
       return errorResponse;
