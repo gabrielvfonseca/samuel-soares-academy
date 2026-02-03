@@ -107,7 +107,8 @@
         "items": [
           {
             "title": "URD Tires Field",
-            "description": "Rua do Campo de Futebol, 4, 2785-609 São Domingos de Rana"
+            "description": "Rua do Campo de Futebol, 4, 2785-609 São Domingos de Rana",
+            "image": "/images/court.jpg"
           }
         ]
       },
@@ -260,7 +261,11 @@
         "title": "Ready to Start Defending your future?",
         "description": "Schedule your first training. Come evolve with us.",
         "primaryCta": "Schedule Class",
-        "secondaryCta": "Call Now"
+        "secondaryCta": "Call Now",
+        "image": {
+          "src": "/images/team_cta.JPG",
+          "alt": "Ready to Start Defending your future?"
+        }
       },
       "contact": {
         "title": "Get in Touch",
@@ -284,8 +289,10 @@
           "emailPlaceholder": "geral@samuelsoares.academy",
           "phone": "Phone",
           "phonePlaceholder": "+351 928 353 747",
-          "childAge": "Child's Age",
+          "childAge": "Athlete's Age",
           "childAgePlaceholder": "E.g.: 8 years old",
+          "club": "Do you play for a club? If yes, which one:",
+          "clubPlaceholder": "E.g.: SL Benfica",
           "message": "Message",
           "messagePlaceholder": "Tell us more about your child's interest in football...",
           "submit": "Send Message",
@@ -299,7 +306,6 @@
       "nav": [
         { "label": "About", "href": "#about" },
         { "label": "Team", "href": "#coaches" },
-        { "label": "Gallery", "href": "#gallery" },
         { "label": "Pricing", "href": "#pricing" },
         { "label": "Contact", "href": "#contact" }
       ],

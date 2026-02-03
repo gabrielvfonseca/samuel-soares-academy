@@ -14,8 +14,8 @@ export async function AboutSection({ lang = "pt" }: SectionProps) {
           <div>
             <div className="relative aspect-[4/5] bg-muted rounded-lg overflow-hidden">
               <Image
-                src="/placeholder.svg?height=600&width=480"
-                alt="Treinador a ensinar criancas no campo"
+                src="/images/samu_about.JPG"
+                alt="Samuel Soares - Fundador da Academia"
                 fill
                 className="object-cover"
               />

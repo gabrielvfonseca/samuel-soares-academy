@@ -107,7 +107,8 @@
         "items": [
           {
             "title": "Campo do URD Tires",
-            "description": "Rua do Campo de Futebol, 4, 2785-609 São Domingos de Rana"
+            "description": "Rua do Campo de Futebol, 4, 2785-609 São Domingos de Rana",
+            "image": "/images/court.jpg"
           }
         ]
       },
@@ -214,7 +215,7 @@
               "1 Treino Individual.",
               "Desconto na compra de 5 ou mais treinos indivudais."
             ],
-            "hidePeriod": false
+            "hidePeriod": true
           }
         ]
       },
@@ -260,7 +261,11 @@
         "title": "Pronto para Começar a Defender o teu futuro?",
         "description": "Agenda o teu primeiro treino. Vem evoluir connosco.",
         "primaryCta": "Agendar Aula",
-        "secondaryCta": "Ligar Agora"
+        "secondaryCta": "Ligar Agora",
+        "image": {
+          "src": "/images/team_cta.JPG",
+          "alt": "Pronto para Começar a Defender o teu futuro?"
+        }
       },
       "contact": {
         "title": "Entre em Contacto",
@@ -284,8 +289,10 @@
           "emailPlaceholder": "geral@samuelsoares.academy",
           "phone": "Telefone",
           "phonePlaceholder": "+351 928 353 747",
-          "childAge": "Idade da Criança",
+          "childAge": "Idade do Atleta",
           "childAgePlaceholder": "Ex: 8 anos",
+          "club": "Atua em algum clube? Se sim qual:",
+          "clubPlaceholder": "Ex: SL Benfica",
           "message": "Mensagem",
           "messagePlaceholder": "Conte-nos mais sobre o interesse do seu filho no futebol...",
           "submit": "Enviar Mensagem",
@@ -299,7 +306,6 @@
       "nav": [
         { "label": "Sobre", "href": "#about" },
         { "label": "Equipa", "href": "#coaches" },
-        { "label": "Galeria", "href": "#gallery" },
         { "label": "Preços", "href": "#pricing" },
         { "label": "Contactos", "href": "#contact" }
       ],

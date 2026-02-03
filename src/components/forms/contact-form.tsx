@@ -17,12 +17,15 @@ interface ContactFormProps {
   phonePlaceholder: string;
   ageLabel: string;
   agePlaceholder: string;
+  clubLabel: string;
+  clubPlaceholder: string;
   messageLabel: string;
   messagePlaceholder: string;
   submitButton: string;
   submittingButton: string;
   successMessage: string;
   errorMessage: string;
+  whatsappPhone?: string;
 }
 
 interface FormData {
@@ -30,6 +33,7 @@ interface FormData {
   email: string;
   phone: string;
   childAge: string;
+  club: string;
   message: string;
 }
 
@@ -39,6 +43,7 @@ export function ContactForm(props: ContactFormProps) {
     email: "",
     phone: "",
     childAge: "",
+    club: "",
     message: "",
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -59,14 +64,43 @@ export function ContactForm(props: ContactFormProps) {
       const data = await response.json();
 
       if (!response.ok) {
+        // If we have validation details, show them
+        if (data.details?.fieldErrors) {
+          const fieldErrors = data.details.fieldErrors;
+          const firstErrorField = Object.keys(fieldErrors)[0];
+          const firstErrorMessage = fieldErrors[firstErrorField]?.[0];
+          throw new Error(firstErrorMessage || data.error || "Algo correu mal.");
+        }
         throw new Error(data.error || "Algo correu mal.");
       }
 
       toast.success(props.successMessage);
-      setFormData({ name: "", email: "", phone: "", childAge: "", message: "" });
+
+      // Construct and open WhatsApp link
+      if (props.whatsappPhone) {
+        const message = `*Nova Inscrição*
+
+*Nome:* ${formData.name}
+*Email:* ${formData.email}
+*Telefone:* ${formData.phone}
+*Idade do Atleta:* ${formData.childAge}
+*Clube:* ${formData.club || "Não informado"}
+
+*Mensagem:*
+${formData.message}
+
+---
+Recebido via formulário de contacto - Samuel Soares Academy`;
+
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappUrl = `https://wa.me/${props.whatsappPhone.replace(/[^\d]/g, "")}?text=${encodedMessage}`;
+        window.open(whatsappUrl, "_blank");
+      }
+
+      setFormData({ name: "", email: "", phone: "", childAge: "", club: "", message: "" });
     } catch (error) {
       console.error("Form submission error:", error);
-      toast.error(props.errorMessage);
+      toast.error(error instanceof Error ? error.message : props.errorMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -150,6 +184,22 @@ export function ContactForm(props: ContactFormProps) {
             className="bg-background"
           />
         </div>
+      </div>
+
+      <div>
+        <label htmlFor="club" className="block text-sm text-muted-foreground mb-2">
+          {props.clubLabel}
+        </label>
+        <Input
+          id="club"
+          name="club"
+          type="text"
+          disabled={isSubmitting}
+          value={formData.club}
+          onChange={handleChange}
+          placeholder={props.clubPlaceholder}
+          className="bg-background"
+        />
       </div>
 
       <div>
