@@ -6,8 +6,8 @@ export const runtime = "edge";
 
 export const alt = BRAND_SHORT_NAME;
 export const size = {
-  width: 180,
-  height: 180,
+  width: 32,
+  height: 32,
 };
 export const contentType = "image/png";
 
@@ -21,13 +21,13 @@ export default function Icon(): ImageResponse {
         alignItems: "center",
         justifyContent: "center",
         background: "white",
-        borderRadius: "40px",
+        borderRadius: "20%",
       }}
     >
-      <Logo size={140} showBackground={false} />
+      <Logo size={24} />
     </div>,
     {
       ...size,
-    },
+    }
   );
 }
