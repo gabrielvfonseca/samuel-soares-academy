@@ -8,6 +8,7 @@ export const SITE_URL = `https://${DOMAIN}`;
 export const SOCIAL_HANDLES = {
   instagram: "@samuelsoares.academy",
   facebook: "Escola de Guarda-Redes Samuel Soares",
+  twitter: "@samuelsoares",
 };
 
 export const CONTACT_INFO = {
