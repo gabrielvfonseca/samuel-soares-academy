@@ -31,7 +31,7 @@ export default function RootLayout({ children }: RootLayoutProps): JSX.Element {
           name: BRAND_NAME,
           description: BRAND_DESCRIPTION,
           url: SITE_URL,
-          logo: `${SITE_URL}/icon.png`,
+          logo: `${SITE_URL}/icon.svg`,
           address: {
             "@type": "PostalAddress",
             streetAddress: CONTACT_INFO.address,
