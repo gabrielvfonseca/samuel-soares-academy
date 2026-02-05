@@ -5,10 +5,10 @@ import type { NextRequest } from "next/server";
 import { createI18nMiddleware } from "next-international/middleware";
 import type pt from "@/dictionaries/pt.json";
 import languine from "@/languine.json" with { type: "json" };
+import { localeSchema, type Locale } from "@/schemas/locale-schema";
 
 export const locales = [languine.locale.source, ...languine.locale.targets] as const;
 
-export type Locale = (typeof locales)[number];
 export type Dictionary = typeof pt;
 
 const dictionaries: Record<string, () => Promise<Dictionary>> = Object.fromEntries(
@@ -22,20 +22,27 @@ const dictionaries: Record<string, () => Promise<Dictionary>> = Object.fromEntri
 );
 
 export const getDictionary = async (locale: string): Promise<Dictionary> => {
+  // Normalize locale
   const normalizedLocale = locale.split("-")[0];
 
-  if (!locales.includes(normalizedLocale as Locale)) {
+  // Parsed language
+  const parsedLang = localeSchema.parse(normalizedLocale);
+
+  // Check if locales includes lang
+  if (!locales.includes(parsedLang)) {
     return dictionaries.pt();
   }
 
   try {
-    return await dictionaries[normalizedLocale as Locale]();
-  } catch (_error) {
+    return await dictionaries[parsedLang]();
+  } catch {
     return dictionaries.pt();
   }
 };
 
-/** Filter to BCP 47 locale tags valid for Intl.getCanonicalLocales (used inside matchLocale). */
+/**
+ * Filter to BCP 47 locale tags valid for Intl.getCanonicalLocales (used inside matchLocale).
+ */
 function filterValidLocaleTags(tags: string[]): string[] {
   const valid: string[] = [];
   const intl = globalThis.Intl as { getCanonicalLocales?(locales: string | string[]): string[] };
@@ -59,6 +66,10 @@ const I18nMiddleware = createI18nMiddleware({
   urlMappingStrategy: "rewriteDefault",
   resolveLocaleFromRequest: (request: NextRequest) => {
     const defaultLocale = languine.locale.source;
+
+    // Parse default locale
+    const parsedLang = localeSchema.parse(defaultLocale);
+
     try {
       const headers = Object.fromEntries(request.headers.entries());
       const negotiator = new Negotiator({ headers });
@@ -66,13 +77,13 @@ const I18nMiddleware = createI18nMiddleware({
       const validRequested = filterValidLocaleTags(acceptedLanguages);
 
       const matchedLocale = matchLocale(
-        validRequested.length > 0 ? validRequested : [defaultLocale],
+        validRequested.length > 0 ? validRequested : [parsedLang],
         [...locales],
-        defaultLocale
+        parsedLang
       );
-      return matchedLocale ?? defaultLocale;
+      return matchedLocale ?? parsedLang;
     } catch {
-      return defaultLocale;
+      return parsedLang;
     }
   },
 });
