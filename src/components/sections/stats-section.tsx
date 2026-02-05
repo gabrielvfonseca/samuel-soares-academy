@@ -1,8 +1,16 @@
-import { getDictionary, type Locale } from "@/lib/i18n";
+import { getDictionary } from "@/lib/i18n";
+import { localeSchema } from "@/schemas/locale-schema";
 import type { SectionProps } from "@/types";
+import { parse } from "path";
 
 export async function StatsSection({ lang = "pt" }: SectionProps) {
-  const dictionary = await getDictionary(lang as Locale);
+  // Parse language
+  const parsedLang = localeSchema.parse(lang);
+
+  // Get dictionary
+  const dictionary = await getDictionary(parsedLang);
+
+  // Set stat items data
   const stats = dictionary.web.sections.stats.items;
 
   return (

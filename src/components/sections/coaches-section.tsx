@@ -1,11 +1,20 @@
 import Image from "next/image";
-import { getDictionary, type Locale } from "@/lib/i18n";
+import { getDictionary } from "@/lib/i18n";
 import type { SectionProps } from "@/types";
+import { localeSchema } from "@/schemas/locale-schema";
+import type { JSX } from "react";
 
-export async function CoachesSection({ lang = "pt" }: SectionProps) {
-  const dictionary = await getDictionary(lang as Locale);
+export async function CoachesSection({ lang = "pt" }: SectionProps): Promise<JSX.Element> {
+  // Parse language
+  const parsedLang = localeSchema.parse(lang);
+
+  // Get dictionary
+  const dictionary = await getDictionary(parsedLang);
+
+  // Get raw coaches section
   const rawData = dictionary.web.sections.coaches;
 
+  // Build coaches section
   const data = {
     title: rawData.title,
     description: rawData.description,

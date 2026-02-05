@@ -1,11 +1,19 @@
 import Image from "next/image";
-import { getDictionary, type Locale } from "@/lib/i18n";
+import { getDictionary } from "@/lib/i18n";
+import { localeSchema } from "@/schemas/locale-schema";
 import type { SectionProps } from "@/types";
 
 export async function TestimonialsSection({ lang = "pt" }: SectionProps) {
-  const dictionary = await getDictionary(lang as Locale);
+  // Parse language
+  const parsedLang = localeSchema.parse(lang);
+
+  // Get dictionary
+  const dictionary = await getDictionary(parsedLang);
+
+  // Get raw data
   const rawData = dictionary.web.sections.testimonials;
 
+  // Set data for testimonials section
   const data = {
     title: rawData.title,
     description: rawData.description,

@@ -1,10 +1,17 @@
 import { FaqAccordionClient } from "@/components/sections/faq-accordion-client";
-import { getDictionary, type Locale } from "@/lib/i18n";
+import { getDictionary } from "@/lib/i18n";
+import { localeSchema } from "@/schemas/locale-schema";
 import { JsonLd } from "@/lib/json-ld";
 import type { SectionProps } from "@/types";
 
 export async function FaqSection({ lang = "pt" }: SectionProps) {
-  const dictionary = await getDictionary(lang as Locale);
+  // Parse language
+  const parsedLang = localeSchema.parse(lang);
+
+  // Get dictionary
+  const dictionary = await getDictionary(parsedLang);
+
+  // Get faq section raw
   const data = dictionary.web.sections.faq;
 
   return (

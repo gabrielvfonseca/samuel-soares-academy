@@ -1,13 +1,22 @@
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { getDictionary, type Locale } from "@/lib/i18n";
+import { getDictionary } from "@/lib/i18n";
+import { localeSchema } from "@/schemas/locale-schema";
 import type { SectionProps } from "@/types";
+import type { JSX } from "react";
 
-export async function CtaSection({ lang = "pt" }: SectionProps) {
-  const dictionary = await getDictionary(lang as Locale);
+export async function CtaSection({ lang = "pt" }: SectionProps): Promise<JSX.Element> {
+  // Parse language
+  const parsedLang = localeSchema.parse(lang);
+
+  // Get dictionary
+  const dictionary = await getDictionary(parsedLang);
+
+  // Get raw cta section
   const rawData = dictionary.web.sections.cta;
 
+  // Build cta section
   const data = {
     title: rawData.title,
     description: rawData.description,
@@ -54,7 +63,7 @@ export async function CtaSection({ lang = "pt" }: SectionProps) {
             </div>
           </div>
           <div className="relative">
-            <div className="relative aspect-[4/3] bg-background/10 rounded-lg overflow-hidden">
+            <div className="relative aspect-4/3 bg-background/10 rounded-lg overflow-hidden">
               <Image
                 src={data.image.src || "/placeholder.svg?height=400&width=600"}
                 alt={data.image.alt}

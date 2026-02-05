@@ -1,11 +1,19 @@
 import Image from "next/image";
-import { getDictionary, type Locale } from "@/lib/i18n";
+import { getDictionary } from "@/lib/i18n";
+import { localeSchema } from "@/schemas/locale-schema";
 import type { SectionProps } from "@/types";
 
 export async function FacilitiesSection({ lang = "pt" }: SectionProps) {
-  const dictionary = await getDictionary(lang as Locale);
+  // Parse the locale
+  const parsedLocale = localeSchema.parse(lang);
+
+  // Get the dictionary
+  const dictionary = await getDictionary(parsedLocale);
+
+  // Get facilities section data
   const rawData = dictionary.web.sections.facilities;
 
+  // Format data
   const data = {
     title: rawData.title,
     description: rawData.description,
@@ -36,7 +44,7 @@ export async function FacilitiesSection({ lang = "pt" }: SectionProps) {
               }`}
             >
               <div className={index % 2 === 1 ? "lg:order-2" : ""}>
-                <div className="relative aspect-[3/2] bg-muted rounded-lg overflow-hidden">
+                <div className="relative aspect-3/2 bg-muted rounded-lg overflow-hidden">
                   <Image
                     src={facility.image || "/placeholder.svg"}
                     alt={facility.title}

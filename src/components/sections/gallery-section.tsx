@@ -1,5 +1,6 @@
 import Image from "next/image";
-import { getDictionary, type Locale } from "@/lib/i18n";
+import { getDictionary } from "@/lib/i18n";
+import { localeSchema } from "@/schemas/locale-schema";
 import type { SectionProps } from "@/types";
 
 const gallerySpans = [
@@ -12,13 +13,20 @@ const gallerySpans = [
 ];
 
 export async function GallerySection({ lang = "pt" }: SectionProps) {
-  const dictionary = await getDictionary(lang as Locale);
+  // Parsed language
+  const parsedLang = localeSchema.parse(lang);
+
+  // Get dictionary
+  const dictionary = await getDictionary(parsedLang);
+
+  // Get raw data for gallery section
   const rawData = dictionary.web.sections.gallery;
 
+  // Format data
   const data = {
     title: rawData.title,
     description: rawData.description,
-    items: rawData.items.map((item, index) => ({
+    items: rawData.items.map((item, index: number) => ({
       src: item.src,
       alt: item.alt,
       span: gallerySpans[index] ?? "col-span-1 row-span-1",

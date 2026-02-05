@@ -1,11 +1,20 @@
 import { Check } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { getDictionary, type Locale } from "@/lib/i18n";
+import { getDictionary } from "@/lib/i18n";
+import { localeSchema } from "@/schemas/locale-schema";
 import type { SectionProps } from "@/types";
 
 export async function PricingSection({ lang = "pt" }: SectionProps) {
-  const dictionary = await getDictionary(lang as Locale);
+  // Parse language
+  const parsedLang = localeSchema.parse(lang);
+
+  // Get dictionary
+  const dictionary = await getDictionary(parsedLang);
+
+  // Get raw data for pricing section
   const rawData = dictionary.web.sections.pricing;
+
+  // Set pricing section data
   const data = {
     title: rawData.title,
     description: rawData.description,

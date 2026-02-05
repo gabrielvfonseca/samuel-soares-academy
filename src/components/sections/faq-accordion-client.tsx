@@ -7,14 +7,15 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import type { FaqSection as FaqSectionData } from "@/models/faq";
+import type { FaqSection } from "@/models/faq";
 
 interface FaqAccordionClientProps {
-  items: FaqSectionData["items"];
+  items: FaqSection["items"];
 }
 
 /** Renders Accordion only after mount to avoid Radix ID hydration mismatch. */
 export function FaqAccordionClient({ items }: FaqAccordionClientProps) {
+  // Accordion client fallback
   const fallback = (
     <div className="mt-12 space-y-4" data-slot="accordion-fallback">
       {items.map((faq, index) => (

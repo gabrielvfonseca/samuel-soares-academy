@@ -1,20 +1,36 @@
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import { Button } from "@/components/ui/button";
-import { getDictionary, type Locale } from "@/lib/i18n";
+import { getDictionary } from "@/lib/i18n";
+import { localeSchema } from "@/schemas/locale-schema";
 import type { SectionProps } from "@/types";
 
 export async function HeroSection({ lang = "pt" }: SectionProps) {
-  const dictionary = await getDictionary(lang as Locale);
+  // Parse language
+  const parseLang = localeSchema.parse(lang);
+
+  // Get dictionary
+  const dictionary = await getDictionary(parseLang);
+
+  // Get raw hero section
   const rawData = dictionary.web.sections.hero;
 
+  // Format hero data
   const data = {
     badge: rawData.badge,
     title: rawData.title,
     description: rawData.description,
     buttons: [
-      { label: rawData.primaryCta, href: "#contact", variant: "default" as const },
-      { label: rawData.secondaryCta, href: "#training", variant: "ghost" as const },
+      {
+        label: rawData.primaryCta,
+        href: "#contact",
+        variant: "default" as const,
+      },
+      {
+        label: rawData.secondaryCta,
+        href: "#training",
+        variant: "ghost" as const,
+      },
     ],
     image: rawData.image,
   };
@@ -47,7 +63,7 @@ export async function HeroSection({ lang = "pt" }: SectionProps) {
         </div>
 
         <div className="mt-20">
-          <div className="relative aspect-[16/9] bg-muted rounded-lg overflow-hidden">
+          <div className="relative aspect-16/9 bg-muted rounded-lg overflow-hidden">
             <Image
               src={data.image.src}
               alt={data.image.alt}
