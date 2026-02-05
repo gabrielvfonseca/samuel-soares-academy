@@ -1,4 +1,4 @@
-import { log } from "./log";
+import consola from "consola";
 
 export const parseError = (error: unknown): string => {
   let message = "An error occurred";
@@ -11,7 +11,7 @@ export const parseError = (error: unknown): string => {
     message = String(error);
   }
 
-  log.error(`Parsing error: ${message}`);
+  consola.error(`Parsing error: ${message}`);
 
   return message;
 };
