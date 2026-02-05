@@ -1,14 +1,14 @@
 import { z } from "zod";
 
-export const ContactInfoSchema = z.object({
+export const contactInfoSchema = z.object({
   label: z.string(),
   value: z.string(),
   href: z.string().optional(),
 });
 
-export const ContactInfoListSchema = z.array(ContactInfoSchema);
+export const contactInfoListSchema = z.array(contactInfoSchema);
 
-export const ContactFormSchema = z.object({
+export const contactFormSchema = z.object({
   name: z.string().min(2, "O nome deve ter pelo menos 2 caracteres"),
   email: z.string().email("Email inválido"),
   phone: z.string().min(9, "O telefone deve ter pelo menos 9 dígitos"),
@@ -17,13 +17,13 @@ export const ContactFormSchema = z.object({
   message: z.string().min(10, "A mensagem deve ter pelo menos 10 caracteres"),
 });
 
-export type ContactInfo = z.infer<typeof ContactInfoSchema>;
-export type ContactForm = z.infer<typeof ContactFormSchema>;
+export type ContactInfo = z.infer<typeof contactInfoSchema>;
+export type ContactForm = z.infer<typeof contactFormSchema>;
 
-export const ContactSectionSchema = z.object({
+export const contactSectionSchema = z.object({
   title: z.string(),
   description: z.string(),
-  info: ContactInfoListSchema,
+  info: contactInfoListSchema,
   form: z.object({
     title: z.string(),
     description: z.string(),
@@ -47,4 +47,4 @@ export const ContactSectionSchema = z.object({
   }),
 });
 
-export type ContactSection = z.infer<typeof ContactSectionSchema>;
+export type ContactSection = z.infer<typeof contactSectionSchema>;
