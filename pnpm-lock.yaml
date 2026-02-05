@@ -134,6 +134,9 @@ importers:
       cmdk:
         specifier: 1.0.4
         version: 1.0.4(@types/react-dom@19.2.3(@types/react@19.2.10))(@types/react@19.2.10)(react-dom@19.2.0(react@19.2.0))(react@19.2.0)
+      consola:
+        specifier: ^3.4.2
+        version: 3.4.2
       date-fns:
         specifier: 4.1.0
         version: 4.1.0
@@ -1642,6 +1645,10 @@ packages:
   commander@14.0.2:
     resolution: {integrity: sha512-TywoWNNRbhoD0BXs1P3ZEScW8W5iKrnbithIl0YH+uCmBd0QpPOA8yc82DS3BIE5Ma6FnBVUsJ7wVUDz4dvOWQ==}
     engines: {node: '>=20'}
+
+  consola@3.4.2:
+    resolution: {integrity: sha512-5IKcdX0nnYavi6G7TtOhwkYzyjfJlatbjMjuLSfE2kYT5pMDOilZ4OvMhi637CcDICTmz3wARPoyhqyX1Y+XvA==}
+    engines: {node: ^14.18.0 || >=16.10.0}
 
   cross-spawn@7.0.6:
     resolution: {integrity: sha512-uV2QOWP2nWzsy2aMp8aRibhi9dlzF5Hgh5SHaB9OiTGEyDTiJJyx0uy51QXdyWbtAHNua4XJzUKca3OzKUd3vA==}
@@ -3931,6 +3938,8 @@ snapshots:
   colorette@2.0.20: {}
 
   commander@14.0.2: {}
+
+  consola@3.4.2: {}
 
   cross-spawn@7.0.6:
     dependencies:
