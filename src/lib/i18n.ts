@@ -5,7 +5,7 @@ import type { NextRequest } from "next/server";
 import { createI18nMiddleware } from "next-international/middleware";
 import type pt from "@/dictionaries/pt.json";
 import languine from "@/languine.json" with { type: "json" };
-import { localeSchema, type Locale } from "@/schemas/locale-schema";
+import { localeSchema } from "@/schemas/locale-schema";
 
 export const locales = [languine.locale.source, ...languine.locale.targets] as const;
 
