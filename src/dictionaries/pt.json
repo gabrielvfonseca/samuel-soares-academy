@@ -146,7 +146,7 @@
           {
             "name": "Ricardo Teixeira",
             "role": "Treinador Principal",
-            "bio": "Treinador de Guarda-Redes no GDS Cascais",
+            "bio": "Ex-Treinador Belenenses, Benfica, Estoril Experiência em Liga 3. Treinador de Guarda-Redes no CS Cascais",
             "image": "/images/ricardo.jpg"
           }
         ]
@@ -274,13 +274,19 @@
           "address": "Morada",
           "phone": "Telefone",
           "email": "Email",
-          "schedule": "Horário"
+          "schedule": "Horário",
+          "facebook": "Facebook",
+          "instagram": "Instagram"
         },
         "values": {
           "address": "Rua do Campo de Futebol, 4, 2785-609 São Domingos de Rana",
           "phone": "+351 928 353 747",
           "email": "geral@samuelsoares.academy",
-          "schedule": "Seg–Dom: 10h–20h"
+          "schedule": "Seg–Dom: 10h–20h",
+          "facebook": "https://www.facebook.com/samuelsoares.academy",
+          "instagram": "https://www.instagram.com/samuelsoares.academy",
+          "facebookHandle": "Escola de Guarda-Redes Samuel Soares",
+          "instagramHandle": "@samuelsoares.academy"
         },
         "form": {
           "name": "Nome Completo",

@@ -16,6 +16,10 @@ export const CONTACT_INFO = {
   phone: "+351 928353747",
   address: "Rua do Campo de Futebol, 4 2785-609 São Domingos de Rana",
   schedule: "Seg-Dom: 10h-20h",
+  facebook: "https://www.facebook.com/samuelsoares.academy",
+  instagram: "https://www.instagram.com/samuelsoares.academy",
+  facebookHandle: SOCIAL_HANDLES.facebook,
+  instagramHandle: SOCIAL_HANDLES.instagram,
 };
 
 export const COLORS = {
