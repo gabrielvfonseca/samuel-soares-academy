@@ -157,13 +157,17 @@
         "popularBadge": "Mais Popular",
         "cta": "Inscrever Agora",
         "monthSuffix": "/mês",
-        "footer": "Preços com Iva incluído.",
+        "footer": "É obrigatório a compra de um dos packs de inscrição para treinar em grupo. Treinos individuais dispensam a compra de um pack de inscrição.",
         "items": [
           {
             "name": "Pack Inscrição Base",
             "price": "60€",
             "description": "O essencial para treinares.",
-            "features": ["Inscrição", "1 Camisola de Treino Estampada", "Seguro desportivo"],
+            "features": [
+              "Inscrição na turma.",
+              "Um camisola de treino estampada.",
+              "Seguro desportivo."
+            ],
             "hidePeriod": true
           },
           {
@@ -171,11 +175,11 @@
             "price": "90€",
             "description": "Defende o teu futuro!",
             "features": [
-              "Inscrição",
-              "1 Camisola de Treino Estampada",
-              "Calções",
-              "Meias",
-              "Seguro Desportivo"
+              "Inscrição na turma.",
+              "Um camisola de treino estampada.",
+              "Calções oficiais de treino.",
+              "Meias de treino.",
+              "Seguro desportivo."
             ],
             "hidePeriod": true
           },
@@ -184,12 +188,12 @@
             "price": "160€",
             "description": "Tudo o que precisas para treinar.",
             "features": [
-              "Inscrição",
-              "2 Camisolas de Treino Estampadas",
-              "Calções",
-              "Meias",
-              "Luvas",
-              "Seguro Desportivo"
+              "Inscrição na turma.",
+              "Duas camisolas de treino personalizadas.",
+              "Calções oficiais de treino.",
+              "Meias de treino.",
+              "Luvas de guarda-redes.",
+              "Seguro desportivo."
             ],
             "hidePeriod": true
           },
@@ -197,23 +201,34 @@
             "name": "Treino de Grupo Base",
             "price": "60€",
             "description": "Um treino por semana.",
-            "features": ["Treina 1x por semana numa das nossas turmas."],
+            "features": ["Treina uma vez por semana numa das nossas turmas."],
             "hidePeriod": false
           },
           {
             "name": "Treino de Grupo Pro",
             "price": "90€",
             "description": "Dois treinos por semana.",
-            "features": ["Treina 2x por semana numa das nossas turmas."],
+            "features": ["Treina duas vezes por semana numa das nossas turmas."],
             "hidePeriod": false
           },
           {
             "name": "Treino Individual",
             "price": "40€",
-            "description": "Treina Individualmente com o nosso treinador.",
+            "description": "Treina individualmente com o nosso treinador.",
             "features": [
-              "1 Treino Individual.",
-              "Desconto na compra de 5 ou mais treinos indivudais."
+              "Um treino individual com o nosso treinador.",
+              "Desconto na compra de cinco ou mais treinos individuais."
+            ],
+            "hidePeriod": true
+          },
+          {
+            "name": "Análise de Vídeo",
+            "price": "30€",
+            "description": "Analise de vídeo personalizada para o teu nível.",
+            "features": [
+              "Análise de vídeo personalizada.",
+              "Jogo analisado pelo nosso Treinador principal.",
+              "Relatório Detalhado com sugestões de melhoria."
             ],
             "hidePeriod": true
           }

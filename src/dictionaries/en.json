@@ -4,8 +4,8 @@
       "hero": {
         "badge": "Goalkeeper Academy",
         "title": "Defend your future!",
-        "description": "We work on technique, positioning, reaction speed, footwork, and confidence. If you want to evolve, join us!",
-        "primaryCta": "Schedule Class",
+        "description": "We work on technique, positioning, reaction speed, footwork and confidence. If you want to improve, join us!",
+        "primaryCta": "Book a Session",
         "secondaryCta": "",
         "image": {
           "src": "/images/hero.jpg",
@@ -14,8 +14,8 @@
       },
       "about": {
         "title": "About Our Academy",
-        "description1": "We are an Academy created by Samuel Soares, SL Benfica Goalkeeper with constant appearances in the National Youth Teams.",
-        "description2": "We believe that sport is a powerful tool for the integral development of children, promoting values such as respect, discipline and teamwork.",
+        "description1": "We are an Academy founded by Samuel Soares, Goalkeeper at SL Benfica with regular call-ups to the National Youth Teams.",
+        "description2": "We believe sport is a powerful tool for children's holistic development, promoting values such as respect, discipline and teamwork.",
         "features": [
           {
             "number": "01",
@@ -25,78 +25,66 @@
           {
             "number": "02",
             "title": "Proven Methodology",
-            "description": "Training program structured on the development of each athlete."
+            "description": "Structured training programme for each athlete's development."
           },
           {
             "number": "03",
-            "title": "Integral Development",
-            "description": "We focus on technique, positioning, reaction speed, footwork, and confidence."
+            "title": "Holistic Development",
+            "description": "We focus on technique, positioning, reaction speed, footwork and confidence."
           },
           {
             "number": "04",
             "title": "Safe Environment",
-            "description": "Adequate facilities and support from Coach and Academy Structure."
+            "description": "Suitable facilities and support from Coach and Academy staff."
           }
         ]
       },
       "stats": {
         "items": [
-          {
-            "value": "10+",
-            "label": "Years of Experience"
-          },
-          {
-            "value": "500+",
-            "label": "Trained Students"
-          },
-          {
-            "value": "12",
-            "label": "Certified Coaches"
-          },
-          {
-            "value": "95%",
-            "label": "Satisfied Parents"
-          }
+          { "value": "10+", "label": "Years of Experience" },
+          { "value": "500+", "label": "Trained Students" },
+          { "value": "12", "label": "Certified Coaches" },
+          { "value": "95%", "label": "Satisfied Parents" }
         ]
       },
       "training": {
-        "title": "Modalities",
-        "description": "Programs adapted to each age group, respecting the natural development of each child and maximizing learning potential.",
+        "title": "Programmes",
+        "description": "Programmes tailored to each age group, respecting each child's natural development and maximising learning potential.",
         "items": [
           {
             "title": "Mini Stars",
             "age": "4-6 years",
-            "description": "Introduction to football through playful games. Development of motor coordination and first contacts with the ball.",
+            "description": "Introduction to football through fun games. Motor coordination and first contact with the ball.",
             "schedule": "Saturdays 9am-10am"
           },
           {
             "title": "Benjamins",
             "age": "7-9 years",
-            "description": "Learning basic football techniques. Passing, receiving and ball control training in a fun environment.",
+            "description": "Learning basic football techniques. Passing, receiving and ball control in a fun environment.",
             "schedule": "Tue/Thu 5pm-6:30pm"
           },
           {
             "title": "Infants",
             "age": "10-12 years",
-            "description": "Technical improvement and introduction to tactics. Participation in tournaments and friendly games with other academies.",
+            "description": "Technical refinement and introduction to tactics. Tournaments and friendlies with other academies.",
             "schedule": "Mon/Wed/Fri 5pm-7pm"
           },
           {
-            "title": "Initiates",
+            "title": "Juniors",
             "age": "13-14 years",
-            "description": "Intensive training with a focus on preparation for competition. Development of advanced tactics and physical preparation.",
+            "description": "Intensive training focused on competition preparation. Advanced tactics and physical conditioning.",
             "schedule": "Mon/Wed/Fri 6pm-8pm"
           },
           {
             "title": "Goalkeepers",
             "age": "7-14 years",
-            "description": "Specialized training for young goalkeepers. Defense techniques, positioning and ball distribution.",
+            "description": "Specialised training for young goalkeepers. Saving technique, positioning and distribution.",
             "schedule": "Saturdays 10am-12pm"
           },
           {
             "title": "Women's Football",
             "age": "6-14 years",
-            "description": "Program dedicated to young athletes. Same technical rigor and fun in a welcoming and inclusive environment.",
+            "description": "Programme for young female athletes. Same technical standards and fun in a welcoming, inclusive environment.",
             "schedule": "Tue/Thu 5pm-6:30pm"
           }
         ]
@@ -117,17 +105,17 @@
         "description": "Family satisfaction is our greatest pride.",
         "items": [
           {
-            "quote": "My son loves going to training. In a few months we saw an incredible evolution not only in football, but also in confidence and teamwork.",
+            "quote": "My son loves going to training. In just a few months we saw incredible progress not only in football, but also in confidence and teamwork.",
             "author": "Maria Silva",
-            "role": "Tomas' mother, 8 years old"
+            "role": "Tomás's mother, 8 years old"
           },
           {
-            "quote": "Professionalism and fun in the right measure. The coaches are excellent and the facilities are top quality.",
-            "author": "Joao Pereira",
+            "quote": "Professionalism and fun in the right measure. The coaches are excellent and the facilities are first-class.",
+            "author": "João Pereira",
             "role": "Beatriz's father, 10 years old"
           },
           {
-            "quote": "The best decision we made was to enroll our son in this academy. The environment is family-oriented and the values conveyed are extraordinary.",
+            "quote": "The best decision we made was enrolling our son in this academy. The atmosphere is family-friendly and the values taught are outstanding.",
             "author": "Ana Rodrigues",
             "role": "Miguel's mother, 6 years old"
           }
@@ -135,93 +123,108 @@
       },
       "coaches": {
         "title": "Our Team",
-        "description": "Professionals passionate about football and dedicated to the development of each young athlete.",
+        "description": "Professionals passionate about football and dedicated to each young athlete's development.",
         "items": [
           {
             "name": "Samuel Soares",
             "role": "Founder",
-            "bio": "SL Benfica Goalkeeper.",
+            "bio": "Goalkeeper at SL Benfica.",
             "image": "/images/samu_bola.png"
           },
           {
             "name": "Ricardo Teixeira",
             "role": "Head Coach",
-            "bio": "Ex-Coach Belenenses, Benfica, Estoril. Experience in Liga 3. Goalkeeper Coach at CS Cascais",
+            "bio": "Former Coach at Belenenses, Benfica, Estoril. Liga 3 experience. Goalkeeper Coach at CS Cascais",
             "image": "/images/ricardo.jpg"
           }
         ]
       },
       "pricing": {
-        "title": "Plans and Registration Packs",
+        "title": "Plans & Registration Packs",
         "description": "Choose the pack that best suits your needs.",
         "popularBadge": "Most Popular",
-        "cta": "Enroll Now",
+        "cta": "Sign Up Now",
         "monthSuffix": "/month",
-        "footer": "Prices include VAT.",
+        "footer": "Purchase of one registration pack is required for group training. Individual sessions do not require a registration pack.",
         "items": [
           {
             "name": "Base Registration Pack",
-            "price": "60€",
-            "description": "The essentials for training.",
-            "features": ["Registration", "1 Printed Training Jersey", "Sports insurance"],
+            "price": "€60",
+            "description": "Everything you need to train.",
+            "features": [
+              "Class registration.",
+              "One printed training jersey.",
+              "Sports insurance."
+            ],
             "hidePeriod": true
           },
           {
             "name": "Pro Registration Pack",
-            "price": "90€",
+            "price": "€90",
             "description": "Defend your future!",
             "features": [
-              "Registration",
-              "1 Printed Training Jersey",
-              "Shorts",
-              "Socks",
-              "Sports Insurance"
+              "Class registration.",
+              "One printed training jersey.",
+              "Official training shorts.",
+              "Training socks.",
+              "Sports insurance."
             ],
             "hidePeriod": true
           },
           {
             "name": "Supreme Registration Pack",
-            "price": "160€",
+            "price": "€160",
             "description": "Everything you need to train.",
             "features": [
-              "Registration",
-              "2 Printed Training Jerseys",
-              "Shorts",
-              "Socks",
-              "Gloves",
-              "Sports Insurance"
+              "Class registration.",
+              "Two personalised training jerseys.",
+              "Official training shorts.",
+              "Training socks.",
+              "Goalkeeper gloves.",
+              "Sports insurance."
             ],
             "hidePeriod": true
           },
           {
             "name": "Base Group Training",
-            "price": "60€",
-            "description": "One training per week.",
-            "features": ["Train 1x per week in one of our classes."],
+            "price": "€60",
+            "description": "One session per week.",
+            "features": ["Train once a week in one of our classes."],
             "hidePeriod": false
           },
           {
             "name": "Pro Group Training",
-            "price": "90€",
-            "description": "Two trainings per week.",
-            "features": ["Train 2x per week in one of our classes."],
+            "price": "€90",
+            "description": "Two sessions per week.",
+            "features": ["Train twice a week in one of our classes."],
             "hidePeriod": false
           },
           {
-            "name": "Individual Training",
-            "price": "40€",
-            "description": "Train individually with our coach.",
+            "name": "Individual Session",
+            "price": "€40",
+            "description": "One-to-one session with our coach.",
             "features": [
-              "1 Individual Training.",
-              "Discount on purchase of 5 or more individual trainings."
+              "One individual session with our coach.",
+              "Discount when booking five or more individual sessions."
             ],
-            "hidePeriod": false
+            "hidePeriod": true
+          },
+          {
+            "name": "Video Analysis",
+            "price": "€30",
+            "description": "Personalised video analysis for your level.",
+            "features": [
+              "Personalised video analysis.",
+              "Session analysed by our Head Coach.",
+              "Detailed report with improvement suggestions."
+            ],
+            "hidePeriod": true
           }
         ]
       },
       "gallery": {
         "title": "Gallery",
-        "description": "Special moments from our trainings and competitions.",
+        "description": "Special moments from our training and competitions.",
         "items": [
           { "src": "/images/hero.jpg", "alt": "Individual technique training" },
           { "src": "/images/ricardo_bola.jpg", "alt": "Team play" },
@@ -236,45 +239,45 @@
         "description": "Find answers to the most common questions about our academy.",
         "items": [
           {
-            "question": "At what age can I enroll my child?",
-            "answer": "We accept students from 6 to 18 years old, organized by age groups and development level, ensuring appropriate monitoring for each phase."
+            "question": "From what age can I enrol my child?",
+            "answer": "We accept students from 6 to 18 years old, organised by age group and development level, with support suited to each stage."
           },
           {
-            "question": "Is previous football experience necessary?",
-            "answer": "No. No previous experience is required. We work with both beginners and young goalkeepers who already play in clubs and want to improve their technique and performance."
+            "question": "Is prior football experience required?",
+            "answer": "No. No prior experience is needed. We work with both beginners and young goalkeepers who already play at clubs and want to improve their technique and performance."
           },
           {
-            "question": "What do I need to bring to training?",
-            "answer": "The student must bring:\n• Comfortable sports equipment\n• Samuel Soares Goalkeeper School Jersey\n• Goalkeeper gloves\n• Cleats suitable for the surface\n• Water bottle"
+            "question": "What should my child bring to training?",
+            "answer": "Students should bring:\n• Comfortable sportswear\n• Samuel Soares Goalkeeper School jersey\n• Goalkeeper gloves\n• Boots suitable for the surface\n• Water bottle"
           },
           {
             "question": "How does payment work?",
-            "answer": "Payment is made monthly, with values adjusted to the weekly frequency of training. All detailed information is provided at the time of registration."
+            "answer": "Payment is monthly, with amounts adjusted to weekly attendance. Full details are provided at registration."
           },
           {
-            "question": "Are trainings cancelled when it rains?",
-            "answer": "As a general rule, trainings are not cancelled due to rain. Training may be postponed or rescheduled only in extreme weather conditions or when the field does not meet safety conditions."
+            "question": "Are sessions cancelled when it rains?",
+            "answer": "As a rule, sessions are not cancelled due to rain. Only in extreme weather or when the pitch is unsafe may a session be postponed or rescheduled."
           }
         ]
       },
       "cta": {
-        "title": "Ready to Start Defending your future?",
-        "description": "Schedule your first training. Come evolve with us.",
-        "primaryCta": "Schedule Class",
+        "title": "Ready to Start Defending Your Future?",
+        "description": "Book your first session. Come and grow with us.",
+        "primaryCta": "Book a Session",
         "secondaryCta": "Call Now",
         "image": {
           "src": "/images/team_cta.JPG",
-          "alt": "Ready to Start Defending your future?"
+          "alt": "Ready to Start Defending Your Future?"
         }
       },
       "contact": {
         "title": "Get in Touch",
-        "description": "Have questions or want to enroll your child? Fill out the form or use one of our direct contacts.",
+        "description": "Have questions or want to enrol your child? Fill in the form or use one of our direct contacts.",
         "info": {
           "address": "Address",
           "phone": "Phone",
           "email": "Email",
-          "schedule": "Schedule",
+          "schedule": "Opening Hours",
           "facebook": "Facebook",
           "instagram": "Instagram"
         },
@@ -285,7 +288,7 @@
           "schedule": "Mon–Sun: 10am–8pm",
           "facebook": "https://www.facebook.com/samuelsoares.academy",
           "instagram": "https://www.instagram.com/samuelsoares.academy",
-          "facebookHandle": "Escola de Guarda-Redes Samuel Soares",
+          "facebookHandle": "Samuel Soares Goalkeeper School",
           "instagramHandle": "@samuelsoares.academy"
         },
         "form": {
@@ -296,14 +299,14 @@
           "phone": "Phone",
           "phonePlaceholder": "+351 928 353 747",
           "childAge": "Athlete's Age",
-          "childAgePlaceholder": "E.g.: 8 years old",
-          "club": "Do you play for a club? If yes, which one:",
-          "clubPlaceholder": "E.g.: SL Benfica",
+          "childAgePlaceholder": "e.g. 8 years old",
+          "club": "Do they play for a club? If so, which:",
+          "clubPlaceholder": "e.g. SL Benfica",
           "message": "Message",
           "messagePlaceholder": "Tell us more about your child's interest in football...",
           "submit": "Send Message",
           "submitting": "Sending...",
-          "success": "Message sent successfully! We will get in touch shortly.",
+          "success": "Message sent successfully! We will get back to you soon.",
           "error": "Failed to send message. Please try again."
         }
       }
@@ -315,7 +318,7 @@
         { "label": "Pricing", "href": "#pricing" },
         { "label": "Contact", "href": "#contact" }
       ],
-      "cta": "Enroll"
+      "cta": "Sign Up"
     },
     "footer": {
       "tagline": "Defend your future!",
