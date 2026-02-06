@@ -27,8 +27,8 @@ export async function PricingSection({ lang = "pt" }: SectionProps) {
   };
 
   return (
-    <section id="pricing" className="py-24 px-4 sm:px-6 lg:px-8 bg-muted/50">
-      <div className="max-w-5xl mx-auto">
+    <section id="pricing" className="py-24 px-4 sm:px-6 lg:px-8 bg-muted/50 overflow-x-hidden">
+      <div className="max-w-5xl mx-auto min-w-0">
         <div className="max-w-xl">
           <h2 className="text-3xl sm:text-4xl font-semibold text-foreground tracking-tight">
             {data.title}
@@ -38,7 +38,7 @@ export async function PricingSection({ lang = "pt" }: SectionProps) {
           </p>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6">
+        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-6 min-w-0">
           {data.items.map((plan, index) => {
             const isLast = index === data.items.length - 1;
 
@@ -46,22 +46,22 @@ export async function PricingSection({ lang = "pt" }: SectionProps) {
               <div
                 key={plan.name}
                 className={cn(
-                  "relative flex flex-col p-6 sm:p-7 bg-background border border-border rounded-xl",
-                  isLast ? "col-span-2" : "col-span-1"
+                  "relative flex min-w-0 flex-col overflow-hidden p-6 sm:p-7 bg-background border border-border rounded-xl",
+                  isLast ? "md:col-span-2" : "col-span-1"
                 )}
               >
                 {isLast ? (
                   <>
-                    <div className="flex flex-1 flex-col gap-6 sm:flex-row sm:items-start sm:gap-0">
-                      <div className="flex shrink-0 flex-col border-border/60 pr-0 sm:border-r sm:pr-8 md:pr-10">
-                        <h3 className="text-xl font-semibold text-foreground sm:text-2xl">
+                    <div className="flex min-w-0 flex-1 flex-col gap-6 md:flex-row md:items-start md:gap-0">
+                      <div className="flex min-w-0 shrink-0 flex-col border-border/60 pr-0 md:border-r md:pr-8 lg:pr-10">
+                        <h3 className="text-xl font-semibold text-foreground wrap-break-word md:text-2xl">
                           {plan.name}
                         </h3>
-                        <p className="mt-2 text-sm text-muted-foreground leading-relaxed sm:max-w-[280px]">
+                        <p className="mt-2 text-sm text-muted-foreground leading-relaxed wrap-break-word md:max-w-[280px]">
                           {plan.description}
                         </p>
-                        <div className="mt-5 pb-6 flex items-baseline gap-1.5">
-                          <span className="text-4xl font-bold tracking-tight text-foreground sm:text-4xl">
+                        <div className="mt-5 pb-6 flex flex-wrap items-baseline gap-1.5">
+                          <span className="text-4xl font-bold tracking-tight text-foreground wrap-break-word md:text-4xl">
                             {plan.price}
                           </span>
                           {!plan.hidePeriod && data.monthSuffix && (
@@ -71,24 +71,26 @@ export async function PricingSection({ lang = "pt" }: SectionProps) {
                           )}
                         </div>
                       </div>
-                      <ul className="flex flex-1 flex-col gap-3 sm:pl-8 md:grid">
+                      <ul className="flex min-w-0 flex-1 flex-col gap-3 md:pl-8 lg:grid">
                         {plan.features.map((feature: string) => (
-                          <li key={feature} className="flex items-center gap-3 text-sm">
+                          <li key={feature} className="flex min-w-0 items-center gap-3 text-sm">
                             <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
                               <Check
-                                className="size-3 text-primary"
+                                className="size-3 shrink-0 text-primary"
                                 strokeWidth={2.5}
                                 aria-hidden="true"
                               />
                             </span>
-                            <span className="text-muted-foreground">{feature}</span>
+                            <span className="min-w-0 wrap-break-word text-muted-foreground">
+                              {feature}
+                            </span>
                           </li>
                         ))}
                       </ul>
                     </div>
-                    <div className="border-t border-border/60 pt-6">
+                    <div className="min-w-0 border-t border-border/60 pt-6">
                       <Button
-                        className="w-full sm:w-fit sm:min-w-[160px]"
+                        className="w-full min-w-0 md:w-fit md:min-w-[160px]"
                         variant="outline"
                         asChild
                       >
@@ -98,14 +100,16 @@ export async function PricingSection({ lang = "pt" }: SectionProps) {
                   </>
                 ) : (
                   <>
-                    <div className="flex min-h-0 flex-1 flex-col">
-                      <div className="flex flex-col border-b border-border/60 pb-6">
-                        <h3 className="text-lg font-semibold text-foreground">{plan.name}</h3>
-                        <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed">
+                    <div className="flex min-h-0 min-w-0 flex-1 flex-col">
+                      <div className="flex min-w-0 flex-col border-b border-border/60 pb-6">
+                        <h3 className="text-lg font-semibold text-foreground wrap-break-word">
+                          {plan.name}
+                        </h3>
+                        <p className="mt-1.5 text-sm text-muted-foreground leading-relaxed wrap-break-word">
                           {plan.description}
                         </p>
-                        <div className="mt-5 flex items-baseline gap-1.5">
-                          <span className="text-4xl font-bold tracking-tight text-foreground">
+                        <div className="mt-5 flex flex-wrap items-baseline gap-1.5">
+                          <span className="text-4xl font-bold tracking-tight text-foreground wrap-break-word">
                             {plan.price}
                           </span>
                           {!plan.hidePeriod && data.monthSuffix && (
@@ -115,24 +119,26 @@ export async function PricingSection({ lang = "pt" }: SectionProps) {
                           )}
                         </div>
                       </div>
-                      <ul className="mt-6 flex flex-1 flex-col gap-3">
+                      <ul className="mt-6 flex min-w-0 flex-1 flex-col gap-3">
                         {plan.features.map((feature: string) => (
-                          <li key={feature} className="flex items-center gap-3 text-sm">
+                          <li key={feature} className="flex min-w-0 items-center gap-3 text-sm">
                             <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
                               <Check
-                                className="size-3 text-primary"
+                                className="size-3 shrink-0 text-primary"
                                 strokeWidth={2.5}
                                 aria-hidden="true"
                               />
                             </span>
-                            <span className="text-muted-foreground">{feature}</span>
+                            <span className="min-w-0 wrap-break-word text-muted-foreground">
+                              {feature}
+                            </span>
                           </li>
                         ))}
                       </ul>
                     </div>
-                    <div className="mt-auto pt-6">
+                    <div className="mt-auto min-w-0 pt-6">
                       <Button
-                        className="w-full sm:w-fit sm:min-w-[160px]"
+                        className="w-full min-w-0 md:w-fit md:min-w-[160px]"
                         variant="outline"
                         asChild
                       >
