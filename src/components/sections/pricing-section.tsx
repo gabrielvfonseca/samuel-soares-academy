@@ -53,14 +53,14 @@ export async function PricingSection({ lang = "pt" }: SectionProps) {
                 {isLast ? (
                   <>
                     <div className="flex min-w-0 flex-1 flex-col gap-6 md:flex-row md:items-start md:gap-0">
-                      <div className="flex min-w-0 shrink-0 flex-col border-border/60 pr-0 md:border-r md:pr-8 lg:pr-10">
+                      <div className="flex min-w-0 shrink-0 flex-col border-b border-border/60 pb-6 pr-0 md:border-b-0 md:border-r md:pb-0 md:pr-8 lg:pr-10">
                         <h3 className="text-xl font-semibold text-foreground wrap-break-word md:text-2xl">
                           {plan.name}
                         </h3>
                         <p className="mt-2 text-sm text-muted-foreground leading-relaxed wrap-break-word md:max-w-[280px]">
                           {plan.description}
                         </p>
-                        <div className="mt-5 pb-6 flex flex-wrap items-baseline gap-1.5">
+                        <div className="mt-5 flex flex-wrap md:mb-6 items-baseline gap-1.5">
                           <span className="text-4xl font-bold tracking-tight text-foreground wrap-break-word md:text-4xl">
                             {plan.price}
                           </span>
@@ -71,7 +71,7 @@ export async function PricingSection({ lang = "pt" }: SectionProps) {
                           )}
                         </div>
                       </div>
-                      <ul className="flex min-w-0 flex-1 flex-col gap-3 md:pl-8 lg:grid">
+                      <ul className="flex min-w-0 flex-1 flex-col gap-3 md:mt-6 md:pl-8 lg:grid">
                         {plan.features.map((feature: string) => (
                           <li key={feature} className="flex min-w-0 items-center gap-3 text-sm">
                             <span className="flex size-5 shrink-0 items-center justify-center rounded-full bg-primary/10">
@@ -88,7 +88,7 @@ export async function PricingSection({ lang = "pt" }: SectionProps) {
                         ))}
                       </ul>
                     </div>
-                    <div className="min-w-0 border-t border-border/60 pt-6">
+                    <div className="min-w-0 md:border-t md:border-border/60 pt-6">
                       <Button
                         className="w-full min-w-0 md:w-fit md:min-w-[160px]"
                         variant="outline"
