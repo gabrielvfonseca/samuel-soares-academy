@@ -47,6 +47,8 @@ export const contactSectionSchema = z.object({
     whatsappPhone: z.string().optional(),
     methodEmailLabel: z.string(),
     methodWhatsappLabel: z.string(),
+    submitEmailButton: z.string(),
+    submitWhatsappButton: z.string(),
   }),
 });
 

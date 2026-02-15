@@ -259,12 +259,12 @@ export function ContactForm(props: ContactFormProps) {
             <>
               {contactMethod === "whatsapp" ? (
                 <>
-                  Continuar para WhatsApp
+                  {props.submitWhatsappButton}
                   <MessageCircle className="size-4" />
                 </>
               ) : (
                 <>
-                  {props.submitButton}
+                  {props.submitEmailButton}
                   <ArrowRight className="size-4" />
                 </>
               )}

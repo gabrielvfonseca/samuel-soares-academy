@@ -30,6 +30,8 @@ export const contactFormPropsSchema = z.object({
   messageLabel: z.string(),
   messagePlaceholder: z.string(),
   submitButton: z.string(),
+  submitEmailButton: z.string(),
+  submitWhatsappButton: z.string(),
   submittingButton: z.string(),
   successMessage: z.string(),
   errorMessage: z.string(),
