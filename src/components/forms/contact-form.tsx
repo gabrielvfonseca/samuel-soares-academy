@@ -19,6 +19,8 @@ import { submitContactForm } from "@/app/actions/contact";
 import { contactFormSchema, type ContactForm } from "@/models/contact";
 import { type ContactFormProps, type ContactSubmitResult } from "@/schemas/contact-schema";
 import { useRouter } from "next/navigation";
+import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { Mail, MessageCircle } from "lucide-react";
 
 const defaultValues: ContactForm = {
   name: "",
@@ -27,6 +29,7 @@ const defaultValues: ContactForm = {
   childAge: "",
   club: "",
   message: "",
+  contactMethod: "email",
 };
 
 export function ContactForm(props: ContactFormProps) {
@@ -42,6 +45,7 @@ export function ContactForm(props: ContactFormProps) {
   >(result, (_current, optimistic) => optimistic);
 
   const isSubmitting = form.formState.isSubmitting;
+  const contactMethod = form.watch("contactMethod");
 
   const router = useRouter();
 
@@ -76,7 +80,7 @@ export function ContactForm(props: ContactFormProps) {
       form.reset(defaultValues);
 
       if (serverResult.whatsappUrl) {
-        router.push(serverResult.whatsappUrl);
+        window.open(serverResult.whatsappUrl, "_blank", "noopener,noreferrer");
       }
     } catch (error) {
       const message = error instanceof Error ? error.message : props.errorMessage;
@@ -97,6 +101,29 @@ export function ContactForm(props: ContactFormProps) {
         className="flex flex-col gap-6"
         aria-busy={isSubmitting}
       >
+        <FormField
+          control={form.control}
+          name="contactMethod"
+          render={({ field }) => (
+            <FormItem className="space-y-3">
+              <FormControl>
+                <Tabs value={field.value} onValueChange={field.onChange} className="w-full">
+                  <TabsList className="grid w-full grid-cols-2">
+                    <TabsTrigger value="email" className="gap-2">
+                      <Mail className="size-4" />
+                      {props.methodEmailLabel}
+                    </TabsTrigger>
+                    <TabsTrigger value="whatsapp" className="gap-2">
+                      <MessageCircle className="size-4" />
+                      {props.methodWhatsappLabel}
+                    </TabsTrigger>
+                  </TabsList>
+                </Tabs>
+              </FormControl>
+            </FormItem>
+          )}
+        />
+
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <FormField
             control={form.control}
@@ -230,8 +257,17 @@ export function ContactForm(props: ContactFormProps) {
             </>
           ) : (
             <>
-              {props.submitButton}
-              <ArrowRight className="size-4" />
+              {contactMethod === "whatsapp" ? (
+                <>
+                  Continuar para WhatsApp
+                  <MessageCircle className="size-4" />
+                </>
+              ) : (
+                <>
+                  {props.submitButton}
+                  <ArrowRight className="size-4" />
+                </>
+              )}
             </>
           )}
         </Button>
