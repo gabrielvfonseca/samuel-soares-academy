@@ -41,10 +41,22 @@
       },
       "stats": {
         "items": [
-          { "value": "10+", "label": "Years of Experience" },
-          { "value": "500+", "label": "Trained Students" },
-          { "value": "12", "label": "Certified Coaches" },
-          { "value": "95%", "label": "Satisfied Parents" }
+          {
+            "value": "10+",
+            "label": "Years of Experience"
+          },
+          {
+            "value": "500+",
+            "label": "Trained Students"
+          },
+          {
+            "value": "12",
+            "label": "Certified Coaches"
+          },
+          {
+            "value": "95%",
+            "label": "Satisfied Parents"
+          }
         ]
       },
       "training": {
@@ -226,12 +238,30 @@
         "title": "Gallery",
         "description": "Special moments from our training and competitions.",
         "items": [
-          { "src": "/images/hero.jpg", "alt": "Individual technique training" },
-          { "src": "/images/ricardo_bola.jpg", "alt": "Team play" },
-          { "src": "/images/ricardo.jpg", "alt": "Coordination exercises" },
-          { "src": "/images/samu_bola.png", "alt": "Inter-academy tournament" },
-          { "src": "/images/hero.jpg", "alt": "Goal celebration" },
-          { "src": "/images/ricardo_bola.jpg", "alt": "Academy group photo" }
+          {
+            "src": "/images/hero.jpg",
+            "alt": "Individual technique training"
+          },
+          {
+            "src": "/images/ricardo_bola.jpg",
+            "alt": "Team play"
+          },
+          {
+            "src": "/images/ricardo.jpg",
+            "alt": "Coordination exercises"
+          },
+          {
+            "src": "/images/samu_bola.png",
+            "alt": "Inter-academy tournament"
+          },
+          {
+            "src": "/images/hero.jpg",
+            "alt": "Goal celebration"
+          },
+          {
+            "src": "/images/ricardo_bola.jpg",
+            "alt": "Academy group photo"
+          }
         ]
       },
       "faq": {
@@ -292,6 +322,10 @@
           "instagramHandle": "@samuelsoares.academy"
         },
         "form": {
+          "method": {
+            "email": "Email",
+            "whatsapp": "WhatsApp"
+          },
           "name": "Full Name",
           "namePlaceholder": "Your name",
           "email": "Email",
@@ -307,16 +341,41 @@
           "submit": "Send Message",
           "submitting": "Sending...",
           "success": "Message sent successfully! We will get back to you soon.",
-          "error": "Failed to send message. Please try again."
+          "error": "Failed to send message. Please try again.",
+          "templates": {
+            "confirmation": {
+              "subject": "We've received your message - Samuel Soares Academy",
+              "title": "Hello {{name}}!",
+              "message": "Thank you for getting in touch. We have received your request and will get back to you shortly.",
+              "details": "Here are the details of your submission:"
+            },
+            "notification": {
+              "subject": "New Contact: {{name}}",
+              "title": "New contact request received",
+              "message": "A new user filled out the contact form on the website."
+            }
+          }
         }
       }
     },
     "header": {
       "nav": [
-        { "label": "About", "href": "#about" },
-        { "label": "Team", "href": "#coaches" },
-        { "label": "Pricing", "href": "#pricing" },
-        { "label": "Contact", "href": "#contact" }
+        {
+          "label": "About",
+          "href": "#about"
+        },
+        {
+          "label": "Team",
+          "href": "#coaches"
+        },
+        {
+          "label": "Pricing",
+          "href": "#pricing"
+        },
+        {
+          "label": "Contact",
+          "href": "#contact"
+        }
       ],
       "cta": "Sign Up"
     },
@@ -326,11 +385,26 @@
       "privacy": "Privacy Policy",
       "terms": "Terms of Service",
       "nav": [
-        { "label": "About", "href": "#about" },
-        { "label": "Team", "href": "#coaches" },
-        { "label": "Gallery", "href": "#gallery" },
-        { "label": "Pricing", "href": "#pricing" },
-        { "label": "Contact", "href": "#contact" }
+        {
+          "label": "About",
+          "href": "#about"
+        },
+        {
+          "label": "Team",
+          "href": "#coaches"
+        },
+        {
+          "label": "Gallery",
+          "href": "#gallery"
+        },
+        {
+          "label": "Pricing",
+          "href": "#pricing"
+        },
+        {
+          "label": "Contact",
+          "href": "#contact"
+        }
       ]
     }
   }

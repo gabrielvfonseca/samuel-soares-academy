@@ -34,6 +34,8 @@ export const contactFormPropsSchema = z.object({
   successMessage: z.string(),
   errorMessage: z.string(),
   whatsappPhone: z.string().optional(),
+  methodEmailLabel: z.string(),
+  methodWhatsappLabel: z.string(),
   lang: localeSchema.optional(),
 });
 

@@ -15,6 +15,7 @@ export const contactFormSchema = z.object({
   childAge: z.string().min(1, "A idade do atleta é obrigatória"),
   club: z.string().optional(),
   message: z.string().min(10, "A mensagem deve ter pelo menos 10 caracteres"),
+  contactMethod: z.enum(["email", "whatsapp"]).default("email"),
 });
 
 export type ContactInfo = z.infer<typeof contactInfoSchema>;
@@ -44,6 +45,8 @@ export const contactSectionSchema = z.object({
     successMessage: z.string(),
     errorMessage: z.string(),
     whatsappPhone: z.string().optional(),
+    methodEmailLabel: z.string(),
+    methodWhatsappLabel: z.string(),
   }),
 });
 

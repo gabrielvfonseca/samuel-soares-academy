@@ -27,6 +27,12 @@ const contactSectionDictionarySchema = z.object({
     })
     .optional(),
   form: z.object({
+    method: z
+      .object({
+        email: z.string().default("Email"),
+        whatsapp: z.string().default("WhatsApp"),
+      })
+      .default({ email: "Email", whatsapp: "WhatsApp" }),
     name: z.string(),
     namePlaceholder: z.string(),
     email: z.string(),
@@ -127,6 +133,8 @@ export function parseContactSection(
       successMessage: parsed.form.success,
       errorMessage: parsed.form.error ?? FORM_MESSAGE_DEFAULTS.error,
       whatsappPhone,
+      methodEmailLabel: parsed.form.method.email,
+      methodWhatsappLabel: parsed.form.method.whatsapp,
     },
   };
 

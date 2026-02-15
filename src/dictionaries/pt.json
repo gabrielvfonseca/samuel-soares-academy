@@ -238,12 +238,30 @@
         "title": "Galeria",
         "description": "Momentos especiais dos nossos treinos e competições.",
         "items": [
-          { "src": "/images/hero.jpg", "alt": "Treino de técnica individual" },
-          { "src": "/images/ricardo_bola.jpg", "alt": "Jogo de equipa" },
-          { "src": "/images/ricardo.jpg", "alt": "Exercícios de coordenação" },
-          { "src": "/images/samu_bola.png", "alt": "Torneio entre academias" },
-          { "src": "/images/hero.jpg", "alt": "Celebração de golo" },
-          { "src": "/images/ricardo_bola.jpg", "alt": "Foto de grupo da academia" }
+          {
+            "src": "/images/hero.jpg",
+            "alt": "Treino de técnica individual"
+          },
+          {
+            "src": "/images/ricardo_bola.jpg",
+            "alt": "Jogo de equipa"
+          },
+          {
+            "src": "/images/ricardo.jpg",
+            "alt": "Exercícios de coordenação"
+          },
+          {
+            "src": "/images/samu_bola.png",
+            "alt": "Torneio entre academias"
+          },
+          {
+            "src": "/images/hero.jpg",
+            "alt": "Celebração de golo"
+          },
+          {
+            "src": "/images/ricardo_bola.jpg",
+            "alt": "Foto de grupo da academia"
+          }
         ]
       },
       "faq": {
@@ -304,6 +322,10 @@
           "instagramHandle": "@samuelsoares.academy"
         },
         "form": {
+          "method": {
+            "email": "Email",
+            "whatsapp": "WhatsApp"
+          },
           "name": "Nome Completo",
           "namePlaceholder": "O seu nome",
           "email": "Email",
@@ -319,16 +341,41 @@
           "submit": "Enviar Mensagem",
           "submitting": "Enviando...",
           "success": "Mensagem enviada com sucesso! Entraremos em contacto brevemente.",
-          "error": "Erro ao enviar mensagem. Por favor, tente novamente."
+          "error": "Erro ao enviar mensagem. Por favor, tente novamente.",
+          "templates": {
+            "confirmation": {
+              "subject": "Recebemos a tua mensagem - Academia Samuel Soares",
+              "title": "Olá {{name}}!",
+              "message": "Obrigado por entrares em contacto connosco. Recebemos o teu pedido e entraremos em contacto brevemente.",
+              "details": "Aqui estão os detalhes do teu envio:"
+            },
+            "notification": {
+              "subject": "Novo Contacto: {{name}}",
+              "title": "Novo pedido de contacto recebido",
+              "message": "Um novo utilizador preencheu o formulário de contacto no website."
+            }
+          }
         }
       }
     },
     "header": {
       "nav": [
-        { "label": "Sobre", "href": "#about" },
-        { "label": "Equipa", "href": "#coaches" },
-        { "label": "Preços", "href": "#pricing" },
-        { "label": "Contactos", "href": "#contact" }
+        {
+          "label": "Sobre",
+          "href": "#about"
+        },
+        {
+          "label": "Equipa",
+          "href": "#coaches"
+        },
+        {
+          "label": "Preços",
+          "href": "#pricing"
+        },
+        {
+          "label": "Contactos",
+          "href": "#contact"
+        }
       ],
       "cta": "Inscrever"
     },
@@ -338,11 +385,26 @@
       "privacy": "Política de Privacidade",
       "terms": "Termos de Serviço",
       "nav": [
-        { "label": "Sobre", "href": "#about" },
-        { "label": "Equipa", "href": "#coaches" },
-        { "label": "Galeria", "href": "#gallery" },
-        { "label": "Preços", "href": "#pricing" },
-        { "label": "Contactos", "href": "#contact" }
+        {
+          "label": "Sobre",
+          "href": "#about"
+        },
+        {
+          "label": "Equipa",
+          "href": "#coaches"
+        },
+        {
+          "label": "Galeria",
+          "href": "#gallery"
+        },
+        {
+          "label": "Preços",
+          "href": "#pricing"
+        },
+        {
+          "label": "Contactos",
+          "href": "#contact"
+        }
       ]
     }
   }
