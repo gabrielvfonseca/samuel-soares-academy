@@ -7,6 +7,9 @@ export const env = createEnv({
     UPSTASH_REDIS_REST_URL: z.string().url().optional(),
     UPSTASH_REDIS_REST_TOKEN: z.string().optional(),
     ARCJET_KEY: z.string().startsWith("ajkey_").optional(),
+    RESEND_API_KEY: z.string().min(1),
+    CONTACT_EMAIL_FROM: z.string().email(),
+    CONTACT_EMAIL_TO: z.string().email(),
   },
   client: {
     NEXT_PUBLIC_GA_MEASUREMENT_ID: z.string().startsWith("G-").optional(),
@@ -25,6 +28,9 @@ export const env = createEnv({
     UPSTASH_REDIS_REST_URL: process.env.UPSTASH_REDIS_REST_URL,
     UPSTASH_REDIS_REST_TOKEN: process.env.UPSTASH_REDIS_REST_TOKEN,
     ARCJET_KEY: process.env.ARCJET_KEY,
+    RESEND_API_KEY: process.env.RESEND_API_KEY,
+    CONTACT_EMAIL_FROM: process.env.CONTACT_EMAIL_FROM,
+    CONTACT_EMAIL_TO: process.env.CONTACT_EMAIL_TO,
   },
   emptyStringAsUndefined: true,
 });
