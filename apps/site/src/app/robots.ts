@@ -4,8 +4,8 @@ import { createRobots } from "@/lib/robots";
 
 export default function robots(): MetadataRoute.Robots {
   return createRobots(SITE_URL, {
-    userAgent: "*",
     allow: "/",
     disallow: "/private/",
+    userAgent: "*",
   });
 }

@@ -2,9 +2,9 @@ name: CI
 
 on:
   push:
-    branches: [main, develop]
+    branches: [ main, develop ]
   pull_request:
-    branches: [main, develop]
+    branches: [ main, develop ]
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -32,11 +32,11 @@ jobs:
 
       - run: pnpm install --frozen-lockfile
 
-      - name: Format check
-        run: pnpm format:check
+      - name: Biome / Ultracite (lint + format)
+        run: pnpm check
 
-      - name: Lint, type-check and build (affected only on PRs)
-        run: pnpm exec turbo run lint check-types build ${{ github.event_name == 'pull_request' && '--affected' || '' }}
+      - name: Type-check and build (affected only on PRs)
+        run: pnpm exec turbo run check-types build ${{ github.event_name == 'pull_request' && '--affected' || '' }}
         env:
           NEXT_PUBLIC_APP_URL: http://localhost:3000
           RESEND_API_KEY: re_ci_placeholder

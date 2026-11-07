@@ -208,7 +208,9 @@
             "name": "Treino de Grupo Pro",
             "price": "90€",
             "description": "Dois treinos por semana.",
-            "features": ["Treina duas vezes por semana numa das nossas turmas."],
+            "features": [
+              "Treina duas vezes por semana numa das nossas turmas."
+            ],
             "hidePeriod": false
           },
           {

@@ -1,10 +1,10 @@
 import type { Thing, WithContext } from "schema-dts";
 
-const LT_REGEX = /</g;
-const GT_REGEX = />/g;
-const AMP_REGEX = /&/g;
-const LS_REGEX = /\u2028/g;
-const PS_REGEX = /\u2029/g;
+const LT_REGEX = /</gu;
+const GT_REGEX = />/gu;
+const AMP_REGEX = /&/gu;
+const LS_REGEX = /\u2028/gu;
+const PS_REGEX = /\u2029/gu;
 
 const LT_ESCAPE = "\\u003c";
 const GT_ESCAPE = "\\u003e";

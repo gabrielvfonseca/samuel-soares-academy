@@ -6,6 +6,9 @@ import {
 } from "@repo/ui/lib/next-themes";
 import type { JSX } from "react";
 
-export function ThemeProvider({ children, ...props }: NextThemesProviderProps): JSX.Element {
+export function ThemeProvider({
+  children,
+  ...props
+}: NextThemesProviderProps): JSX.Element {
   return <NextThemesProvider {...props}>{children}</NextThemesProvider>;
 }

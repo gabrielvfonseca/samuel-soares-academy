@@ -32,3 +32,4 @@ supabase/.temp
 *.local
 npm-debug.log*
 .pnpm-debug.log*
+.biome-report.json

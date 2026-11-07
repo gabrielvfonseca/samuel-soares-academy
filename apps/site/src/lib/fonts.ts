@@ -1,5 +1,5 @@
-import { Inconsolata, Inter, Montserrat } from "next/font/google";
 import { cn } from "@repo/ui/lib/utils";
+import { Inconsolata, Inter, Montserrat } from "next/font/google";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -20,5 +20,5 @@ export const fonts = cn(
   inter.variable,
   inconsolata.variable,
   montserrat.variable,
-  "touch-manipulation font-sans antialiased",
+  "touch-manipulation font-sans antialiased"
 );

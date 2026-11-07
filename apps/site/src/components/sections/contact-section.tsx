@@ -1,13 +1,15 @@
+import { type Locale, localeSchema } from "@repo/validation/locale";
+import type { JSX } from "react";
+import { ContactForm } from "@/components/forms/contact-form";
 import { env } from "@/env";
 import { CONTACT_INFO } from "@/globals/constants";
 import { getDictionary } from "@/lib/i18n";
-import { localeSchema, type Locale } from "@repo/validation/locale";
-import { parseContactSection } from "@/utils/contact-utils";
 import type { SectionProps } from "@/types";
-import type { JSX } from "react";
-import { ContactForm } from "@/components/forms/contact-form";
+import { parseContactSection } from "@/utils/contact-utils";
 
-export async function ContactSection({ lang = "pt" }: SectionProps): Promise<JSX.Element> {
+export async function ContactSection({
+  lang = "pt",
+}: SectionProps): Promise<JSX.Element> {
   // Parse language
   const parsedLang = localeSchema.parse(lang);
 
@@ -29,27 +31,36 @@ export async function ContactSection({ lang = "pt" }: SectionProps): Promise<JSX
   const data = parseContactSection(raw, CONTACT_INFO, whatsappPhone);
 
   return (
-    <section id="contact" className="py-24 px-4 sm:px-6 lg:px-8 border-t border-border">
-      <div className="max-w-5xl mx-auto">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
+    <section
+      className="border-border border-t px-4 py-24 sm:px-6 lg:px-8"
+      id="contact"
+    >
+      <div className="mx-auto max-w-5xl">
+        <div className="grid grid-cols-1 gap-16 lg:grid-cols-2">
           <div>
-            <h2 className="text-3xl sm:text-4xl font-semibold text-foreground tracking-tight">
+            <h2 className="text-foreground text-3xl font-semibold tracking-tight sm:text-4xl">
               {data.title}
             </h2>
-            <p className="mt-4 text-muted-foreground text-pretty leading-relaxed">
+            <p className="text-muted-foreground mt-4 leading-relaxed text-pretty">
               {data.description}
             </p>
 
             <div className="mt-12 space-y-6">
               {data.info.map((info) => (
                 <div key={info.label}>
-                  <p className="text-sm text-muted-foreground">{info.label}</p>
+                  <p className="text-muted-foreground text-sm">{info.label}</p>
                   {info.href ? (
                     <a
-                      href={info.href}
-                      target={info.href.startsWith("http") ? "_blank" : undefined}
-                      rel={info.href.startsWith("http") ? "noopener noreferrer" : undefined}
                       className="text-foreground mt-1 block hover:underline focus:underline focus:outline-none"
+                      href={info.href}
+                      rel={
+                        info.href.startsWith("http")
+                          ? "noopener noreferrer"
+                          : undefined
+                      }
+                      target={
+                        info.href.startsWith("http") ? "_blank" : undefined
+                      }
                     >
                       {info.value}
                     </a>

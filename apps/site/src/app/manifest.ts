@@ -1,26 +1,31 @@
 import type { MetadataRoute } from "next";
-import { BRAND_DESCRIPTION, BRAND_NAME, BRAND_SHORT_NAME, COLORS } from "@/globals/constants";
+import {
+  BRAND_DESCRIPTION,
+  BRAND_NAME,
+  BRAND_SHORT_NAME,
+  COLORS,
+} from "@/globals/constants";
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: BRAND_NAME,
-    short_name: BRAND_SHORT_NAME,
-    description: BRAND_DESCRIPTION,
-    start_url: "/",
-    display: "standalone",
     background_color: COLORS.background,
-    theme_color: COLORS.primary,
+    description: BRAND_DESCRIPTION,
+    display: "standalone",
     icons: [
       {
-        src: "/icon.svg",
         sizes: "any",
+        src: "/icon.svg",
         type: "image/svg+xml",
       },
       {
-        src: "/apple-icon.svg",
         sizes: "180x180",
+        src: "/apple-icon.svg",
         type: "image/svg+xml",
       },
     ],
+    name: BRAND_NAME,
+    short_name: BRAND_SHORT_NAME,
+    start_url: "/",
+    theme_color: COLORS.primary,
   };
 }

@@ -1,6 +1,6 @@
+import { localeSchema } from "@repo/validation/locale";
 import Image from "next/image";
 import { getDictionary } from "@/lib/i18n";
-import { localeSchema } from "@repo/validation/locale";
 import type { SectionProps } from "@/types";
 
 const gallerySpans = [
@@ -24,38 +24,38 @@ export async function GallerySection({ lang = "pt" }: SectionProps) {
 
   // Format data
   const data = {
-    title: rawData.title,
     description: rawData.description,
     items: rawData.items.map((item, index: number) => ({
-      src: item.src,
       alt: item.alt,
       span: gallerySpans[index] ?? "col-span-1 row-span-1",
+      src: item.src,
     })),
+    title: rawData.title,
   };
 
   return (
-    <section id="gallery" className="py-24 px-4 sm:px-6 lg:px-8 bg-muted/50">
-      <div className="max-w-5xl mx-auto">
-        <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4">
+    <section className="bg-muted/50 px-4 py-24 sm:px-6 lg:px-8" id="gallery">
+      <div className="mx-auto max-w-5xl">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 className="text-3xl sm:text-4xl font-semibold text-foreground tracking-tight">
+            <h2 className="text-foreground text-3xl font-semibold tracking-tight sm:text-4xl">
               {data.title}
             </h2>
-            <p className="mt-4 text-muted-foreground">{data.description}</p>
+            <p className="text-muted-foreground mt-4">{data.description}</p>
           </div>
         </div>
 
-        <div className="mt-12 grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="mt-12 grid grid-cols-2 gap-3 md:grid-cols-4">
           {data.items.map((image, index) => (
             <div
+              className={`${image.span} bg-muted relative overflow-hidden rounded-lg`}
               key={index}
-              className={`${image.span} relative bg-muted rounded-lg overflow-hidden`}
             >
               <Image
-                src={image.src || "/placeholder.svg"}
                 alt={image.alt}
+                className="object-cover transition-transform duration-300 hover:scale-105"
                 fill
-                className="object-cover hover:scale-105 transition-transform duration-300"
+                src={image.src || "/placeholder.svg"}
               />
             </div>
           ))}

@@ -1,7 +1,8 @@
-import { ContactForm } from "@/models/contact";
+import type { ContactForm } from "@/models/contact";
 
-export const buildWhatsappMessage = (formData: ContactForm): string => {
-  return `*Nova Inscrição*
+export const buildWhatsappMessage = (
+  formData: ContactForm
+): string => `*Nova Inscrição*
 
 *Nome:* ${formData.name}
 *Email:* ${formData.email}
@@ -14,4 +15,3 @@ ${formData.message}
 
 ----
 Recebido via formulário de contacto - Samuel Soares Academy`;
-};

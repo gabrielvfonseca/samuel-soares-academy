@@ -1,25 +1,31 @@
 import "server-only";
 import { match as matchLocale } from "@formatjs/intl-localematcher";
+import { localeSchema } from "@repo/validation/locale";
 import Negotiator from "negotiator";
 import type { NextRequest } from "next/server";
 import { createI18nMiddleware } from "next-international/middleware";
 import type pt from "@/dictionaries/pt.json";
 import languine from "@/languine.json" with { type: "json" };
-import { localeSchema } from "@repo/validation/locale";
 
-export const locales = [languine.locale.source, ...languine.locale.targets] as const;
+export const locales = [
+  languine.locale.source,
+  ...languine.locale.targets,
+] as const;
 
 export type Dictionary = typeof pt;
 
-const dictionaries: Record<string, () => Promise<Dictionary>> = Object.fromEntries(
-  locales.map((locale) => [
-    locale,
-    () =>
-      import(`@/dictionaries/${locale}.json`)
-        .then((mod) => mod.default)
-        .catch((_err) => import("@/dictionaries/pt.json").then((mod) => mod.default)),
-  ]),
-);
+const dictionaries: Record<string, () => Promise<Dictionary>> =
+  Object.fromEntries(
+    locales.map((locale) => [
+      locale,
+      () =>
+        import(`@/dictionaries/${locale}.json`)
+          .then((mod) => mod.default)
+          .catch((_err) =>
+            import("@/dictionaries/pt.json").then((mod) => mod.default)
+          ),
+    ])
+  );
 
 export const getDictionary = async (locale: string): Promise<Dictionary> => {
   // Normalize locale
@@ -45,11 +51,17 @@ export const getDictionary = async (locale: string): Promise<Dictionary> => {
  */
 function filterValidLocaleTags(tags: string[]): string[] {
   const valid: string[] = [];
-  const intl = globalThis.Intl as { getCanonicalLocales?(locales: string | string[]): string[] };
+  const intl = globalThis.Intl as {
+    getCanonicalLocales?: (locales: string | string[]) => string[];
+  };
   const getCanonicalLocales = intl?.getCanonicalLocales;
-  if (!getCanonicalLocales) return valid;
+  if (!getCanonicalLocales) {
+    return valid;
+  }
   for (const tag of tags) {
-    if (!tag || tag === "*") continue;
+    if (!tag || tag === "*") {
+      continue;
+    }
     try {
       getCanonicalLocales(tag);
       valid.push(tag);
@@ -61,9 +73,8 @@ function filterValidLocaleTags(tags: string[]): string[] {
 }
 
 const I18nMiddleware = createI18nMiddleware({
-  locales: [...locales],
   defaultLocale: languine.locale.source,
-  urlMappingStrategy: "rewriteDefault",
+  locales: [...locales],
   resolveLocaleFromRequest: (request: NextRequest) => {
     const defaultLocale = languine.locale.source;
 
@@ -79,16 +90,18 @@ const I18nMiddleware = createI18nMiddleware({
       const matchedLocale = matchLocale(
         validRequested.length > 0 ? validRequested : [parsedLang],
         [...locales],
-        parsedLang,
+        parsedLang
       );
       return matchedLocale ?? parsedLang;
     } catch {
       return parsedLang;
     }
   },
+  urlMappingStrategy: "rewriteDefault",
 });
 
-export const internationalizationMiddleware = (request: NextRequest) => I18nMiddleware(request);
+export const internationalizationMiddleware = (request: NextRequest) =>
+  I18nMiddleware(request);
 
 export const config = {
   matcher: ["/((?!api|_next/static|_next/image|favicon.ico).*)"],

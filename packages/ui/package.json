@@ -2,8 +2,8 @@
   "name": "@repo/ui",
   "version": "0.0.0",
   "private": true,
-  "type": "module",
   "sideEffects": false,
+  "type": "module",
   "exports": {
     "./components/*": "./src/components/*.tsx",
     "./hooks/*": "./src/hooks/*.ts",
@@ -51,7 +51,6 @@
     "input-otp": "1.4.1",
     "lucide-react": "catalog:",
     "next-themes": "^0.4.6",
-    "react": "catalog:",
     "react-day-picker": "9.8.0",
     "react-hook-form": "catalog:",
     "react-resizable-panels": "^2.1.7",
@@ -60,14 +59,16 @@
     "tailwind-merge": "catalog:",
     "vaul": "^1.1.2"
   },
-  "peerDependencies": {
-    "react": "^19",
-    "react-dom": "^19"
-  },
   "devDependencies": {
     "@repo/typescript-config": "workspace:*",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "react": "catalog:",
+    "react-dom": "catalog:",
     "typescript": "catalog:"
+  },
+  "peerDependencies": {
+    "react": "^19",
+    "react-dom": "^19"
   }
 }

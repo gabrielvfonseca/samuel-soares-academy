@@ -25,17 +25,17 @@ All source lives under **src**; keep new modules inside the most appropriate sub
 | `pnpm dev`                     | Starts the Next.js dev server (hot‑reload).      |
 | `pnpm build`                   | Produces an optimized production build.          |
 | `pnpm start`                   | Runs the compiled app with `next start`.         |
-| `pnpm lint`                    | Runs **Prettier** linting across the repo.       |
-| `pnpm format`                  | Auto‑formats files using Prettier.               |
+| `pnpm check` (repo root) | Biome + Ultracite lint/format check. |
+| `pnpm fix` (repo root) | Auto-fix with Ultracite. |
 | `pnpm check-types`             | Type-checks the app.                             |
 | `npm test` _(not defined yet)_ | Placeholder for future Jest or Playwright tests. |
 
 ## Coding Style & Naming Conventions
 
-- Indentation: **2 spaces** (enforced by Prettier).
+- Indentation: **2 spaces** (enforced by Biome).
 - Files: use **kebab‑case** for filenames, **PascalCase** for React components, and **camelCase** for functions/variables.
 - Types: Exported TypeScript types/interfaces use **PascalCase** (e.g., `UserProfile`).
-- Linting: `pnpm lint` must pass before commits; run `pnpm format` to auto‑fix style issues.
+- Linting: `pnpm check` must pass before commits; run `pnpm fix` to auto‑fix style issues.
 
 ## Testing Guidelines
 
@@ -54,7 +54,7 @@ The project currently does not contain a test suite. When adding tests, follow t
   - Reference the related issue (`#123`).
   - Summarize changes and any migration steps.
   - Include screenshots for UI changes.
-- Ensure the CI passes (`pnpm lint` & `pnpm check-types` | Type-checks the app. |
+- Ensure the CI passes (`pnpm check` & `pnpm check-types`)
 
 ## Security & Configuration Tips
 

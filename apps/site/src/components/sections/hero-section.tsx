@@ -1,8 +1,8 @@
-import { ArrowRight } from "@repo/ui/icons";
-import Image from "next/image";
 import { Button } from "@repo/ui/components/button";
-import { getDictionary } from "@/lib/i18n";
+import { ArrowRight } from "@repo/ui/icons";
 import { localeSchema } from "@repo/validation/locale";
+import Image from "next/image";
+import { getDictionary } from "@/lib/i18n";
 import type { SectionProps } from "@/types";
 
 export async function HeroSection({ lang = "pt" }: SectionProps) {
@@ -18,42 +18,42 @@ export async function HeroSection({ lang = "pt" }: SectionProps) {
   // Format hero data
   const data = {
     badge: rawData.badge,
-    title: rawData.title,
-    description: rawData.description,
     buttons: [
       {
-        label: rawData.primaryCta,
         href: "#contact",
+        label: rawData.primaryCta,
         variant: "default" as const,
       },
       {
-        label: rawData.secondaryCta,
         href: "#training",
+        label: rawData.secondaryCta,
         variant: "ghost" as const,
       },
     ],
+    description: rawData.description,
     image: rawData.image,
+    title: rawData.title,
   };
 
   return (
-    <section className="pt-28 pb-24 px-4 sm:px-6 lg:px-8 bg-background">
-      <div className="max-w-5xl mx-auto">
+    <section className="bg-background px-4 pt-28 pb-24 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl">
         <div className="max-w-3xl">
-          <p className="text-sm font-medium uppercase tracking-widest text-muted-foreground mb-4">
+          <p className="text-muted-foreground mb-4 text-sm font-medium tracking-widest uppercase">
             {data.badge}
           </p>
-          <h1 className="text-4xl sm:text-5xl lg:text-6xl font-semibold text-foreground leading-[1.1] tracking-tight text-balance">
+          <h1 className="text-foreground text-4xl leading-[1.1] font-semibold tracking-tight text-balance sm:text-5xl lg:text-6xl">
             {data.title}
           </h1>
-          <p className="mt-6 text-lg text-muted-foreground max-w-xl text-pretty leading-relaxed">
+          <p className="text-muted-foreground mt-6 max-w-xl text-lg leading-relaxed text-pretty">
             {data.description}
           </p>
-          <div className="mt-10 flex flex-col sm:flex-row items-start gap-4">
+          <div className="mt-10 flex flex-col items-start gap-4 sm:flex-row">
             {data.buttons
               .filter((button) => button.label)
               .map((button, index) => (
-                <Button key={index} size="lg" variant={button.variant} asChild>
-                  <a href={button.href} className="gap-2">
+                <Button asChild key={index} size="lg" variant={button.variant}>
+                  <a className="gap-2" href={button.href}>
                     {button.label}
                     {index === 0 && <ArrowRight className="size-4" />}
                   </a>
@@ -63,13 +63,13 @@ export async function HeroSection({ lang = "pt" }: SectionProps) {
         </div>
 
         <div className="mt-20">
-          <div className="relative aspect-16/9 bg-muted rounded-lg overflow-hidden">
+          <div className="bg-muted relative aspect-16/9 overflow-hidden rounded-lg">
             <Image
-              src={data.image.src}
               alt={data.image.alt}
-              fill
               className="object-cover"
+              fill
               priority
+              src={data.image.src}
             />
           </div>
         </div>

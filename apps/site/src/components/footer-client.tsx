@@ -18,22 +18,22 @@ export function FooterClient({ data }: FooterClientProps): JSX.Element {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="py-12 px-4 sm:px-6 lg:px-8 bg-foreground text-background">
-      <div className="max-w-5xl mx-auto">
-        <div className="flex flex-col md:flex-row items-start justify-between gap-8">
+    <footer className="bg-foreground text-background px-4 py-12 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-5xl">
+        <div className="flex flex-col items-start justify-between gap-8 md:flex-row">
           <div>
-            <Link href="/" className="text-lg font-medium tracking-tight">
+            <Link className="text-lg font-medium tracking-tight" href="/">
               {BRAND_NAME}
             </Link>
-            <p className="mt-2 text-sm text-background/60">{data.tagline}</p>
+            <p className="text-background/60 mt-2 text-sm">{data.tagline}</p>
           </div>
 
-          <nav className="flex flex-col md:flex-row gap-3">
+          <nav className="flex flex-col gap-3 md:flex-row">
             {data.nav.map((link) => (
               <Link
-                key={link.href}
+                className="text-background/60 hover:text-background text-sm transition-colors"
                 href={link.href}
-                className="text-sm text-background/60 hover:text-background transition-colors"
+                key={link.href}
               >
                 {link.label}
               </Link>
@@ -41,8 +41,8 @@ export function FooterClient({ data }: FooterClientProps): JSX.Element {
           </nav>
         </div>
 
-        <div className="mt-12 pt-8 border-t border-background/10 flex flex-col sm:flex-row items-center justify-between gap-4">
-          <p className="text-sm text-background/60">
+        <div className="border-background/10 mt-12 flex flex-col items-center justify-between gap-4 border-t pt-8 sm:flex-row">
+          <p className="text-background/60 text-sm">
             {currentYear} {BRAND_NAME}. {data.rights}
           </p>
           <div className="flex items-center gap-6">
@@ -50,14 +50,14 @@ export function FooterClient({ data }: FooterClientProps): JSX.Element {
               fallback={
                 <>
                   <button
+                    className="text-background/60 hover:text-background text-sm transition-colors"
                     type="button"
-                    className="text-sm text-background/60 hover:text-background transition-colors"
                   >
                     {data.privacy}
                   </button>
                   <button
+                    className="text-background/60 hover:text-background text-sm transition-colors"
                     type="button"
-                    className="text-sm text-background/60 hover:text-background transition-colors"
                   >
                     {data.terms}
                   </button>
@@ -70,8 +70,8 @@ export function FooterClient({ data }: FooterClientProps): JSX.Element {
                 triggerLabel={data.privacy}
               />
               <TermsDialog
-                termsOpen={termsOpen}
                 setTermsOpen={setTermsOpen}
+                termsOpen={termsOpen}
                 triggerLabel={data.terms}
               />
             </ClientOnly>

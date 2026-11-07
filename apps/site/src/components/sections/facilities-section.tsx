@@ -1,6 +1,6 @@
+import { localeSchema } from "@repo/validation/locale";
 import Image from "next/image";
 import { getDictionary } from "@/lib/i18n";
-import { localeSchema } from "@repo/validation/locale";
 import type { SectionProps } from "@/types";
 
 export async function FacilitiesSection({ lang = "pt" }: SectionProps) {
@@ -15,22 +15,24 @@ export async function FacilitiesSection({ lang = "pt" }: SectionProps) {
 
   // Format data
   const data = {
-    title: rawData.title,
     description: rawData.description,
-    items: rawData.items.map((item: any) => ({
-      ...item,
-      image: item.image || "/images/court.jpg",
-    })),
+    items: rawData.items.map(
+      (item: (typeof rawData.items)[number] & { image?: string }) => ({
+        ...item,
+        image: item.image || "/images/court.jpg",
+      })
+    ),
+    title: rawData.title,
   };
 
   return (
-    <section id="facilities" className="py-24 px-4 sm:px-6 lg:px-8 bg-muted/50">
-      <div className="max-w-5xl mx-auto">
+    <section className="bg-muted/50 px-4 py-24 sm:px-6 lg:px-8" id="facilities">
+      <div className="mx-auto max-w-5xl">
         <div className="max-w-xl">
-          <h2 className="text-3xl sm:text-4xl font-semibold text-foreground tracking-tight">
+          <h2 className="text-foreground text-3xl font-semibold tracking-tight sm:text-4xl">
             {data.title}
           </h2>
-          <p className="mt-4 text-muted-foreground text-pretty leading-relaxed">
+          <p className="text-muted-foreground mt-4 leading-relaxed text-pretty">
             {data.description}
           </p>
         </div>
@@ -38,24 +40,28 @@ export async function FacilitiesSection({ lang = "pt" }: SectionProps) {
         <div className="mt-12 space-y-12">
           {data.items.map((facility, index) => (
             <div
-              key={facility.title}
-              className={`grid grid-cols-1 lg:grid-cols-2 gap-8 items-center ${
+              className={`grid grid-cols-1 items-center gap-8 lg:grid-cols-2 ${
                 index % 2 === 1 ? "lg:flex-row-reverse" : ""
               }`}
+              key={facility.title}
             >
               <div className={index % 2 === 1 ? "lg:order-2" : ""}>
-                <div className="relative aspect-3/2 bg-muted rounded-lg overflow-hidden">
+                <div className="bg-muted relative aspect-3/2 overflow-hidden rounded-lg">
                   <Image
-                    src={facility.image || "/placeholder.svg"}
                     alt={facility.title}
-                    fill
                     className="object-cover"
+                    fill
+                    src={facility.image || "/placeholder.svg"}
                   />
                 </div>
               </div>
               <div className={index % 2 === 1 ? "lg:order-1" : ""}>
-                <h3 className="text-xl font-semibold text-foreground">{facility.title}</h3>
-                <p className="mt-3 text-muted-foreground leading-relaxed">{facility.description}</p>
+                <h3 className="text-foreground text-xl font-semibold">
+                  {facility.title}
+                </h3>
+                <p className="text-muted-foreground mt-3 leading-relaxed">
+                  {facility.description}
+                </p>
               </div>
             </div>
           ))}

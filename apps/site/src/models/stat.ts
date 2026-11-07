@@ -1,8 +1,8 @@
 import { z } from "zod";
 
 export const StatSchema = z.object({
-  value: z.string(),
   label: z.string(),
+  value: z.string(),
 });
 
 export const StatsSchema = z.array(StatSchema);

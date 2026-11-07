@@ -4,12 +4,11 @@
   "private": true,
   "scripts": {
     "build": "next build",
+    "check-types": "tsc --noEmit",
     "dev": "next dev",
     "start": "next start",
-    "lint": "prettier --check . --ignore-path ../../.prettierignore",
-    "check-types": "tsc --noEmit",
-    "transit": "echo transit",
-    "test": "echo 'No tests configured'"
+    "test": "echo 'No tests configured'",
+    "transit": "echo transit"
   },
   "dependencies": {
     "@arcjet/next": "^1.0.0",
@@ -17,6 +16,9 @@
     "@logtail/next": "^0.3.1",
     "@next/third-parties": "^16.1.6",
     "@nosecone/next": "^1.0.0",
+    "@repo/email": "workspace:*",
+    "@repo/ui": "workspace:*",
+    "@repo/validation": "workspace:*",
     "@rescale/nemo": "^2.1.1",
     "@t3-oss/env-nextjs": "^0.13.10",
     "@upstash/ratelimit": "^2.0.8",
@@ -32,26 +34,21 @@
     "react": "catalog:",
     "react-dom": "catalog:",
     "schema-dts": "^1.1.5",
-    "zod": "catalog:",
-    "@repo/ui": "workspace:*",
-    "@repo/email": "workspace:*",
-    "@repo/validation": "workspace:*"
+    "server-only": "catalog:",
+    "zod": "catalog:"
   },
   "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
     "@tailwindcss/postcss": "catalog:",
     "@types/lodash.merge": "^4.6.9",
     "@types/negotiator": "^0.6.4",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "baseline-browser-mapping": "^2.9.19",
     "postcss": "catalog:",
     "tailwindcss": "catalog:",
     "tw-animate-css": "catalog:",
-    "@repo/typescript-config": "workspace:*",
-    "@repo/lint-config": "workspace:*",
-    "prettier": "^3.8.1",
-    "typescript": "catalog:",
-    "baseline-browser-mapping": "^2.9.19"
-  },
-  "prettier": "@repo/lint-config/prettier"
+    "typescript": "catalog:"
+  }
 }

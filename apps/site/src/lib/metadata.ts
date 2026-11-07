@@ -1,14 +1,13 @@
 import merge from "lodash.merge";
 import type { Metadata } from "next";
-
-interface MetadataGenerator {
-  title: string;
-  description: string;
-  image?: string;
-}
-
 import { env } from "@/env";
 import { BRAND_NAME, SITE_URL, SOCIAL_HANDLES } from "@/globals/constants";
+
+interface MetadataGenerator {
+  description: string;
+  image?: string;
+  title: string;
+}
 
 const applicationName = BRAND_NAME;
 const author: Metadata["authors"] = {
@@ -30,19 +29,21 @@ export const createMetadata = ({
 }: MetadataGenerator): Metadata => {
   const parsedTitle = `${title} | ${applicationName}`;
   const defaultMetadata: Metadata = {
-    title: parsedTitle,
-    description,
-    applicationName,
-    metadataBase: productionUrl ? new URL(`${protocol}://${productionUrl}`) : undefined,
-    authors: [author],
-    creator: author.name,
-    formatDetection: {
-      telephone: false,
+    alternates: {
+      canonical: SITE_URL,
     },
     appleWebApp: {
       capable: true,
       statusBarStyle: "default",
       title: parsedTitle,
+    },
+    applicationName,
+    authors: [author],
+    category: "sports",
+    creator: author.name,
+    description,
+    formatDetection: {
+      telephone: false,
     },
     keywords: [
       "futebol kids",
@@ -52,36 +53,36 @@ export const createMetadata = ({
       "futebol infantil porto",
       "desporto infantil",
     ],
-    category: "sports",
-    robots: {
-      index: true,
-      follow: true,
-      googleBot: {
-        index: true,
-        follow: true,
-        "max-video-preview": -1,
-        "max-image-preview": "large",
-        "max-snippet": -1,
-      },
-    },
+    metadataBase: productionUrl
+      ? new URL(`${protocol}://${productionUrl}`)
+      : undefined,
     openGraph: {
-      title: parsedTitle,
       description,
-      type: "website",
-      siteName: applicationName,
       locale: "pt_PT",
+      siteName: applicationName,
+      title: parsedTitle,
+      type: "website",
       url: SITE_URL,
     },
-    alternates: {
-      canonical: SITE_URL,
-    },
     publisher,
+    robots: {
+      follow: true,
+      googleBot: {
+        follow: true,
+        index: true,
+        "max-image-preview": "large",
+        "max-snippet": -1,
+        "max-video-preview": -1,
+      },
+      index: true,
+    },
+    title: parsedTitle,
     twitter: {
       card: "summary_large_image",
-      title: parsedTitle,
-      description,
       creator: twitterHandle,
+      description,
       site: twitterHandle,
+      title: parsedTitle,
     },
   };
 
@@ -90,10 +91,10 @@ export const createMetadata = ({
   if (image && metadata.openGraph) {
     metadata.openGraph.images = [
       {
+        alt: title,
+        height: 630,
         url: image,
         width: 1200,
-        height: 630,
-        alt: title,
       },
     ];
   }

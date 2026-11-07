@@ -4,10 +4,10 @@ import { SITE_URL } from "@/globals/constants";
 export default function sitemap(): MetadataRoute.Sitemap {
   return [
     {
-      url: SITE_URL,
-      lastModified: new Date(),
       changeFrequency: "weekly",
+      lastModified: new Date(),
       priority: 1,
+      url: SITE_URL,
     },
   ];
 }

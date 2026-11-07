@@ -6,5 +6,12 @@ interface LogoProps {
 }
 
 export function Logo({ size = 400 }: LogoProps): JSX.Element {
-  return <Image src="/images/logo.svg" alt="Logo" width={Number(size)} height={Number(size)} />;
+  return (
+    <Image
+      alt="Logo"
+      height={Number(size)}
+      src="/images/logo.svg"
+      width={Number(size)}
+    />
+  );
 }

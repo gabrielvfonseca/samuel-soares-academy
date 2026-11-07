@@ -1,4 +1,3 @@
-import type { JSX } from "react";
 import {
   Dialog,
   DialogContent,
@@ -7,6 +6,7 @@ import {
   DialogTrigger,
 } from "@repo/ui/components/dialog";
 import { ScrollArea } from "@repo/ui/components/scroll-area";
+import type { JSX } from "react";
 import { BRAND_NAME, CONTACT_INFO } from "@/globals/constants";
 
 interface PrivacyDialogProps {
@@ -21,51 +21,68 @@ export function PrivacyDialog({
   triggerLabel = "Privacidade",
 }: PrivacyDialogProps): JSX.Element {
   return (
-    <Dialog open={privacyOpen} onOpenChange={setPrivacyOpen}>
+    <Dialog onOpenChange={setPrivacyOpen} open={privacyOpen}>
       <DialogTrigger asChild>
-        <button className="text-sm text-background/60 hover:text-background transition-colors">
+        <button className="text-background/60 hover:text-background text-sm transition-colors">
           {triggerLabel}
         </button>
       </DialogTrigger>
-      <DialogContent className="max-w-2xl max-h-[85vh]">
+      <DialogContent className="max-h-[85vh] max-w-2xl">
         <DialogHeader>
-          <DialogTitle className="text-xl font-medium">Politica de Privacidade</DialogTitle>
+          <DialogTitle className="text-xl font-medium">
+            Politica de Privacidade
+          </DialogTitle>
         </DialogHeader>
         <ScrollArea className="h-[60vh] pr-4">
-          <div className="space-y-6 text-sm text-muted-foreground leading-relaxed">
-            <p className="text-foreground font-medium">Última atualização: Fevereiro 2026</p>
+          <div className="text-muted-foreground space-y-6 text-sm leading-relaxed">
+            <p className="text-foreground font-medium">
+              Última atualização: Fevereiro 2026
+            </p>
 
             <section>
-              <h3 className="text-foreground font-medium mb-2">1. Introdução</h3>
+              <h3 className="text-foreground mb-2 font-medium">
+                1. Introdução
+              </h3>
               <p>
-                A {BRAND_NAME} ("nós", "nosso" ou "Academia") está comprometida em proteger a
-                privacidade dos nossos alunos, pais e utilizadores do nosso website. Esta Política
-                de Privacidade explica como recolhemos, utilizamos, armazenamos e protegemos as suas
+                A {BRAND_NAME} ("nós", "nosso" ou "Academia") está comprometida
+                em proteger a privacidade dos nossos alunos, pais e utilizadores
+                do nosso website. Esta Política de Privacidade explica como
+                recolhemos, utilizamos, armazenamos e protegemos as suas
                 informações pessoais.
               </p>
             </section>
 
             <section>
-              <h3 className="text-foreground font-medium mb-2">2. Informações que Recolhemos</h3>
+              <h3 className="text-foreground mb-2 font-medium">
+                2. Informações que Recolhemos
+              </h3>
               <p>Recolhemos os seguintes tipos de informações:</p>
-              <ul className="list-disc pl-5 mt-2 space-y-1">
-                <li>Nome completo dos pais/encarregados de educação e das crianças</li>
+              <ul className="mt-2 list-disc space-y-1 pl-5">
+                <li>
+                  Nome completo dos pais/encarregados de educação e das crianças
+                </li>
                 <li>Endereço de email e número de telefone</li>
                 <li>Morada de residência</li>
                 <li>Data de nascimento das crianças</li>
-                <li>Informações médicas relevantes para a prática desportiva</li>
-                <li>Fotografias e vídeos durante as atividades (com consentimento)</li>
+                <li>
+                  Informações médicas relevantes para a prática desportiva
+                </li>
+                <li>
+                  Fotografias e vídeos durante as atividades (com consentimento)
+                </li>
               </ul>
             </section>
 
             <section>
-              <h3 className="text-foreground font-medium mb-2">
+              <h3 className="text-foreground mb-2 font-medium">
                 3. Como Utilizamos as Informações
               </h3>
               <p>As informações recolhidas são utilizadas para:</p>
-              <ul className="list-disc pl-5 mt-2 space-y-1">
+              <ul className="mt-2 list-disc space-y-1 pl-5">
                 <li>Gestão das inscrições e participação nas atividades</li>
-                <li>Comunicação com pais sobre horários, eventos e atualizações</li>
+                <li>
+                  Comunicação com pais sobre horários, eventos e atualizações
+                </li>
                 <li>Garantir a segurança e bem-estar das crianças</li>
                 <li>Processamento de pagamentos e faturação</li>
                 <li>Cumprimento de obrigações legais e regulamentares</li>
@@ -74,12 +91,15 @@ export function PrivacyDialog({
             </section>
 
             <section>
-              <h3 className="text-foreground font-medium mb-2">4. Partilha de Informações</h3>
+              <h3 className="text-foreground mb-2 font-medium">
+                4. Partilha de Informações
+              </h3>
               <p>
-                Não vendemos, alugamos ou partilhamos informações pessoais com terceiros para fins
-                de marketing. Podemos partilhar informações com:
+                Não vendemos, alugamos ou partilhamos informações pessoais com
+                terceiros para fins de marketing. Podemos partilhar informações
+                com:
               </p>
-              <ul className="list-disc pl-5 mt-2 space-y-1">
+              <ul className="mt-2 list-disc space-y-1 pl-5">
                 <li>Seguradoras (para cobertura de seguro desportivo)</li>
                 <li>Federações desportivas (para inscrições em competições)</li>
                 <li>Autoridades competentes (quando legalmente exigido)</li>
@@ -87,28 +107,35 @@ export function PrivacyDialog({
             </section>
 
             <section>
-              <h3 className="text-foreground font-medium mb-2">5. Proteção de Dados de Menores</h3>
+              <h3 className="text-foreground mb-2 font-medium">
+                5. Proteção de Dados de Menores
+              </h3>
               <p>
-                Damos especial atenção à proteção dos dados das crianças. Recolhemos apenas as
-                informações estritamente necessárias e sempre com o consentimento dos pais ou
-                encarregados de educação. Imagens das crianças só são publicadas com autorização
-                expressa.
+                Damos especial atenção à proteção dos dados das crianças.
+                Recolhemos apenas as informações estritamente necessárias e
+                sempre com o consentimento dos pais ou encarregados de educação.
+                Imagens das crianças só são publicadas com autorização expressa.
               </p>
             </section>
 
             <section>
-              <h3 className="text-foreground font-medium mb-2">6. Segurança dos Dados</h3>
+              <h3 className="text-foreground mb-2 font-medium">
+                6. Segurança dos Dados
+              </h3>
               <p>
-                Implementamos medidas técnicas e organizacionais adequadas para proteger as
-                informações pessoais contra acesso não autorizado, alteração, divulgação ou
-                destruição. Os dados são armazenados em sistemas seguros com acesso restrito.
+                Implementamos medidas técnicas e organizacionais adequadas para
+                proteger as informações pessoais contra acesso não autorizado,
+                alteração, divulgação ou destruição. Os dados são armazenados em
+                sistemas seguros com acesso restrito.
               </p>
             </section>
 
             <section>
-              <h3 className="text-foreground font-medium mb-2">7. Os Seus Direitos</h3>
+              <h3 className="text-foreground mb-2 font-medium">
+                7. Os Seus Direitos
+              </h3>
               <p>Ao abrigo do RGPD, tem direito a:</p>
-              <ul className="list-disc pl-5 mt-2 space-y-1">
+              <ul className="mt-2 list-disc space-y-1 pl-5">
                 <li>Aceder aos seus dados pessoais</li>
                 <li>Retificar dados incorretos ou incompletos</li>
                 <li>Solicitar a eliminação dos seus dados</li>
@@ -116,27 +143,29 @@ export function PrivacyDialog({
                 <li>Portabilidade dos dados</li>
                 <li>Retirar o consentimento a qualquer momento</li>
                 <li>
-                  Apresentar queixa à autoridade de controlo (CNPD – Comissão Nacional de Proteção
-                  de Dados)
+                  Apresentar queixa à autoridade de controlo (CNPD – Comissão
+                  Nacional de Proteção de Dados)
                 </li>
               </ul>
             </section>
 
             <section>
-              <h3 className="text-foreground font-medium mb-2">8. Retenção de Dados</h3>
+              <h3 className="text-foreground mb-2 font-medium">
+                8. Retenção de Dados
+              </h3>
               <p>
-                Mantemos os dados pessoais apenas durante o período necessário para cumprir os fins
-                para os quais foram recolhidos, ou conforme exigido por lei. Para efeitos de
-                faturação e obrigações fiscais, os dados podem ser mantidos por um período de 10
-                anos.
+                Mantemos os dados pessoais apenas durante o período necessário
+                para cumprir os fins para os quais foram recolhidos, ou conforme
+                exigido por lei. Para efeitos de faturação e obrigações fiscais,
+                os dados podem ser mantidos por um período de 10 anos.
               </p>
             </section>
 
             <section>
-              <h3 className="text-foreground font-medium mb-2">9. Contacto</h3>
+              <h3 className="text-foreground mb-2 font-medium">9. Contacto</h3>
               <p>
-                Para questões relacionadas com privacidade ou para exercer os seus direitos,
-                contacte-nos através de:
+                Para questões relacionadas com privacidade ou para exercer os
+                seus direitos, contacte-nos através de:
               </p>
               <p className="mt-2">
                 Email: {CONTACT_INFO.email}

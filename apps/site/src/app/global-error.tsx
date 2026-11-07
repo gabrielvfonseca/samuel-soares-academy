@@ -17,21 +17,25 @@ export default function GlobalError({
   return (
     <html lang="pt" suppressHydrationWarning>
       <body
-        className="min-h-screen flex flex-col items-center justify-center px-4 bg-white text-slate-900 antialiased"
+        className="flex min-h-screen flex-col items-center justify-center bg-white px-4 text-slate-900 antialiased"
         style={{ fontFamily: "system-ui, sans-serif" }}
       >
-        <main className="max-w-md w-full text-center space-y-6">
+        <main className="w-full max-w-md space-y-6 text-center">
           <p className="text-5xl font-bold">Erro</p>
-          <h1 className="text-xl font-semibold tracking-tight">Algo correu mal</h1>
-          <p className="text-slate-600 text-sm">Ocorreu um erro inesperado. Tente novamente.</p>
+          <h1 className="text-xl font-semibold tracking-tight">
+            Algo correu mal
+          </h1>
+          <p className="text-sm text-slate-600">
+            Ocorreu um erro inesperado. Tente novamente.
+          </p>
           <button
-            type="button"
-            onClick={() => reset()}
             className="inline-flex items-center justify-center"
+            onClick={() => reset()}
+            type="button"
           >
             Tentar novamente
           </button>
-          <p className="text-sm text-slate-500 pt-4">{BRAND_NAME}</p>
+          <p className="pt-4 text-sm text-slate-500">{BRAND_NAME}</p>
         </main>
       </body>
     </html>

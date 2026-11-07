@@ -1,5 +1,5 @@
-import { getDictionary } from "@/lib/i18n";
 import { localeSchema } from "@repo/validation/locale";
+import { getDictionary } from "@/lib/i18n";
 import type { SectionProps } from "@/types";
 
 export async function TrainingSection({ lang = "pt" }: SectionProps) {
@@ -13,31 +13,35 @@ export async function TrainingSection({ lang = "pt" }: SectionProps) {
   const data = dictionary.web.sections.training;
 
   return (
-    <section id="training" className="py-24 px-4 sm:px-6 lg:px-8 bg-muted/50">
-      <div className="max-w-5xl mx-auto">
+    <section className="bg-muted/50 px-4 py-24 sm:px-6 lg:px-8" id="training">
+      <div className="mx-auto max-w-5xl">
         <div className="max-w-xl">
-          <h2 className="text-3xl sm:text-4xl font-semibold text-foreground tracking-tight">
+          <h2 className="text-foreground text-3xl font-semibold tracking-tight sm:text-4xl">
             {data.title}
           </h2>
-          <p className="mt-4 text-muted-foreground text-pretty leading-relaxed">
+          <p className="text-muted-foreground mt-4 leading-relaxed text-pretty">
             {data.description}
           </p>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-px bg-border">
+        <div className="bg-border mt-12 grid grid-cols-1 gap-px md:grid-cols-2 lg:grid-cols-3">
           {data.items.map((modalidade) => (
             <div
+              className="bg-background hover:bg-muted/30 p-6 transition-colors"
               key={modalidade.title}
-              className="bg-background p-6 hover:bg-muted/30 transition-colors"
             >
               <div className="flex items-baseline justify-between gap-4">
-                <h3 className="font-semibold text-foreground">{modalidade.title}</h3>
-                <span className="text-xs font-medium text-muted-foreground shrink-0">
+                <h3 className="text-foreground font-semibold">
+                  {modalidade.title}
+                </h3>
+                <span className="text-muted-foreground shrink-0 text-xs font-medium">
                   {modalidade.age}
                 </span>
               </div>
-              <p className="mt-1 text-xs text-muted-foreground font-mono">{modalidade.schedule}</p>
-              <p className="mt-4 text-sm text-muted-foreground leading-relaxed">
+              <p className="text-muted-foreground mt-1 font-mono text-xs">
+                {modalidade.schedule}
+              </p>
+              <p className="text-muted-foreground mt-4 text-sm leading-relaxed">
                 {modalidade.description}
               </p>
             </div>

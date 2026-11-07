@@ -9,13 +9,9 @@ import {
   Section,
   Text,
 } from "@react-email/components";
-import * as React from "react";
+import type * as React from "react";
 
 interface ContactConfirmationEmailProps {
-  name: string;
-  title: string;
-  message: string;
-  detailsLabel: string;
   data: {
     name: string;
     email: string;
@@ -24,10 +20,13 @@ interface ContactConfirmationEmailProps {
     club?: string;
     message: string;
   };
+  detailsLabel: string;
+  message: string;
+  name: string;
+  title: string;
 }
 
 export const ContactConfirmationEmail = ({
-  name,
   title,
   message,
   detailsLabel,
@@ -64,12 +63,15 @@ export const ContactConfirmationEmail = ({
           </Text>
         </Section>
         <Hr style={hr} />
-        <Text style={footer}>Academia Samuel Soares - Defende o teu futuro!</Text>
+        <Text style={footer}>
+          Academia Samuel Soares - Defende o teu futuro!
+        </Text>
       </Container>
     </Body>
   </Html>
 );
 
+// biome-ignore lint/complexity/noRedundantDefaultExport: react-email preview requires a default export
 export default ContactConfirmationEmail;
 
 const main: React.CSSProperties = {
@@ -81,24 +83,24 @@ const main: React.CSSProperties = {
 const container: React.CSSProperties = {
   backgroundColor: "#ffffff",
   margin: "0 auto",
-  padding: "20px 0 48px",
   marginBottom: "64px",
+  padding: "20px 0 48px",
 };
 
 const h1: React.CSSProperties = {
   color: "#333",
   fontSize: "24px",
   fontWeight: "bold",
-  textAlign: "center",
   margin: "30px 0",
+  textAlign: "center",
 };
 
 const text: React.CSSProperties = {
   color: "#333",
   fontSize: "16px",
   lineHeight: "26px",
-  textAlign: "center",
   padding: "0 40px",
+  textAlign: "center",
 };
 
 const section: React.CSSProperties = {

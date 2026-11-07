@@ -6,8 +6,8 @@ export const runtime = "edge";
 
 export const alt = `${BRAND_NAME}`;
 export const size = {
-  width: 1200,
   height: 600,
+  width: 1200,
 };
 export const contentType = "image/png";
 
@@ -15,18 +15,18 @@ export default async function Image(): Promise<ImageResponse> {
   return new ImageResponse(
     <div
       style={{
-        height: "100%",
-        width: "100%",
-        display: "flex",
         alignItems: "center",
-        justifyContent: "center",
         backgroundColor: "#fff",
+        display: "flex",
+        height: "100%",
+        justifyContent: "center",
+        width: "100%",
       }}
     >
       <Logo size={400} />
     </div>,
     {
       ...size,
-    },
+    }
   );
 }

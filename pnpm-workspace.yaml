@@ -2,7 +2,7 @@ packages:
   - "apps/*"
   - "packages/*"
 
-# Supply-chain guard carried over from gestao (bunfig minimumReleaseAge = 24h)
+# Supply-chain guard carried over from the admin app (bunfig minimumReleaseAge = 24h)
 minimumReleaseAge: 1440
 
 # Single version source for dependencies shared across workspaces

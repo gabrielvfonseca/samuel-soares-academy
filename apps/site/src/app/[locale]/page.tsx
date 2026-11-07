@@ -19,11 +19,13 @@ interface HomePageProps {
   params: Promise<{ locale: string }>;
 }
 
-export default async function HomePage({ params }: HomePageProps): Promise<JSX.Element> {
+export default async function HomePage({
+  params,
+}: HomePageProps): Promise<JSX.Element> {
   const { locale } = await params;
 
   return (
-    <main id="main-content" className="min-h-screen">
+    <main className="min-h-screen" id="main-content">
       <JsonLd
         code={{
           "@context": "https://schema.org",
@@ -31,9 +33,9 @@ export default async function HomePage({ params }: HomePageProps): Promise<JSX.E
           itemListElement: [
             {
               "@type": "ListItem",
-              position: 1,
-              name: "Home",
               item: SITE_URL,
+              name: "Home",
+              position: 1,
             },
           ],
         }}

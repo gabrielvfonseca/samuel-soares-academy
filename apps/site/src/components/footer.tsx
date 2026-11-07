@@ -1,6 +1,6 @@
+import { localeSchema } from "@repo/validation/locale";
 import { FooterClient } from "@/components/footer-client";
 import { getDictionary } from "@/lib/i18n";
-import { localeSchema } from "@repo/validation/locale";
 import type { SectionProps } from "@/types";
 
 export async function Footer({ lang = "pt" }: SectionProps) {

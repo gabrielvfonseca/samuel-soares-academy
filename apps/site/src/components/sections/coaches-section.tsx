@@ -1,10 +1,12 @@
+import { localeSchema } from "@repo/validation/locale";
 import Image from "next/image";
+import type { JSX } from "react";
 import { getDictionary } from "@/lib/i18n";
 import type { SectionProps } from "@/types";
-import { localeSchema } from "@repo/validation/locale";
-import type { JSX } from "react";
 
-export async function CoachesSection({ lang = "pt" }: SectionProps): Promise<JSX.Element> {
+export async function CoachesSection({
+  lang = "pt",
+}: SectionProps): Promise<JSX.Element> {
   // Parse language
   const parsedLang = localeSchema.parse(lang);
 
@@ -16,43 +18,48 @@ export async function CoachesSection({ lang = "pt" }: SectionProps): Promise<JSX
 
   // Build coaches section
   const data = {
-    title: rawData.title,
     description: rawData.description,
     items: rawData.items.map((item) => ({
-      name: item.name,
-      role: item.role,
       bio: item.bio,
       image: item.image,
+      name: item.name,
+      role: item.role,
     })),
+    title: rawData.title,
   };
 
   return (
-    <section id="coaches" className="py-24 px-4 sm:px-6 lg:px-8 border-t border-border">
-      <div className="max-w-5xl mx-auto">
+    <section
+      className="border-border border-t px-4 py-24 sm:px-6 lg:px-8"
+      id="coaches"
+    >
+      <div className="mx-auto max-w-5xl">
         <div className="max-w-xl">
-          <h2 className="text-3xl sm:text-4xl font-semibold text-foreground tracking-tight">
+          <h2 className="text-foreground text-3xl font-semibold tracking-tight sm:text-4xl">
             {data.title}
           </h2>
-          <p className="mt-4 text-muted-foreground text-pretty leading-relaxed">
+          <p className="text-muted-foreground mt-4 leading-relaxed text-pretty">
             {data.description}
           </p>
         </div>
 
-        <div className="mt-12 grid grid-cols-1 sm:grid-cols-2 gap-8">
+        <div className="mt-12 grid grid-cols-1 gap-8 sm:grid-cols-2">
           {data.items.map((coach) => (
-            <div key={coach.name} className="group">
-              <div className="relative aspect-square bg-muted rounded-lg overflow-hidden">
+            <div className="group" key={coach.name}>
+              <div className="bg-muted relative aspect-square overflow-hidden rounded-lg">
                 <Image
-                  src={coach.image || "/placeholder.svg"}
                   alt={`Foto de ${coach.name} - ${coach.role}`}
-                  fill
                   className="object-cover transition-all duration-300"
+                  fill
+                  src={coach.image || "/placeholder.svg"}
                 />
               </div>
               <div className="mt-4">
-                <h3 className="font-semibold text-foreground">{coach.name}</h3>
-                <p className="text-sm text-muted-foreground">{coach.role}</p>
-                <p className="mt-2 text-sm text-muted-foreground leading-relaxed">{coach.bio}</p>
+                <h3 className="text-foreground font-semibold">{coach.name}</h3>
+                <p className="text-muted-foreground text-sm">{coach.role}</p>
+                <p className="text-muted-foreground mt-2 text-sm leading-relaxed">
+                  {coach.bio}
+                </p>
               </div>
             </div>
           ))}

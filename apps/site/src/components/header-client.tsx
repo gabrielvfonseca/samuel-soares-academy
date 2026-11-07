@@ -1,10 +1,9 @@
 "use client";
 
+import { Button } from "@repo/ui/components/button";
 import { Menu, X } from "@repo/ui/icons";
 import Link from "next/link";
 import { type JSX, useState } from "react";
-import { Button } from "@repo/ui/components/button";
-import { BRAND_NAME } from "@/globals/constants";
 import type { Header as HeaderData } from "@/models/header";
 import { Logo } from "./logo";
 
@@ -17,19 +16,22 @@ export function HeaderClient({ data }: HeaderClientProps): JSX.Element {
   const { nav, cta } = data;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-background/95 backdrop-blur-sm border-b border-border">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          <Link href="/" className="text-lg font-semibold tracking-tight text-foreground">
+    <header className="bg-background/95 border-border fixed top-0 right-0 left-0 z-50 border-b backdrop-blur-sm">
+      <div className="mx-auto max-w-6xl px-4 sm:px-6 lg:px-8">
+        <div className="flex h-16 items-center justify-between">
+          <Link
+            className="text-foreground text-lg font-semibold tracking-tight"
+            href="/"
+          >
             <Logo size={45} />
           </Link>
 
-          <nav className="hidden md:flex items-center gap-8">
+          <nav className="hidden items-center gap-8 md:flex">
             {nav.map((link) => (
               <Link
-                key={link.href}
+                className="text-muted-foreground hover:text-foreground text-sm font-medium transition-colors"
                 href={link.href}
-                className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                key={link.href}
                 onClick={(e) => {
                   e.preventDefault();
                   const target = document.querySelector(link.href);
@@ -50,23 +52,27 @@ export function HeaderClient({ data }: HeaderClientProps): JSX.Element {
           </div>
 
           <button
-            type="button"
-            className="md:hidden p-2 text-muted-foreground hover:text-foreground"
-            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             aria-label="Toggle menu"
+            className="text-muted-foreground hover:text-foreground p-2 md:hidden"
+            onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+            type="button"
           >
-            {mobileMenuOpen ? <X className="size-6" /> : <Menu className="size-6" />}
+            {mobileMenuOpen ? (
+              <X className="size-6" />
+            ) : (
+              <Menu className="size-6" />
+            )}
           </button>
         </div>
 
         {mobileMenuOpen && (
-          <div className="md:hidden py-4 border-t border-border">
+          <div className="border-border border-t py-4 md:hidden">
             <nav className="flex flex-col gap-4">
               {nav.map((link) => (
                 <Link
-                  key={link.href}
+                  className="text-muted-foreground hover:text-foreground text-sm font-medium transition-colors"
                   href={link.href}
-                  className="text-sm font-medium text-muted-foreground hover:text-foreground transition-colors"
+                  key={link.href}
                   onClick={(e) => {
                     e.preventDefault();
                     setMobileMenuOpen(false);

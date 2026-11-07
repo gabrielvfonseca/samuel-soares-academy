@@ -1,40 +1,41 @@
 {
   "name": "samuel-soares-academy",
   "private": true,
-  "packageManager": "pnpm@12.18.0",
-  "engines": {
-    "node": ">=22"
-  },
   "scripts": {
     "build": "turbo run build",
-    "dev": "turbo run dev",
-    "dev:site": "turbo run dev --filter=@repo/site",
-    "dev:gestao": "turbo run dev --filter=@repo/gestao",
-    "lint": "turbo run lint",
-    "check-types": "turbo run check-types",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "db:generate": "turbo run db:generate --filter=@repo/db",
-    "db:migrate": "turbo run db:migrate --filter=@repo/db",
-    "db:push": "turbo run db:push --filter=@repo/db",
-    "db:pull": "turbo run db:pull --filter=@repo/db",
-    "db:studio": "turbo run db:studio --filter=@repo/db",
-    "db:check": "turbo run db:check --filter=@repo/db",
-    "supabase": "supabase",
     "changeset": "changeset",
-    "version": "changeset version",
-    "prepare": "husky"
+    "check": "ultracite check",
+    "check-types": "turbo run check-types",
+    "db:check": "turbo run db:check --filter=@repo/database",
+    "db:generate": "turbo run db:generate --filter=@repo/database",
+    "db:migrate": "turbo run db:migrate --filter=@repo/database",
+    "db:pull": "turbo run db:pull --filter=@repo/database",
+    "db:push": "turbo run db:push --filter=@repo/database",
+    "db:studio": "turbo run db:studio --filter=@repo/database",
+    "dev": "turbo run dev",
+    "dev:admin": "turbo run dev --filter=@repo/admin",
+    "dev:site": "turbo run dev --filter=@repo/site",
+    "fix": "ultracite fix",
+    "lint": "turbo run //#check",
+    "prepare": "husky",
+    "supabase": "supabase",
+    "version": "changeset version"
   },
   "lint-staged": {
-    "*.{ts,tsx,js,jsx,json,jsonc,css,md}": "prettier --write"
+    "*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,json,jsonc,css,md,mdx,yaml,yml}": "ultracite fix"
   },
   "devDependencies": {
+    "@biomejs/biome": "2.6.6",
     "@changesets/cli": "^2.29.8",
     "husky": "^9.1.7",
     "lint-staged": "^16.2.7",
     "supabase": "^2.0.0",
     "turbo": "^2.11.10",
     "typescript": "catalog:",
-    "prettier": "^3.8.1"
+    "ultracite": "8.1.1"
+  },
+  "packageManager": "pnpm@12.18.0",
+  "engines": {
+    "node": ">=22"
   }
 }

@@ -5,7 +5,7 @@
   "globalEnv": ["NODE_ENV"],
   "tasks": {
     "build": {
-      "dependsOn": ["^build"],
+      "dependsOn": ["^build", "check-types"],
       "inputs": ["$TURBO_DEFAULT$", ".env*"],
       "outputs": [".next/**", "!.next/cache/**", ".output/**", "dist/**"],
       "env": [
@@ -30,18 +30,34 @@
     "check-types": {
       "dependsOn": ["transit"]
     },
-    "lint": {
-      "dependsOn": ["^lint"]
-    },
     "dev": {
       "cache": false,
       "persistent": true
     },
-    "db:generate": { "cache": false },
-    "db:migrate": { "cache": false },
-    "db:push": { "cache": false },
-    "db:pull": { "cache": false },
-    "db:studio": { "cache": false, "persistent": true },
-    "db:check": { "cache": false }
+    "db:generate": {
+      "cache": false
+    },
+    "db:migrate": {
+      "cache": false
+    },
+    "db:push": {
+      "cache": false
+    },
+    "db:pull": {
+      "cache": false
+    },
+    "db:studio": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:check": {
+      "cache": false
+    },
+    "//#check": {
+      "inputs": ["$TURBO_DEFAULT$", "biome.jsonc"]
+    },
+    "//#fix": {
+      "cache": false
+    }
   }
 }

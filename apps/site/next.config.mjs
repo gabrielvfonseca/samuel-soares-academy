@@ -1,16 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  transpilePackages: ["@repo/ui", "@repo/email", "@repo/validation"],
-  typescript: {
-    ignoreBuildErrors: true,
-  },
-  images: {
-    unoptimized: true,
-  },
   async headers() {
     return [
       {
-        source: "/:path*",
         headers: [
           {
             key: "X-Frame-Options",
@@ -33,8 +25,16 @@ const nextConfig = {
             value: "1; mode=block",
           },
         ],
+        source: "/:path*",
       },
     ];
+  },
+  images: {
+    unoptimized: true,
+  },
+  transpilePackages: ["@repo/ui", "@repo/email", "@repo/validation"],
+  typescript: {
+    ignoreBuildErrors: true,
   },
 };
 

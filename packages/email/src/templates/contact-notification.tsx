@@ -9,11 +9,9 @@ import {
   Section,
   Text,
 } from "@react-email/components";
-import * as React from "react";
+import type * as React from "react";
 
 interface ContactNotificationEmailProps {
-  title: string;
-  message: string;
   data: {
     name: string;
     email: string;
@@ -23,6 +21,8 @@ interface ContactNotificationEmailProps {
     message: string;
     contactMethod: string;
   };
+  message: string;
+  title: string;
 }
 
 export const ContactNotificationEmail = ({
@@ -59,7 +59,8 @@ export const ContactNotificationEmail = ({
             <strong>Mensagem:</strong> {data.message}
           </Text>
           <Text style={detailsText}>
-            <strong>Método de Contacto Selecionado:</strong> {data.contactMethod}
+            <strong>Método de Contacto Selecionado:</strong>{" "}
+            {data.contactMethod}
           </Text>
         </Section>
         <Hr style={hr} />
@@ -69,6 +70,7 @@ export const ContactNotificationEmail = ({
   </Html>
 );
 
+// biome-ignore lint/complexity/noRedundantDefaultExport: react-email preview requires a default export
 export default ContactNotificationEmail;
 
 const main: React.CSSProperties = {
@@ -80,24 +82,24 @@ const main: React.CSSProperties = {
 const container: React.CSSProperties = {
   backgroundColor: "#ffffff",
   margin: "0 auto",
-  padding: "20px 0 48px",
   marginBottom: "64px",
+  padding: "20px 0 48px",
 };
 
 const h1: React.CSSProperties = {
   color: "#333",
   fontSize: "24px",
   fontWeight: "bold",
-  textAlign: "center",
   margin: "30px 0",
+  textAlign: "center",
 };
 
 const text: React.CSSProperties = {
   color: "#333",
   fontSize: "16px",
   lineHeight: "26px",
-  textAlign: "center",
   padding: "0 40px",
+  textAlign: "center",
 };
 
 const section: React.CSSProperties = {

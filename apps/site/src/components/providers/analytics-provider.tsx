@@ -6,7 +6,9 @@ interface AnalyticsProviderProps {
   readonly children: ReactNode;
 }
 
-export function AnalyticsProvider({ children }: AnalyticsProviderProps): JSX.Element {
+export function AnalyticsProvider({
+  children,
+}: AnalyticsProviderProps): JSX.Element {
   return (
     <>
       {children}

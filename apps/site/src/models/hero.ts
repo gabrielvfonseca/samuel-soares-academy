@@ -3,10 +3,10 @@ import { ButtonSchema, SectionImageDataSchema } from "./cta";
 
 export const HeroSchema = z.object({
   badge: z.string(),
-  title: z.string(),
-  description: z.string(),
   buttons: z.array(ButtonSchema),
+  description: z.string(),
   image: SectionImageDataSchema,
+  title: z.string(),
 });
 
 export type Hero = z.infer<typeof HeroSchema>;

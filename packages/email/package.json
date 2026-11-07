@@ -9,8 +9,8 @@
     "./templates/*": "./src/templates/*.tsx"
   },
   "scripts": {
-    "dev": "email dev --dir src/templates --port 3030",
     "check-types": "tsc --noEmit",
+    "dev": "email dev --dir src/templates --port 3030",
     "transit": "echo transit"
   },
   "dependencies": {
