@@ -1,0 +1,47 @@
+{
+  "$schema": "https://turborepo.dev/schema.json",
+  "ui": "tui",
+  "globalDependencies": [".env"],
+  "globalEnv": ["NODE_ENV"],
+  "tasks": {
+    "build": {
+      "dependsOn": ["^build"],
+      "inputs": ["$TURBO_DEFAULT$", ".env*"],
+      "outputs": [".next/**", "!.next/cache/**", ".output/**", "dist/**"],
+      "env": [
+        "NEXT_PUBLIC_*",
+        "VITE_*",
+        "SUPABASE_*",
+        "CODIGO_ACESSO_INTERNO",
+        "TREINOS_CRON_SECRET",
+        "LOVABLE_API_KEY",
+        "DATABASE_URL",
+        "RESEND_API_KEY",
+        "CONTACT_EMAIL_*",
+        "WHATSAPP_*",
+        "ARCJET_KEY",
+        "UPSTASH_*",
+        "LOGTAIL_*"
+      ]
+    },
+    "transit": {
+      "dependsOn": ["^transit"]
+    },
+    "check-types": {
+      "dependsOn": ["transit"]
+    },
+    "lint": {
+      "dependsOn": ["^lint"]
+    },
+    "dev": {
+      "cache": false,
+      "persistent": true
+    },
+    "db:generate": { "cache": false },
+    "db:migrate": { "cache": false },
+    "db:push": { "cache": false },
+    "db:pull": { "cache": false },
+    "db:studio": { "cache": false, "persistent": true },
+    "db:check": { "cache": false }
+  }
+}

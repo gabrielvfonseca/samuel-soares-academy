@@ -1,23 +1,13 @@
-# Dependencies
 node_modules
-
-# Build outputs
 .next
-out
+.output
+.turbo
 dist
-
-# Lock files
+out
 pnpm-lock.yaml
-package-lock.json
-yarn.lock
-
-# Generated files
+routeTree.gen.ts
+supabase/migrations
 *.min.js
 *.min.css
-
-# IDE
-.idea
-.vscode
-
-# OS
-.DS_Store
+.turbo
+next-env.d.ts
