@@ -1,0 +1,1 @@
+REVOKE ALL ON FUNCTION public.sincronizar_movimento_treino() FROM public, anon, authenticated;

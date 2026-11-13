@@ -1,0 +1,27 @@
+{
+  "name": "@repo/email",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./layout": "./src/layout.ts",
+    "./mailer": "./src/mailer.ts",
+    "./templates/*": "./src/templates/*.tsx"
+  },
+  "scripts": {
+    "check-types": "tsc --noEmit",
+    "dev": "email dev --dir src/templates --port 3030",
+    "transit": "echo transit"
+  },
+  "dependencies": {
+    "@react-email/components": "catalog:",
+    "react": "catalog:",
+    "resend": "catalog:"
+  },
+  "devDependencies": {
+    "@repo/typescript-config": "workspace:*",
+    "@types/react": "catalog:",
+    "react-email": "^5.2.8",
+    "typescript": "catalog:"
+  }
+}

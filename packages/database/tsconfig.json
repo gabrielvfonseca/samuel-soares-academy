@@ -1,0 +1,4 @@
+{
+  "extends": "@repo/typescript-config/node-library.json",
+  "include": ["src", "drizzle.config.ts"]
+}

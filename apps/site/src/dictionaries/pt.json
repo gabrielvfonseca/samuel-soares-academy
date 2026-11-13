@@ -1,0 +1,415 @@
+{
+  "web": {
+    "sections": {
+      "hero": {
+        "badge": "Academia de Guarda-Redes",
+        "title": "Defende o teu futuro!",
+        "description": "Trabalhamos técnica, posicionamento, velocidade de reação, jogo de pés e confiança. Se queres evoluir, junta-te a nós!",
+        "primaryCta": "Agendar Aula",
+        "secondaryCta": "",
+        "image": {
+          "src": "/images/hero.jpg",
+          "alt": "Defende o teu futuro!"
+        }
+      },
+      "about": {
+        "title": "Sobre a Nossa Academia",
+        "description1": "Somos uma Academia criada pelo Samuel Soares, Guarda-Redes do SL Benfica com passagens constantes pelas Seleções Nacionais Jovens.",
+        "description2": "Acreditamos que o desporto é uma ferramenta poderosa para o desenvolvimento integral das crianças, promovendo valores como respeito, disciplina e trabalho em equipa.",
+        "features": [
+          {
+            "number": "01",
+            "title": "Treinador Certificado",
+            "description": "Treinador com anos de experiência"
+          },
+          {
+            "number": "02",
+            "title": "Metodologia Comprovada",
+            "description": "Programa de treino estruturado no desenvolvimento de cada atleta."
+          },
+          {
+            "number": "03",
+            "title": "Desenvolvimento Integral",
+            "description": "Focamos na técnica, posicionamento, velocidade de reação, jogo de pés e confiança."
+          },
+          {
+            "number": "04",
+            "title": "Ambiente Seguro",
+            "description": "Instalações adequadas e acompanhamento de Treinador e Estrutura da Academia."
+          }
+        ]
+      },
+      "stats": {
+        "items": [
+          {
+            "value": "10+",
+            "label": "Anos de Experiência"
+          },
+          {
+            "value": "500+",
+            "label": "Alunos Formados"
+          },
+          {
+            "value": "12",
+            "label": "Treinadores Certificados"
+          },
+          {
+            "value": "95%",
+            "label": "Pais Satisfeitos"
+          }
+        ]
+      },
+      "training": {
+        "title": "Modalidades",
+        "description": "Programas adaptados a cada faixa etária, respeitando o desenvolvimento natural de cada criança e maximizando o potencial de aprendizagem.",
+        "items": [
+          {
+            "title": "Mini Craques",
+            "age": "4-6 anos",
+            "description": "Introdução ao futebol através de jogos lúdicos. Desenvolvimento da coordenação motora e primeiros contactos com a bola.",
+            "schedule": "Sábados 9h-10h"
+          },
+          {
+            "title": "Benjamins",
+            "age": "7-9 anos",
+            "description": "Aprendizagem das técnicas básicas do futebol. Treino de passe, recepção e condução de bola num ambiente divertido.",
+            "schedule": "Ter/Qui 17h-18h30"
+          },
+          {
+            "title": "Infantis",
+            "age": "10-12 anos",
+            "description": "Aperfeiçoamento técnico e introdução à tática. Participação em torneios e jogos amigáveis com outras academias.",
+            "schedule": "Seg/Qua/Sex 17h-19h"
+          },
+          {
+            "title": "Iniciados",
+            "age": "13-14 anos",
+            "description": "Treino intensivo com foco na preparação para competição. Desenvolvimento de tática avançada e preparação física.",
+            "schedule": "Seg/Qua/Sex 18h-20h"
+          },
+          {
+            "title": "Guarda-Redes",
+            "age": "7-14 anos",
+            "description": "Treino especializado para jovens guarda-redes. Técnicas de defesa, posicionamento e distribuição de bola.",
+            "schedule": "Sábados 10h-12h"
+          },
+          {
+            "title": "Futebol Feminino",
+            "age": "6-14 anos",
+            "description": "Programa dedicado às jovens atletas. Mesmo rigor técnico e diversão num ambiente acolhedor e inclusivo.",
+            "schedule": "Ter/Qui 17h-18h30"
+          }
+        ]
+      },
+      "facilities": {
+        "title": "As Nossas Instalações",
+        "description": "Treinos no Campo do URD Tires",
+        "items": [
+          {
+            "title": "Campo do URD Tires",
+            "description": "Rua do Campo de Futebol, 4, 2785-609 São Domingos de Rana",
+            "image": "/images/court.jpg"
+          }
+        ]
+      },
+      "testimonials": {
+        "title": "O Que Dizem os Pais",
+        "description": "A satisfação das famílias é o nosso maior orgulho.",
+        "items": [
+          {
+            "quote": "O meu filho adora ir aos treinos. Em poucos meses vimos uma evolução incrível não só no futebol, mas também na confiança e trabalho em equipa.",
+            "author": "Maria Silva",
+            "role": "Mãe do Tomás, 8 anos"
+          },
+          {
+            "quote": "Profissionalismo e diversão na medida certa. Os treinadores são excelentes e as instalações são de primeira qualidade.",
+            "author": "João Pereira",
+            "role": "Pai da Beatriz, 10 anos"
+          },
+          {
+            "quote": "A melhor decisão que tomamos foi inscrever o nosso filho nesta academia. O ambiente é familiar e os valores transmitidos são extraordinários.",
+            "author": "Ana Rodrigues",
+            "role": "Mãe do Miguel, 6 anos"
+          }
+        ]
+      },
+      "coaches": {
+        "title": "A Nossa Equipa",
+        "description": "Profissionais apaixonados pelo futebol e dedicados ao desenvolvimento de cada jovem atleta.",
+        "items": [
+          {
+            "name": "Samuel Soares",
+            "role": "Fundador",
+            "bio": "Guarda-Redes do SL Benfica.",
+            "image": "/images/samu_bola.png"
+          },
+          {
+            "name": "Ricardo Teixeira",
+            "role": "Treinador Principal",
+            "bio": "Ex-Treinador Belenenses, Benfica, Estoril Experiência em Liga 3. Treinador de Guarda-Redes no CS Cascais",
+            "image": "/images/ricardo.jpg"
+          }
+        ]
+      },
+      "pricing": {
+        "title": "Planos e Packs de Inscrição",
+        "description": "Escolha o pack que melhor se adapta às suas necessidades.",
+        "popularBadge": "Mais Popular",
+        "cta": "Inscrever Agora",
+        "monthSuffix": "/mês",
+        "footer": "É obrigatório a compra de um dos packs de inscrição para treinar em grupo. Treinos individuais dispensam a compra de um pack de inscrição.",
+        "items": [
+          {
+            "name": "Pack Inscrição Base",
+            "price": "60€",
+            "description": "O essencial para treinares.",
+            "features": [
+              "Inscrição na turma.",
+              "Um camisola de treino estampada.",
+              "Seguro desportivo."
+            ],
+            "hidePeriod": true
+          },
+          {
+            "name": "Pack Inscrição Pro",
+            "price": "90€",
+            "description": "Defende o teu futuro!",
+            "features": [
+              "Inscrição na turma.",
+              "Um camisola de treino estampada.",
+              "Calções oficiais de treino.",
+              "Meias de treino.",
+              "Seguro desportivo."
+            ],
+            "hidePeriod": true
+          },
+          {
+            "name": "Pack Inscrição Supreme",
+            "price": "160€",
+            "description": "Tudo o que precisas para treinar.",
+            "features": [
+              "Inscrição na turma.",
+              "Duas camisolas de treino personalizadas.",
+              "Calções oficiais de treino.",
+              "Meias de treino.",
+              "Luvas de guarda-redes.",
+              "Seguro desportivo."
+            ],
+            "hidePeriod": true
+          },
+          {
+            "name": "Treino de Grupo Base",
+            "price": "60€",
+            "description": "Um treino por semana.",
+            "features": ["Treina uma vez por semana numa das nossas turmas."],
+            "hidePeriod": false
+          },
+          {
+            "name": "Treino de Grupo Pro",
+            "price": "90€",
+            "description": "Dois treinos por semana.",
+            "features": [
+              "Treina duas vezes por semana numa das nossas turmas."
+            ],
+            "hidePeriod": false
+          },
+          {
+            "name": "Treino Individual",
+            "price": "40€",
+            "description": "Treina individualmente com o nosso treinador.",
+            "features": [
+              "Um treino individual com o nosso treinador.",
+              "Desconto na compra de cinco ou mais treinos individuais."
+            ],
+            "hidePeriod": true
+          },
+          {
+            "name": "Análise de Vídeo",
+            "price": "30€",
+            "description": "Analise de vídeo personalizada para o teu nível.",
+            "features": [
+              "Análise de vídeo personalizada.",
+              "Jogo analisado pelo nosso Treinador principal.",
+              "Relatório Detalhado com sugestões de melhoria."
+            ],
+            "hidePeriod": true
+          }
+        ]
+      },
+      "gallery": {
+        "title": "Galeria",
+        "description": "Momentos especiais dos nossos treinos e competições.",
+        "items": [
+          {
+            "src": "/images/hero.jpg",
+            "alt": "Treino de técnica individual"
+          },
+          {
+            "src": "/images/ricardo_bola.jpg",
+            "alt": "Jogo de equipa"
+          },
+          {
+            "src": "/images/ricardo.jpg",
+            "alt": "Exercícios de coordenação"
+          },
+          {
+            "src": "/images/samu_bola.png",
+            "alt": "Torneio entre academias"
+          },
+          {
+            "src": "/images/hero.jpg",
+            "alt": "Celebração de golo"
+          },
+          {
+            "src": "/images/ricardo_bola.jpg",
+            "alt": "Foto de grupo da academia"
+          }
+        ]
+      },
+      "faq": {
+        "title": "Perguntas Frequentes",
+        "description": "Encontre respostas às dúvidas mais comuns sobre a nossa academia.",
+        "items": [
+          {
+            "question": "A partir de que idade posso inscrever o meu filho?",
+            "answer": "Aceitamos alunos a partir dos 6 anos de idade até aos 18 anos, organizados por escalões etários e nível de desenvolvimento, garantindo um acompanhamento adequado a cada fase."
+          },
+          {
+            "question": "É necessário ter experiência prévia em futebol?",
+            "answer": "Não. Não é necessária qualquer experiência prévia. Trabalhamos tanto com iniciantes como com jovens guarda-redes que já atuam em clubes e pretendem aperfeiçoar a sua técnica e desempenho."
+          },
+          {
+            "question": "O que preciso trazer para os treinos?",
+            "answer": "O aluno deve trazer:\n• Equipamento desportivo confortável\n• Camisola da Escola de Guarda-Redes Samuel Soares\n• Luvas de guarda-redes\n• Chuteiras adequadas ao piso\n• Garrafa de água"
+          },
+          {
+            "question": "Como funciona o pagamento?",
+            "answer": "O pagamento é feito de forma mensal, com valores ajustados à frequência semanal dos treinos. Todas as informações detalhadas são fornecidas no momento da inscrição."
+          },
+          {
+            "question": "Os treinos são cancelados quando chove?",
+            "answer": "Regra geral, os treinos não são cancelados por chuva. Apenas em situações de condições climatéricas extremas ou quando o campo não reúne condições de segurança é que o treino poderá ser adiado ou reagendado."
+          }
+        ]
+      },
+      "cta": {
+        "title": "Pronto para Começar a Defender o teu futuro?",
+        "description": "Agenda o teu primeiro treino. Vem evoluir connosco.",
+        "primaryCta": "Agendar Aula",
+        "secondaryCta": "Ligar Agora",
+        "image": {
+          "src": "/images/team_cta.JPG",
+          "alt": "Pronto para Começar a Defender o teu futuro?"
+        }
+      },
+      "contact": {
+        "title": "Entre em Contacto",
+        "description": "Tem dúvidas ou quer inscrever o seu filho? Preencha o formulário ou utilize um dos nossos contactos diretos.",
+        "info": {
+          "address": "Morada",
+          "phone": "Telefone",
+          "email": "Email",
+          "schedule": "Horário",
+          "facebook": "Facebook",
+          "instagram": "Instagram"
+        },
+        "values": {
+          "address": "Rua do Campo de Futebol, 4, 2785-609 São Domingos de Rana",
+          "phone": "+351 928 353 747",
+          "email": "geral@samuelsoares.academy",
+          "schedule": "Seg–Dom: 10h–20h",
+          "facebook": "https://www.facebook.com/samuelsoares.academy",
+          "instagram": "https://www.instagram.com/samuelsoares.academy",
+          "facebookHandle": "Escola de Guarda-Redes Samuel Soares",
+          "instagramHandle": "@samuelsoares.academy"
+        },
+        "form": {
+          "method": {
+            "email": "Email",
+            "whatsapp": "WhatsApp"
+          },
+          "name": "Nome Completo",
+          "namePlaceholder": "O seu nome",
+          "email": "Email",
+          "emailPlaceholder": "geral@samuelsoares.academy",
+          "phone": "Telefone",
+          "phonePlaceholder": "+351 928 353 747",
+          "childAge": "Idade do Atleta",
+          "childAgePlaceholder": "Ex: 8 anos",
+          "club": "Atua em algum clube? Se sim qual:",
+          "clubPlaceholder": "Ex: SL Benfica",
+          "message": "Mensagem",
+          "messagePlaceholder": "Conte-nos mais sobre o seu interesse...",
+          "submit": "Enviar Mensagem",
+          "submitEmail": "Enviar Email",
+          "submitWhatsapp": "Enviar por Whatsapp",
+          "submitting": "Enviando...",
+          "success": "Mensagem enviada com sucesso! Entraremos em contacto brevemente.",
+          "error": "Erro ao enviar mensagem. Por favor, tente novamente.",
+          "templates": {
+            "confirmation": {
+              "subject": "Recebemos a tua mensagem - Academia Samuel Soares",
+              "title": "Olá {{name}}!",
+              "message": "Obrigado por entrares em contacto connosco. Recebemos o teu pedido e entraremos em contacto brevemente.",
+              "details": "Aqui estão os detalhes do teu envio:"
+            },
+            "notification": {
+              "subject": "Novo Contacto: {{name}}",
+              "title": "Novo pedido de contacto recebido",
+              "message": "Um novo utilizador preencheu o formulário de contacto no website."
+            }
+          }
+        }
+      }
+    },
+    "header": {
+      "nav": [
+        {
+          "label": "Sobre",
+          "href": "#about"
+        },
+        {
+          "label": "Equipa",
+          "href": "#coaches"
+        },
+        {
+          "label": "Preços",
+          "href": "#pricing"
+        },
+        {
+          "label": "Contactos",
+          "href": "#contact"
+        }
+      ],
+      "cta": "Inscrever"
+    },
+    "footer": {
+      "tagline": "Defende o teu futuro!",
+      "rights": "Todos os direitos reservados.",
+      "privacy": "Política de Privacidade",
+      "terms": "Termos de Serviço",
+      "nav": [
+        {
+          "label": "Sobre",
+          "href": "#about"
+        },
+        {
+          "label": "Equipa",
+          "href": "#coaches"
+        },
+        {
+          "label": "Galeria",
+          "href": "#gallery"
+        },
+        {
+          "label": "Preços",
+          "href": "#pricing"
+        },
+        {
+          "label": "Contactos",
+          "href": "#contact"
+        }
+      ]
+    }
+  }
+}
