@@ -198,9 +198,7 @@ function Pagamentos() {
   return (
     <div className="space-y-6">
       <header>
-        <h1 className="font-display text-5xl leading-none">
-          Painel de pagamentos
-        </h1>
+        <h1 className="text-5xl leading-none">Painel de pagamentos</h1>
         <p className="text-muted-foreground">
           Treinos individuais e mensalidades dos atletas de grupo
         </p>
@@ -213,9 +211,7 @@ function Pagamentos() {
               Treinos por receber
             </CardTitle>
           </CardHeader>
-          <CardContent className="font-display text-4xl">
-            {porReceber}
-          </CardContent>
+          <CardContent className="text-4xl">{porReceber}</CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2">
@@ -223,9 +219,7 @@ function Pagamentos() {
               Pagos com fatura
             </CardTitle>
           </CardHeader>
-          <CardContent className="font-display text-4xl">
-            {comFatura}
-          </CardContent>
+          <CardContent className="text-4xl">{comFatura}</CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2">
@@ -233,9 +227,7 @@ function Pagamentos() {
               Atletas de grupo
             </CardTitle>
           </CardHeader>
-          <CardContent className="font-display text-4xl">
-            {alunosGrupo.length}
-          </CardContent>
+          <CardContent className="text-4xl">{alunosGrupo.length}</CardContent>
         </Card>
         <Card>
           <CardHeader className="pb-2">
@@ -243,7 +235,7 @@ function Pagamentos() {
               Mensalidades em atraso
             </CardTitle>
           </CardHeader>
-          <CardContent className="font-display text-destructive text-4xl">
+          <CardContent className="text-destructive text-4xl">
             {emAtraso}
           </CardContent>
         </Card>
@@ -253,7 +245,7 @@ function Pagamentos() {
               Clubes por receber
             </CardTitle>
           </CardHeader>
-          <CardContent className="font-display text-destructive text-4xl">
+          <CardContent className="text-destructive text-4xl">
             {clubesEmAtraso}
           </CardContent>
         </Card>

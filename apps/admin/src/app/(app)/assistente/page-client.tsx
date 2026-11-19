@@ -101,7 +101,7 @@ function AssistentePage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="font-display text-3xl">Assistente</h1>
+        <h1 className="text-3xl">Assistente</h1>
         <p className="text-muted-foreground text-sm">
           Escreve como falarias: “lembra-me de ligar ao clube amanhã às 10h”. O
           aviso chega ao teu email à hora combinada.

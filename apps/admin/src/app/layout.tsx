@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import type { ReactNode } from "react";
 
+import { fonts } from "@/lib/fonts";
 import "./globals.css";
 import { Providers } from "./providers";
 
@@ -23,19 +24,7 @@ export const viewport: Viewport = { initialScale: 1, width: "device-width" };
 export default function RootLayout({ children }: { children: ReactNode }) {
   return (
     <html lang="pt">
-      <head>
-        <link href="https://fonts.googleapis.com" rel="preconnect" />
-        <link
-          crossOrigin="anonymous"
-          href="https://fonts.gstatic.com"
-          rel="preconnect"
-        />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Barlow:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
-      </head>
-      <body>
+      <body className={fonts}>
         <Providers>{children}</Providers>
       </body>
     </html>

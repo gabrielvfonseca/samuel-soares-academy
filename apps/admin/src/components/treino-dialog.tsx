@@ -259,7 +259,7 @@ export function TreinoDialog({
     <Dialog onOpenChange={onOpenChange} open={open}>
       <DialogContent className="max-h-[90vh] overflow-y-auto sm:max-w-lg">
         <DialogHeader>
-          <DialogTitle className="font-display text-2xl">
+          <DialogTitle className="text-2xl">
             {treino ? "Editar treino" : "Marcar treino"}
           </DialogTitle>
         </DialogHeader>

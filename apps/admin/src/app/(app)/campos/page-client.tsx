@@ -150,7 +150,7 @@ function Campos() {
     <div className="space-y-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-5xl leading-none">Campos</h1>
+          <h1 className="text-5xl leading-none">Campos</h1>
           <p className="text-muted-foreground">
             Locais de treino e horas em que cada campo está livre.
           </p>
@@ -165,7 +165,7 @@ function Campos() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="font-display text-2xl">Novo campo</CardTitle>
+          <CardTitle className="text-2xl">Novo campo</CardTitle>
           <CardDescription>
             Adiciona um campo ou pavilhão onde damos treinos.
           </CardDescription>
@@ -208,7 +208,7 @@ function Campos() {
             <Card key={c.id}>
               <CardHeader className="flex-row items-start justify-between gap-3 space-y-0">
                 <div>
-                  <CardTitle className="font-display flex items-center gap-2 text-2xl">
+                  <CardTitle className="flex items-center gap-2 text-2xl">
                     <MapPin className="size-5" /> {c.nome}
                   </CardTitle>
                   <CardDescription>
@@ -268,7 +268,7 @@ function Campos() {
       <Dialog onOpenChange={setOpen} open={open}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="font-display text-2xl">
+            <DialogTitle className="text-2xl">
               Disponibilidade do campo
             </DialogTitle>
           </DialogHeader>

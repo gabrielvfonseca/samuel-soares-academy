@@ -80,8 +80,8 @@ export function AppShell({ children }: { children: ReactNode }) {
             src="/logo.svg"
           />
           <div>
-            <p className="font-display text-xl leading-none">
-              SAMUEL SOARES <span className="text-gold">ACADEMY</span>
+            <p className="text-xl leading-none">
+              SAMUEL SOARES <span className="text-foreground">ACADEMY</span>
             </p>
             <p className="text-muted-foreground text-[10px] tracking-widest uppercase">
               Escola de guarda-redes

@@ -153,7 +153,7 @@ function Definicoes() {
   return (
     <div className="space-y-8">
       <header>
-        <h1 className="font-display text-5xl leading-none">Automações</h1>
+        <h1 className="text-5xl leading-none">Automações</h1>
         <p className="text-muted-foreground">
           Lembretes diários aos treinadores e resumos mensais de faturas e
           ordenados, enviados no antepenúltimo e penúltimo dia de cada mês.
@@ -162,9 +162,7 @@ function Definicoes() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="font-display text-2xl">
-            Lembretes diários
-          </CardTitle>
+          <CardTitle className="text-2xl">Lembretes diários</CardTitle>
           <CardDescription>
             O sistema verifica a cada 5 minutos e dispara os envios à hora
             definida ou na primeira verificação seguinte (fuso{" "}
@@ -284,9 +282,7 @@ function Definicoes() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="font-display text-2xl">
-            Histórico de envios
-          </CardTitle>
+          <CardTitle className="text-2xl">Histórico de envios</CardTitle>
           <CardDescription>Últimos 100 registos automáticos.</CardDescription>
         </CardHeader>
         <CardContent>

@@ -59,13 +59,13 @@ function Landing() {
       <section className="flex flex-col justify-center gap-8 px-8 py-16 lg:px-16">
         <img
           alt="Emblema da Samuel Soares Academy — Escola de Guarda-Redes"
-          className="shadow-primary/40 size-28 rounded-full shadow-[0_0_60px_-10px] md:size-36"
+          className="size-28 rounded-full md:size-36"
           src={"/logo.svg"}
         />
-        <div className="border-gold/40 bg-gold/10 text-gold inline-flex w-fit items-center gap-2 rounded-full border px-4 py-1 text-xs font-semibold tracking-widest uppercase">
+        <div className="border-border bg-muted text-foreground inline-flex w-fit items-center gap-2 rounded-full border px-4 py-1 text-xs font-semibold tracking-widest uppercase">
           Samuel Soares Academy · Escola de Guarda-Redes
         </div>
-        <h1 className="font-display text-6xl leading-none md:text-7xl">
+        <h1 className="text-6xl leading-none md:text-7xl">
           Gestão total dos <span className="text-primary">teus treinos</span>
         </h1>
         <p className="text-muted-foreground max-w-md">
@@ -91,7 +91,7 @@ function Landing() {
       <section className="bg-card/40 flex items-center justify-center px-6 py-16">
         <Card className="border-border/60 w-full max-w-sm">
           <CardHeader>
-            <CardTitle className="font-display text-3xl">Entrar</CardTitle>
+            <CardTitle className="text-3xl">Entrar</CardTitle>
           </CardHeader>
           <CardContent>
             <form className="space-y-4" onSubmit={submeter}>

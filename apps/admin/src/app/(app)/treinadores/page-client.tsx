@@ -92,7 +92,7 @@ function Treinadores() {
     <div className="space-y-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-5xl leading-none">Treinadores</h1>
+          <h1 className="text-5xl leading-none">Treinadores</h1>
           <p className="text-muted-foreground">Equipa técnica da escola</p>
         </div>
         <Button onClick={() => abrir()}>
@@ -149,7 +149,7 @@ function Treinadores() {
       <Dialog onOpenChange={setOpen} open={open}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="font-display text-2xl">
+            <DialogTitle className="text-2xl">
               {atual ? "Editar treinador" : "Novo treinador"}
             </DialogTitle>
           </DialogHeader>

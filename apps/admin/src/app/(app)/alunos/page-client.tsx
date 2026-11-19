@@ -151,7 +151,7 @@ function Alunos() {
     <div className="space-y-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-5xl leading-none">Alunos</h1>
+          <h1 className="text-5xl leading-none">Alunos</h1>
           <p className="text-muted-foreground">
             Guarda-redes inscritos na escola
           </p>
@@ -237,7 +237,7 @@ function Alunos() {
                         </div>
                       </div>
                       {a.notas_tecnicas && (
-                        <p className="pitch-line text-muted-foreground pl-3 text-sm">
+                        <p className="border-border text-muted-foreground border-l-4 pl-3 text-sm">
                           {a.notas_tecnicas}
                         </p>
                       )}
@@ -260,7 +260,7 @@ function Alunos() {
       <Dialog onOpenChange={setOpen} open={open}>
         <DialogContent>
           <DialogHeader>
-            <DialogTitle className="font-display text-2xl">
+            <DialogTitle className="text-2xl">
               {atual ? "Editar aluno" : "Novo aluno"}
             </DialogTitle>
           </DialogHeader>

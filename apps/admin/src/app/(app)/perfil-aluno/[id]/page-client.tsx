@@ -138,7 +138,7 @@ function PerfilAluno() {
       </Link>
 
       <header className="space-y-2">
-        <h1 className="font-display text-5xl leading-none">
+        <h1 className="text-5xl leading-none">
           {aluno.data?.nome ?? "Perfil"}
         </h1>
         <p className="text-muted-foreground">
@@ -155,9 +155,7 @@ function PerfilAluno() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="font-display text-2xl">
-            Tipo de atleta
-          </CardTitle>
+          <CardTitle className="text-2xl">Tipo de atleta</CardTitle>
           <CardDescription>
             Define se o atleta treina em grupo ou individualmente.
           </CardDescription>
@@ -184,7 +182,7 @@ function PerfilAluno() {
       {form.tipo_atleta === "Grupo" && (
         <Card>
           <CardHeader>
-            <CardTitle className="font-display text-2xl">Inscrição</CardTitle>
+            <CardTitle className="text-2xl">Inscrição</CardTitle>
             <CardDescription>
               Modalidade contratada e data de entrada na escola.
             </CardDescription>
@@ -227,9 +225,7 @@ function PerfilAluno() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="font-display text-2xl">
-            Dados do atleta
-          </CardTitle>
+          <CardTitle className="text-2xl">Dados do atleta</CardTitle>
           <CardDescription>Informação de inscrição e contacto.</CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2">

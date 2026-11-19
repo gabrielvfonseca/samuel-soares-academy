@@ -147,7 +147,7 @@ function PerfilTreinador() {
       </Link>
 
       <header>
-        <h1 className="font-display text-5xl leading-none">
+        <h1 className="text-5xl leading-none">
           {treinador.data?.nome ?? "Perfil"}
         </h1>
         <p className="text-muted-foreground">{treinador.data?.email}</p>
@@ -155,9 +155,7 @@ function PerfilTreinador() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="font-display text-2xl">
-            Dados do treinador
-          </CardTitle>
+          <CardTitle className="text-2xl">Dados do treinador</CardTitle>
           <CardDescription>
             Informação interna da equipa técnica.
           </CardDescription>
@@ -223,7 +221,7 @@ function PerfilTreinador() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="font-display text-2xl">Ordenado</CardTitle>
+          <CardTitle className="text-2xl">Ordenado</CardTitle>
           <CardDescription>
             Valores por hora e cálculo automático do ordenado do mês atual.
           </CardDescription>
@@ -262,23 +260,19 @@ function PerfilTreinador() {
               <p className="text-muted-foreground text-xs tracking-widest uppercase">
                 Horas individuais (mês)
               </p>
-              <p className="font-display text-3xl">
-                {resumo.horasInd.toFixed(1)}h
-              </p>
+              <p className="text-3xl">{resumo.horasInd.toFixed(1)}h</p>
             </div>
             <div className="border-border rounded-md border p-4">
               <p className="text-muted-foreground text-xs tracking-widest uppercase">
                 Horas de grupo (mês)
               </p>
-              <p className="font-display text-3xl">
-                {resumo.horasGrupo.toFixed(1)}h
-              </p>
+              <p className="text-3xl">{resumo.horasGrupo.toFixed(1)}h</p>
             </div>
             <div className="border-primary/40 bg-primary/10 rounded-md border p-4">
               <p className="text-muted-foreground text-xs tracking-widest uppercase">
                 Ordenado do mês
               </p>
-              <p className="font-display text-primary text-3xl">
+              <p className="text-primary text-3xl">
                 {formatEuros(resumo.total)}
               </p>
             </div>

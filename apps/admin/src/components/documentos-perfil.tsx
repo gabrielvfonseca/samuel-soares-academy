@@ -130,7 +130,7 @@ export function DocumentosPerfil({ prefixo, titulo, descricao }: Props) {
     <Card>
       <CardHeader className="flex-row items-start justify-between gap-4 space-y-0">
         <div>
-          <CardTitle className="font-display text-2xl">{titulo}</CardTitle>
+          <CardTitle className="text-2xl">{titulo}</CardTitle>
           <CardDescription>{descricao}</CardDescription>
         </div>
         <Button
@@ -203,7 +203,7 @@ export function DocumentosPerfil({ prefixo, titulo, descricao }: Props) {
       >
         <DialogContent className="max-w-5xl">
           <DialogHeader>
-            <DialogTitle className="font-display truncate text-2xl">
+            <DialogTitle className="truncate text-2xl">
               {visualizar?.nome.replace(/^\d+-/u, "")}
             </DialogTitle>
           </DialogHeader>
