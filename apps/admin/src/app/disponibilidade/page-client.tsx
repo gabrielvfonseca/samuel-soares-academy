@@ -131,8 +131,8 @@ function DisponibilidadePublica() {
           src={"/logo.svg"}
         />
         <div>
-          <h1 className="font-display text-2xl leading-none">
-            SAMUEL SOARES <span className="text-gold">ACADEMY</span>
+          <h1 className="text-2xl leading-none">
+            SAMUEL SOARES <span className="text-foreground">ACADEMY</span>
           </h1>
           <p className="text-muted-foreground text-xs tracking-widest uppercase">
             Disponibilidade semanal
@@ -143,9 +143,7 @@ function DisponibilidadePublica() {
       <div className="space-y-6">
         <Card>
           <CardHeader>
-            <CardTitle className="font-display text-xl tracking-wide">
-              1. Quem és?
-            </CardTitle>
+            <CardTitle className="text-xl tracking-wide">1. Quem és?</CardTitle>
           </CardHeader>
           <CardContent>
             <Select onValueChange={setTreinadorId} value={treinadorId}>
@@ -165,7 +163,7 @@ function DisponibilidadePublica() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="font-display text-xl tracking-wide">
+            <CardTitle className="text-xl tracking-wide">
               2. Adiciona os teus horários
             </CardTitle>
           </CardHeader>
@@ -252,9 +250,7 @@ function DisponibilidadePublica() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="font-display text-xl tracking-wide">
-              3. Enviar
-            </CardTitle>
+            <CardTitle className="text-xl tracking-wide">3. Enviar</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             <div className="space-y-1.5">
@@ -278,9 +274,7 @@ function DisponibilidadePublica() {
 
         {treinadorId && minhas.length > 0 && (
           <section className="space-y-2">
-            <h2 className="font-display text-lg tracking-wide">
-              Já registaste
-            </h2>
+            <h2 className="text-lg tracking-wide">Já registaste</h2>
             {minhas.map((d) => (
               <div
                 className="border-border flex items-center justify-between rounded-md border p-3"

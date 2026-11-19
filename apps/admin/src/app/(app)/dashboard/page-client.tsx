@@ -78,7 +78,7 @@ function Dashboard() {
     <div className="space-y-8">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-5xl leading-none">Dashboard</h1>
+          <h1 className="text-5xl leading-none">Dashboard</h1>
           <p className="text-muted-foreground">
             {new Date().toLocaleDateString("pt-PT", {
               day: "2-digit",
@@ -114,7 +114,7 @@ function Dashboard() {
       <div className="grid gap-6 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle className="font-display text-2xl">Hoje</CardTitle>
+            <CardTitle className="text-2xl">Hoje</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {deHoje.length === 0 && (
@@ -124,7 +124,7 @@ function Dashboard() {
             )}
             {deHoje.map((t) => (
               <div
-                className="pitch-line bg-secondary/50 rounded-md p-3"
+                className="border-border bg-secondary/50 rounded-md border-l-4 p-3"
                 key={t.id}
               >
                 <div className="flex items-center justify-between gap-2">
@@ -177,9 +177,7 @@ function Dashboard() {
 
         <Card>
           <CardHeader>
-            <CardTitle className="font-display text-2xl">
-              Próximos treinos
-            </CardTitle>
+            <CardTitle className="text-2xl">Próximos treinos</CardTitle>
           </CardHeader>
           <CardContent className="space-y-3">
             {proximos.length === 0 && (
@@ -234,7 +232,7 @@ function StatCard({
           <Icon className="size-6" />
         </div>
         <div>
-          <p className="font-display text-4xl leading-none">{value}</p>
+          <p className="text-4xl leading-none">{value}</p>
           <p className="text-muted-foreground text-xs tracking-widest uppercase">
             {label}
           </p>

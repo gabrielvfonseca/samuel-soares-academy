@@ -160,7 +160,7 @@ function Turmas() {
     <div className="space-y-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-5xl leading-none">Turmas</h1>
+          <h1 className="text-5xl leading-none">Turmas</h1>
           <p className="text-muted-foreground">
             Grupos de atletas com treinador, campo e horário semanal
           </p>
@@ -222,7 +222,7 @@ function Turmas() {
                     : "Ainda sem atletas atribuídos"}
                 </p>
                 {t.notas && (
-                  <p className="pitch-line text-muted-foreground pl-3 text-sm">
+                  <p className="border-border text-muted-foreground border-l-4 pl-3 text-sm">
                     {t.notas}
                   </p>
                 )}
@@ -240,7 +240,7 @@ function Turmas() {
       <Dialog onOpenChange={setOpen} open={open}>
         <DialogContent className="max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="font-display text-2xl">
+            <DialogTitle className="text-2xl">
               {atual ? "Editar turma" : "Nova turma"}
             </DialogTitle>
           </DialogHeader>

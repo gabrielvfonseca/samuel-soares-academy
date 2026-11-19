@@ -278,9 +278,7 @@ function Ocupacao() {
   return (
     <div className="space-y-6">
       <header className="space-y-2">
-        <h1 className="font-display text-5xl leading-none">
-          Vagas para marcação
-        </h1>
+        <h1 className="text-5xl leading-none">Vagas para marcação</h1>
         <p className="text-muted-foreground">
           Cruzamento entre a disponibilidade dos treinadores, a disponibilidade
           dos campos e os treinos já marcados.
@@ -377,7 +375,7 @@ function Ocupacao() {
       <Card>
         <CardHeader className="flex-row items-start justify-between gap-4 space-y-0">
           <div>
-            <CardTitle className="font-display flex items-center gap-2 text-2xl">
+            <CardTitle className="flex items-center gap-2 text-2xl">
               <Sparkles className="size-5" /> Sugestões inteligentes
             </CardTitle>
             <CardDescription>
@@ -403,7 +401,7 @@ function Ocupacao() {
 
       <Card>
         <CardHeader>
-          <CardTitle className="font-display flex items-center gap-2 text-2xl">
+          <CardTitle className="flex items-center gap-2 text-2xl">
             <CalendarCheck className="size-5" /> {vagas.length} vagas livres ·{" "}
             {horasLivres.toFixed(1)}h
           </CardTitle>

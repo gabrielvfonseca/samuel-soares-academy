@@ -369,7 +369,7 @@ function Clubes() {
     <div className="space-y-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-5xl leading-none">Clubes</h1>
+          <h1 className="text-5xl leading-none">Clubes</h1>
           <p className="text-muted-foreground">
             Prestação de serviços a clubes (B2B)
           </p>
@@ -420,7 +420,7 @@ function Clubes() {
                 </div>
               </div>
               {c.notas && (
-                <p className="pitch-line text-muted-foreground pl-3 text-sm">
+                <p className="border-border text-muted-foreground border-l-4 pl-3 text-sm">
                   {c.notas}
                 </p>
               )}
@@ -437,7 +437,7 @@ function Clubes() {
       <Dialog onOpenChange={setOpen} open={open}>
         <DialogContent className="max-h-[85vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle className="font-display text-2xl">
+            <DialogTitle className="text-2xl">
               {atual ? "Editar clube" : "Novo clube"}
             </DialogTitle>
           </DialogHeader>

@@ -147,9 +147,7 @@ function Financas() {
     <div className="space-y-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h1 className="font-display text-5xl leading-none">
-            Contas da escola
-          </h1>
+          <h1 className="text-5xl leading-none">Contas da escola</h1>
           <p className="text-muted-foreground">
             Entradas e saídas mês a mês. Cada treino individual gera uma entrada
             de 40 € assim que fica marcado como pago (editável).
@@ -163,9 +161,7 @@ function Financas() {
           </DialogTrigger>
           <DialogContent>
             <DialogHeader>
-              <DialogTitle className="font-display text-2xl">
-                Novo movimento
-              </DialogTitle>
+              <DialogTitle className="text-2xl">Novo movimento</DialogTitle>
             </DialogHeader>
             <div className="grid gap-4">
               <div className="grid grid-cols-2 gap-3">
@@ -280,7 +276,7 @@ function Financas() {
                       Entradas
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="font-display text-primary text-4xl">
+                  <CardContent className="text-primary text-4xl">
                     {formatEuros(entradas)}
                   </CardContent>
                 </Card>
@@ -290,7 +286,7 @@ function Financas() {
                       Saídas
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="font-display text-destructive text-4xl">
+                  <CardContent className="text-destructive text-4xl">
                     {formatEuros(saidas)}
                   </CardContent>
                 </Card>
@@ -300,7 +296,7 @@ function Financas() {
                       Total do mês
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="font-display text-4xl">
+                  <CardContent className="text-4xl">
                     {formatEuros(entradas - saidas)}
                   </CardContent>
                 </Card>
@@ -310,7 +306,7 @@ function Financas() {
                       Total sem IVA (−23%)
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="font-display text-4xl">
+                  <CardContent className="text-4xl">
                     {formatEuros(entradas * 0.77 - saidas)}
                   </CardContent>
                 </Card>

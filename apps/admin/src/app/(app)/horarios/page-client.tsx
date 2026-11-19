@@ -121,7 +121,7 @@ function Horarios() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="font-display text-3xl">Horários Disponíveis</h1>
+          <h1 className="text-3xl">Horários Disponíveis</h1>
           <p className="text-muted-foreground text-sm">
             Disponibilidade semanal declarada por cada treinador.
           </p>
@@ -158,9 +158,7 @@ function Horarios() {
           return (
             <Card key={dia}>
               <CardHeader className="pb-2">
-                <CardTitle className="font-display text-xl tracking-wide">
-                  {dia}
-                </CardTitle>
+                <CardTitle className="text-xl tracking-wide">{dia}</CardTitle>
               </CardHeader>
               <CardContent className="space-y-2">
                 {doDia.length === 0 && (
