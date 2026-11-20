@@ -1,48 +1,59 @@
-import { sql } from "drizzle-orm";
-import {
-  boolean,
-  date,
-  numeric,
-  pgTable,
-  text,
-  uuid,
-} from "drizzle-orm/pg-core";
-import { createdAt, id, updatedAt } from "./_columns";
-import { turmas } from "./places";
+import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
 
-export const treinadores = pgTable("treinadores", {
-  ativo: boolean("ativo").notNull().default(true),
+import { createdAt, id, updatedAt } from "./_columns";
+import { groups } from "./places";
+
+export const coaches = sqliteTable("coaches", {
+  active: integer("active", { mode: "boolean" }).notNull().default(true),
+  address: text("address"),
+  birthDate: text("birth_date"),
   createdAt: createdAt(),
-  dataNascimento: date("data_nascimento"),
   email: text("email").notNull(),
+  // Money as integer cents (Postgres `numeric(10,2)` → `integer` cents).
+  groupRate: integer("group_rate").notNull().default(0),
   id: id(),
-  morada: text("morada"),
-  nif: text("nif"),
-  nome: text("nome").notNull(),
-  observacoes: text("observacoes"),
-  telefoneWhatsapp: text("telefone_whatsapp"),
+  individualRate: integer("individual_rate").notNull().default(0),
+  name: text("name").notNull(),
+  notes: text("notes"),
+  taxId: text("tax_id"),
   updatedAt: updatedAt(),
-  valorHoraGrupo: numeric("valor_hora_grupo").notNull().default("0"),
-  valorHoraIndividual: numeric("valor_hora_individual").notNull().default("0"),
+  whatsappPhone: text("whatsapp_phone"),
 });
 
-export const alunos = pgTable("alunos", {
-  contactoEe: text("contacto_ee"),
+export const students = sqliteTable("students", {
+  athleteType: text("athlete_type").notNull().default("Individual"),
+  birthDate: text("birth_date"),
   createdAt: createdAt(),
-  dataInscricao: date("data_inscricao"),
-  dataNascimento: date("data_nascimento"),
-  emailEe: text("email_ee"),
-  escalao: text("escalao"),
-  id: id(),
-  modalidadeInscricao: text("modalidade_inscricao"),
-  nome: text("nome").notNull(),
-  nomeEe: text("nome_ee"),
-  notasTecnicas: text("notas_tecnicas"),
-  observacoes: text("observacoes"),
-  tipoAtleta: text("tipo_atleta").notNull().default("Individual"),
-  turmaId: uuid("turma_id").references(() => turmas.id, {
+  enrollDate: text("enroll_date"),
+  enrollmentType: text("enrollment_type"),
+  // Single "primary" group FK (parity with Postgres `group_id`).
+  groupId: text("group_id").references(() => groups.id, {
     onDelete: "set null",
   }),
-  turmaIds: uuid("turma_ids").array().notNull().default(sql`'{}'::uuid[]`),
+  id: id(),
+  level: text("level"),
+  name: text("name").notNull(),
+  notes: text("notes"),
+  parentContact: text("parent_contact"),
+  parentEmail: text("parent_email"),
+  parentName: text("parent_name"),
+  technicalNotes: text("technical_notes"),
   updatedAt: updatedAt(),
 });
+
+/**
+ * Replaces Postgres `uuid[]` `students.group_ids` (a table cannot hold arrays
+ * on SQLite). One row per (student, group) membership.
+ */
+export const studentGroups = sqliteTable(
+  "student_groups",
+  {
+    groupId: text("group_id")
+      .notNull()
+      .references(() => groups.id, { onDelete: "cascade" }),
+    studentId: text("student_id")
+      .notNull()
+      .references(() => students.id, { onDelete: "cascade" }),
+  },
+  (t) => [unique("student_groups_unique").on(t.studentId, t.groupId)]
+);

@@ -30,23 +30,26 @@ import {
 import { Send } from "@repo/ui/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/data/client";
 import { enviarResumoFaturasAgora } from "@/lib/actions/faturas";
 import { enviarLembretesAgora } from "@/lib/actions/lembretes";
 import { enviarResumoMensalidadesAgora } from "@/lib/actions/mensalidades";
 import { enviarResumoOrdenadosAgora } from "@/lib/actions/ordenados";
-import { getConfiguracao, listLembretes, listTreinadores } from "@/lib/gk";
+import { getNotificationSettings, listCoaches, listReminders } from "@/lib/gk";
 import { useAuthedAction } from "@/lib/use-authed-action";
 
 function Definicoes() {
   const qc = useQueryClient();
-  const config = useQuery({ queryFn: getConfiguracao, queryKey: ["config"] });
+  const config = useQuery({
+    queryFn: getNotificationSettings,
+    queryKey: ["config"],
+  });
   const historico = useQuery({
-    queryFn: listLembretes,
+    queryFn: listReminders,
     queryKey: ["historico"],
   });
   const treinadores = useQuery({
-    queryFn: listTreinadores,
+    queryFn: listCoaches,
     queryKey: ["treinadores"],
   });
   const enviar = useAuthedAction(enviarLembretesAgora);
@@ -55,11 +58,11 @@ function Definicoes() {
   const enviarMensalidades = useAuthedAction(enviarResumoMensalidadesAgora);
 
   const [form, setForm] = useState({
-    canal_preferencial: "Email",
-    chave_api_resend: "",
-    chave_api_whatsapp: "",
-    email_remetente: "",
-    hora_envio_diario: "20:00",
+    daily_send_time: "20:00",
+    from_email: "",
+    preferred_channel: "Email" as "Email" | "WhatsApp" | "Both",
+    resend_api_key: "",
+    whatsapp_api_key: "",
     whatsapp_phone_id: "",
   });
 
@@ -69,11 +72,11 @@ function Definicoes() {
       return;
     }
     setForm({
-      canal_preferencial: c.canal_preferencial,
-      chave_api_resend: c.chave_api_resend ?? "",
-      chave_api_whatsapp: c.chave_api_whatsapp ?? "",
-      email_remetente: c.email_remetente ?? "",
-      hora_envio_diario: c.hora_envio_diario.slice(0, 5),
+      daily_send_time: c.daily_send_time.slice(0, 5),
+      from_email: c.from_email ?? "",
+      preferred_channel: c.preferred_channel,
+      resend_api_key: c.resend_api_key ?? "",
+      whatsapp_api_key: c.whatsapp_api_key ?? "",
       whatsapp_phone_id: c.whatsapp_phone_id ?? "",
     });
   }, [config.data]);
@@ -84,17 +87,16 @@ function Definicoes() {
         return;
       }
       const { error } = await supabase
-        .from("configuracoes_notificacoes")
+        .from("notification_settings")
         .update({
-          hora_envio_diario: form.hora_envio_diario,
-          ...(form.hora_envio_diario ===
-          config.data.hora_envio_diario.slice(0, 5)
+          daily_send_time: form.daily_send_time,
+          ...(form.daily_send_time === config.data.daily_send_time.slice(0, 5)
             ? {}
-            : { ultimo_envio_data: null }),
-          canal_preferencial: form.canal_preferencial,
-          chave_api_resend: form.chave_api_resend || null,
-          chave_api_whatsapp: form.chave_api_whatsapp || null,
-          email_remetente: form.email_remetente || null,
+            : { last_sent_date: null }),
+          from_email: form.from_email || null,
+          preferred_channel: form.preferred_channel,
+          resend_api_key: form.resend_api_key || null,
+          whatsapp_api_key: form.whatsapp_api_key || null,
           whatsapp_phone_id: form.whatsapp_phone_id || null,
         } as never)
         .eq("id", config.data.id);
@@ -148,7 +150,54 @@ function Definicoes() {
   });
 
   const nomeTreinador = (id: string | null) =>
-    treinadores.data?.find((t) => t.id === id)?.nome ?? "—";
+    treinadores.data?.find((t) => t.id === id)?.name ?? "—";
+
+  function handleHoraChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, daily_send_time: e.target.value });
+  }
+
+  function handleCanalChange(v: string) {
+    setForm({
+      ...form,
+      preferred_channel: v as "Email" | "WhatsApp" | "Both",
+    });
+  }
+
+  function handleResendChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, resend_api_key: e.target.value });
+  }
+
+  function handleRemetenteChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, from_email: e.target.value });
+  }
+
+  function handleWaChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, whatsapp_api_key: e.target.value });
+  }
+
+  function handleWaidChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, whatsapp_phone_id: e.target.value });
+  }
+
+  function guardarDef() {
+    guardar.mutate();
+  }
+
+  function testarEnvio() {
+    testar.mutate();
+  }
+
+  function testarFaturasEnvio() {
+    testarFaturas.mutate();
+  }
+
+  function testarOrdenadosEnvio() {
+    testarOrdenados.mutate();
+  }
+
+  function testarMensalidadesEnvio() {
+    testarMensalidades.mutate();
+  }
 
   return (
     <div className="space-y-8">
@@ -166,7 +215,7 @@ function Definicoes() {
           <CardDescription>
             O sistema verifica a cada 5 minutos e dispara os envios à hora
             definida ou na primeira verificação seguinte (fuso{" "}
-            {config.data?.fuso_horario ?? "Europe/Lisbon"}).
+            {config.data?.timezone ?? "Europe/Lisbon"}).
           </CardDescription>
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2">
@@ -174,104 +223,92 @@ function Definicoes() {
             <Label htmlFor="hora">Hora de envio diário</Label>
             <Input
               id="hora"
-              onChange={(e) =>
-                setForm({ ...form, hora_envio_diario: e.target.value })
-              }
+              onChange={handleHoraChange}
               type="time"
-              value={form.hora_envio_diario}
+              value={form.daily_send_time}
             />
-          </div>
-          <div className="space-y-2">
-            <Label>Canal preferencial</Label>
-            <Select
-              onValueChange={(v) => setForm({ ...form, canal_preferencial: v })}
-              value={form.canal_preferencial}
-            >
-              <SelectTrigger>
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="Email">Email</SelectItem>
-                <SelectItem value="WhatsApp">WhatsApp</SelectItem>
-                <SelectItem value="Ambos">Ambos</SelectItem>
-              </SelectContent>
-            </Select>
+            <div className="space-y-2">
+              {/* biome-ignore lint/a11y/noLabelWithoutControl: Radix Select trigger has implicit label association */}
+              <Label>Canal preferencial</Label>
+              <Select
+                onValueChange={handleCanalChange}
+                value={form.preferred_channel}
+              >
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="Email">Email</SelectItem>
+                  <SelectItem value="WhatsApp">WhatsApp</SelectItem>
+                  <SelectItem value="Both">Both</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
           </div>
           <div className="space-y-2">
             <Label htmlFor="resend">Chave API Resend</Label>
             <Input
               id="resend"
-              onChange={(e) =>
-                setForm({ ...form, chave_api_resend: e.target.value })
-              }
+              onChange={handleResendChange}
               placeholder="re_..."
               type="password"
-              value={form.chave_api_resend}
+              value={form.resend_api_key}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="remetente">Email remetente</Label>
             <Input
               id="remetente"
-              onChange={(e) =>
-                setForm({ ...form, email_remetente: e.target.value })
-              }
+              onChange={handleRemetenteChange}
               placeholder="treinos@aminhaescola.pt"
-              value={form.email_remetente}
+              value={form.from_email}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="wa">Token API WhatsApp</Label>
             <Input
               id="wa"
-              onChange={(e) =>
-                setForm({ ...form, chave_api_whatsapp: e.target.value })
-              }
+              onChange={handleWaChange}
               type="password"
-              value={form.chave_api_whatsapp}
+              value={form.whatsapp_api_key}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="waid">WhatsApp Phone Number ID</Label>
             <Input
               id="waid"
-              onChange={(e) =>
-                setForm({ ...form, whatsapp_phone_id: e.target.value })
-              }
+              onChange={handleWaidChange}
               value={form.whatsapp_phone_id}
             />
           </div>
           <div className="flex gap-2 md:col-span-2">
-            <Button
-              disabled={guardar.isPending}
-              onClick={() => guardar.mutate()}
-            >
+            <Button disabled={guardar.isPending} onClick={guardarDef}>
               Guardar definições
             </Button>
             <Button
               disabled={testar.isPending}
-              onClick={() => testar.mutate()}
+              onClick={testarEnvio}
               variant="outline"
             >
               <Send className="size-4" /> Enviar agora (teste)
             </Button>
             <Button
               disabled={testarFaturas.isPending}
-              onClick={() => testarFaturas.mutate()}
+              onClick={testarFaturasEnvio}
               variant="outline"
             >
               <Send className="size-4" /> Testar resumo de faturas
             </Button>
             <Button
               disabled={testarOrdenados.isPending}
-              onClick={() => testarOrdenados.mutate()}
+              onClick={testarOrdenadosEnvio}
               variant="outline"
             >
               <Send className="size-4" /> Testar resumo de ordenados
             </Button>
             <Button
               disabled={testarMensalidades.isPending}
-              onClick={() => testarMensalidades.mutate()}
+              onClick={testarMensalidadesEnvio}
               variant="outline"
             >
               <Send className="size-4" /> Testar mensalidades em atraso
@@ -290,7 +327,7 @@ function Definicoes() {
             <TableHeader>
               <TableRow>
                 <TableHead>Data</TableHead>
-                <TableHead>Treinador</TableHead>
+                <TableHead>Coach</TableHead>
                 <TableHead>Canal</TableHead>
                 <TableHead>Estado</TableHead>
                 <TableHead>Detalhe</TableHead>
@@ -300,21 +337,21 @@ function Definicoes() {
               {(historico.data ?? []).map((l) => (
                 <TableRow key={l.id}>
                   <TableCell className="whitespace-nowrap">
-                    {new Date(l.data_envio).toLocaleString("pt-PT")}
+                    {new Date(l.sent_at).toLocaleString("pt-PT")}
                   </TableCell>
-                  <TableCell>{nomeTreinador(l.treinador_id)}</TableCell>
-                  <TableCell>{l.canal}</TableCell>
+                  <TableCell>{nomeTreinador(l.coach_id)}</TableCell>
+                  <TableCell>{l.channel}</TableCell>
                   <TableCell>
                     <Badge
                       variant={
-                        l.estado_envio === "sucesso" ? "default" : "destructive"
+                        l.status === "success" ? "default" : "destructive"
                       }
                     >
-                      {l.estado_envio}
+                      {l.status}
                     </Badge>
                   </TableCell>
                   <TableCell className="text-muted-foreground max-w-64 truncate">
-                    {l.detalhe ?? "—"}
+                    {l.detail ?? "—"}
                   </TableCell>
                 </TableRow>
               ))}

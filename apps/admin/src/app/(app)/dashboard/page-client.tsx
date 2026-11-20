@@ -19,16 +19,16 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { TreinoDialog } from "@/components/treino-dialog";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/data/client";
 import {
-  formatData,
-  formatHora,
-  listAlunos,
-  listTreinadores,
-  listTreinos,
-  listTurmas,
+  formatDate,
+  formatTime,
+  listCoaches,
+  listGroups,
+  listStudents,
+  listTrainings,
   sameDay,
-  type Treino,
+  type Training,
 } from "@/lib/gk";
 
 function Dashboard() {
@@ -36,7 +36,7 @@ function Dashboard() {
   const qc = useQueryClient();
   const apagar = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("treinos").delete().eq("id", id);
+      const { error } = await supabase.from("trainings").delete().eq("id", id);
       if (error) {
         throw new Error(error.message);
       }
@@ -44,35 +44,46 @@ function Dashboard() {
     onError: (e: Error) => toast.error(e.message),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["treinos"] });
-      toast.success("Treino eliminado");
+      toast.success("Training eliminado");
     },
   });
-  const treinos = useQuery({ queryFn: listTreinos, queryKey: ["treinos"] });
+  const treinos = useQuery({ queryFn: listTrainings, queryKey: ["treinos"] });
   const treinadores = useQuery({
-    queryFn: listTreinadores,
+    queryFn: listCoaches,
     queryKey: ["treinadores"],
   });
-  const alunos = useQuery({ queryFn: listAlunos, queryKey: ["alunos"] });
-  const turmas = useQuery({ queryFn: listTurmas, queryKey: ["turmas"] });
+  const treinadoresAtivos = useMemo(
+    () => (treinadores.data ?? []).filter((t) => t.active).length,
+    [treinadores.data]
+  );
+  const alunos = useQuery({ queryFn: listStudents, queryKey: ["alunos"] });
+  const turmas = useQuery({ queryFn: listGroups, queryKey: ["turmas"] });
 
   const nomeTreinador = (id: string | null) =>
-    treinadores.data?.find((t) => t.id === id)?.nome ?? "—";
-  const nomeAluno = (t: Treino) =>
-    t.tipo === "Grupo"
-      ? (turmas.data?.find((x) => x.id === t.turma_id)?.nome ?? "Turma")
-      : (alunos.data?.find((a) => a.id === t.aluno_id)?.nome ?? "—");
+    treinadores.data?.find((t) => t.id === id)?.name ?? "—";
+  const nomeAluno = (t: Training) =>
+    t.type === "Group"
+      ? (turmas.data?.find((x) => x.id === t.group_id)?.name ?? "Group")
+      : (alunos.data?.find((a) => a.id === t.student_id)?.name ?? "—");
 
-  const hoje = new Date();
+  function abrirDialog() {
+    setOpen(true);
+  }
+
+  function confirmarApagar(id: string) {
+    if (window.confirm("Eliminar este treino agendado?")) {
+      apagar.mutate(id);
+    }
+  }
+
+  const hoje = useMemo(() => new Date(), []);
   const { deHoje, proximos } = useMemo(() => {
     const lista = treinos.data ?? [];
     return {
-      deHoje: lista.filter((t) => sameDay(new Date(t.data_hora_inicio), hoje)),
-      proximos: lista
-        .filter((t) => new Date(t.data_hora_inicio) > hoje)
-        .slice(0, 8),
+      deHoje: lista.filter((t) => sameDay(new Date(t.start_date), hoje)),
+      proximos: lista.filter((t) => new Date(t.start_date) > hoje).slice(0, 8),
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [treinos.data]);
+  }, [treinos.data, hoje]);
 
   return (
     <div className="space-y-8">
@@ -88,7 +99,7 @@ function Dashboard() {
             })}
           </p>
         </div>
-        <Button onClick={() => setOpen(true)}>
+        <Button onClick={abrirDialog}>
           <Plus className="size-4" /> Marcar treino
         </Button>
       </header>
@@ -102,7 +113,7 @@ function Dashboard() {
         <StatCard
           icon={Users}
           label="Treinadores ativos"
-          value={(treinadores.data ?? []).filter((t) => t.ativo).length}
+          value={treinadoresAtivos}
         />
         <StatCard
           icon={GraduationCap}
@@ -129,36 +140,29 @@ function Dashboard() {
               >
                 <div className="flex items-center justify-between gap-2">
                   <span className="font-semibold">
-                    {formatHora(t.data_hora_inicio)} –{" "}
-                    {formatHora(t.data_hora_fim)}
+                    {formatTime(t.start_date)} – {formatTime(t.end_date)}
                   </span>
                   <div className="flex items-center gap-2">
-                    <Badge variant="outline">{t.estado}</Badge>
-                    {t.tipo === "Grupo" && (
+                    <Badge variant="outline">{t.status}</Badge>
+                    {t.type === "Group" && (
                       <Badge variant="secondary">Grupo</Badge>
                     )}
-                    {t.tipo === "Individual" && t.estado === "Concluído" && (
+                    {t.type === "Individual" && t.status === "Completed" && (
                       <Badge
                         variant={
-                          t.estado_pagamento === "Pago"
-                            ? "default"
-                            : "secondary"
+                          t.payment_status === "Paid" ? "default" : "secondary"
                         }
                       >
-                        {t.estado_pagamento}
+                        {t.payment_status}
                       </Badge>
                     )}
-                    {t.tipo === "Individual" &&
-                      t.estado_pagamento === "Pago" &&
-                      t.fatura && <Badge variant="outline">{t.fatura}</Badge>}
+                    {t.type === "Individual" &&
+                      t.payment_status === "Paid" &&
+                      t.invoice && <Badge variant="outline">{t.invoice}</Badge>}
                     <Button
                       className="text-destructive hover:text-destructive"
                       disabled={apagar.isPending}
-                      onClick={() => {
-                        if (window.confirm("Eliminar este treino agendado?")) {
-                          apagar.mutate(t.id);
-                        }
-                      }}
+                      onClick={() => confirmarApagar(t.id)}
                       size="icon"
                       variant="ghost"
                     >
@@ -167,8 +171,8 @@ function Dashboard() {
                   </div>
                 </div>
                 <p className="text-muted-foreground text-sm">
-                  {nomeAluno(t)} · {nomeTreinador(t.treinador_id)} ·{" "}
-                  {t.campo_local ?? "Local a definir"}
+                  {nomeAluno(t)} · {nomeTreinador(t.coach_id)} ·{" "}
+                  {t.field ?? "Local a definir"}
                 </p>
               </div>
             ))}
@@ -192,14 +196,13 @@ function Dashboard() {
               >
                 <div>
                   <p className="text-sm font-semibold capitalize">
-                    {formatData(t.data_hora_inicio)} ·{" "}
-                    {formatHora(t.data_hora_inicio)}
+                    {formatDate(t.start_date)} · {formatTime(t.start_date)}
                   </p>
                   <p className="text-muted-foreground text-xs">
-                    {nomeAluno(t)} · {nomeTreinador(t.treinador_id)}
+                    {nomeAluno(t)} · {nomeTreinador(t.coach_id)}
                   </p>
                 </div>
-                <Badge variant="secondary">{t.campo_local ?? "—"}</Badge>
+                <Badge variant="secondary">{t.field ?? "—"}</Badge>
               </div>
             ))}
           </CardContent>

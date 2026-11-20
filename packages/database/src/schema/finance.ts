@@ -1,58 +1,50 @@
-import {
-  boolean,
-  date,
-  numeric,
-  pgTable,
-  text,
-  unique,
-  uuid,
-} from "drizzle-orm/pg-core";
+import { integer, sqliteTable, text, unique } from "drizzle-orm/sqlite-core";
 import { createdAt, id, updatedAt } from "./_columns";
-import { alunos, treinadores } from "./people";
-import { clubes } from "./places";
-import { treinos } from "./training";
+import { coaches, students } from "./people";
+import { clubs } from "./places";
+import { trainings } from "./training";
 
-export const mensalidades = pgTable(
-  "mensalidades",
+export const monthlyFees = sqliteTable(
+  "monthly_fees",
   {
-    alunoId: uuid("aluno_id").references(() => alunos.id, {
-      onDelete: "cascade",
-    }),
-    clubeId: uuid("clube_id").references(() => clubes.id, {
+    // Money as integer cents (Postgres `numeric(10,2)` → `integer` cents).
+    amount: integer("amount"),
+    clubId: text("club_id").references(() => clubs.id, {
       onDelete: "cascade",
     }),
     createdAt: createdAt(),
-    estadoPagamento: text("estado_pagamento")
-      .notNull()
-      .default("A aguardar pagamento"),
-    fatura: text("fatura"),
     id: id(),
-    mesReferencia: date("mes_referencia").notNull(),
-    nif: text("nif"),
-    notas: text("notas"),
+    invoice: text("invoice"),
+    month: text("month").notNull(),
+    notes: text("notes"),
+    paymentStatus: text("payment_status").notNull().default("Pending"),
+    studentId: text("student_id").references(() => students.id, {
+      onDelete: "cascade",
+    }),
+    taxId: text("tax_id"),
     updatedAt: updatedAt(),
-    valor: numeric("valor", { precision: 10, scale: 2 }),
   },
-  (t) => [unique("mensalidades_unicas").on(t.alunoId, t.mesReferencia)]
+  (t) => [unique("monthly_fees_unique").on(t.studentId, t.month)]
 );
 
-export const movimentos = pgTable("movimentos", {
-  automatico: boolean("automatico").notNull().default(false),
-  categoria: text("categoria").notNull().default("Outros"),
-  createdAt: createdAt(),
-  data: date("data").notNull(),
-  descricao: text("descricao"),
-  id: id(),
-  mensalidadeId: uuid("mensalidade_id").references(() => mensalidades.id, {
-    onDelete: "cascade",
-  }),
-  tipo: text("tipo").notNull(),
-  treinadorId: uuid("treinador_id").references(() => treinadores.id, {
+export const transactions = sqliteTable("transactions", {
+  // Money as integer cents (Postgres `numeric(10,2)` → `integer` cents).
+  amount: integer("amount").notNull().default(0),
+  automatic: integer("automatic", { mode: "boolean" }).notNull().default(false),
+  category: text("category").notNull().default("Other"),
+  coachId: text("coach_id").references(() => coaches.id, {
     onDelete: "set null",
   }),
-  treinoId: uuid("treino_id").references(() => treinos.id, {
+  createdAt: createdAt(),
+  date: text("date").notNull(),
+  description: text("description"),
+  id: id(),
+  monthlyFeeId: text("monthly_fee_id").references(() => monthlyFees.id, {
     onDelete: "cascade",
   }),
+  trainingId: text("training_id").references(() => trainings.id, {
+    onDelete: "cascade",
+  }),
+  type: text("type").notNull(),
   updatedAt: updatedAt(),
-  valor: numeric("valor", { precision: 10, scale: 2 }).notNull().default("0"),
 });

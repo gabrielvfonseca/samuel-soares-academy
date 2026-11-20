@@ -1,5 +1,6 @@
 import type { NextRequest } from "next/server";
 import { internationalizationMiddleware } from "@/lib/i18n";
+import { secureHeaders } from "@/lib/secure-headers";
 
 export const config = {
   // matcher tells Next.js which routes to run the middleware on. This runs the
@@ -12,5 +13,9 @@ export const config = {
 export function proxy(request: NextRequest) {
   // Run i18n
   // next-international handles locale rewriting with urlMappingStrategy: "rewriteDefault"
-  return internationalizationMiddleware(request);
+  const response = internationalizationMiddleware(request);
+  for (const [name, value] of Object.entries(secureHeaders)) {
+    response.headers.set(name, value);
+  }
+  return response;
 }

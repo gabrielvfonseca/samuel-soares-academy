@@ -18,31 +18,31 @@ import { IdCard, Pencil, Plus, Trash2 } from "@repo/ui/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { listTreinadores, type Treinador } from "@/lib/gk";
+import { supabase } from "@/integrations/data/client";
+import { type Coach, listCoaches } from "@/lib/gk";
 
 function Treinadores() {
   const qc = useQueryClient();
   const { data } = useQuery({
-    queryFn: listTreinadores,
+    queryFn: listCoaches,
     queryKey: ["treinadores"],
   });
   const [open, setOpen] = useState(false);
-  const [atual, setAtual] = useState<Treinador | null>(null);
+  const [atual, setAtual] = useState<Coach | null>(null);
   const [form, setForm] = useState({
-    ativo: true,
+    active: true,
     email: "",
-    nome: "",
-    telefone_whatsapp: "",
+    name: "",
+    whatsapp_phone: "",
   });
 
-  function abrir(t?: Treinador) {
+  function abrir(t?: Coach) {
     setAtual(t ?? null);
     setForm({
-      ativo: t?.ativo ?? true,
+      active: t?.active ?? true,
       email: t?.email ?? "",
-      nome: t?.nome ?? "",
-      telefone_whatsapp: t?.telefone_whatsapp ?? "",
+      name: t?.name ?? "",
+      whatsapp_phone: t?.whatsapp_phone ?? "",
     });
     setOpen(true);
   }
@@ -51,14 +51,14 @@ function Treinadores() {
     mutationFn: async () => {
       const payload = {
         ...form,
-        telefone_whatsapp: form.telefone_whatsapp || null,
+        whatsapp_phone: form.whatsapp_phone || null,
       };
       const res = atual
         ? await supabase
-            .from("treinadores")
+            .from("coaches")
             .update(payload as never)
             .eq("id", atual.id)
-        : await supabase.from("treinadores").insert(payload as never);
+        : await supabase.from("coaches").insert(payload as never);
       if (res.error) {
         throw new Error(res.error.message);
       }
@@ -66,17 +66,14 @@ function Treinadores() {
     onError: (e: Error) => toast.error(e.message),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["treinadores"] });
-      toast.success("Treinador guardado");
+      toast.success("Coach guardado");
       setOpen(false);
     },
   });
 
   const remover = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase
-        .from("treinadores")
-        .delete()
-        .eq("id", id);
+      const { error } = await supabase.from("coaches").delete().eq("id", id);
       if (error) {
         throw new Error(error.message);
       }
@@ -84,7 +81,7 @@ function Treinadores() {
     onError: (e: Error) => toast.error(e.message),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["treinadores"] });
-      toast.success("Treinador removido");
+      toast.success("Coach removido");
     },
   });
 
@@ -106,17 +103,16 @@ function Treinadores() {
             <CardContent className="flex flex-wrap items-center justify-between gap-3 pt-6">
               <div>
                 <p className="font-semibold">
-                  {t.nome}{" "}
+                  {t.name}{" "}
                   <Badge
                     className="ml-2"
-                    variant={t.ativo ? "default" : "secondary"}
+                    variant={t.active ? "default" : "secondary"}
                   >
-                    {t.ativo ? "Ativo" : "Inativo"}
+                    {t.active ? "Active" : "Inactive"}
                   </Badge>
                 </p>
                 <p className="text-muted-foreground text-sm">
-                  {t.email}{" "}
-                  {t.telefone_whatsapp ? `· ${t.telefone_whatsapp}` : ""}
+                  {t.email} {t.whatsapp_phone ? `· ${t.whatsapp_phone}` : ""}
                 </p>
               </div>
               <div className="flex gap-2">
@@ -158,8 +154,8 @@ function Treinadores() {
               <Label htmlFor="nome">Nome</Label>
               <Input
                 id="nome"
-                onChange={(e) => setForm({ ...form, nome: e.target.value })}
-                value={form.nome}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                value={form.name}
               />
             </div>
             <div className="space-y-2">
@@ -176,17 +172,17 @@ function Treinadores() {
               <Input
                 id="wa"
                 onChange={(e) =>
-                  setForm({ ...form, telefone_whatsapp: e.target.value })
+                  setForm({ ...form, whatsapp_phone: e.target.value })
                 }
                 placeholder="+351912345678"
-                value={form.telefone_whatsapp}
+                value={form.whatsapp_phone}
               />
             </div>
             <div className="flex items-center gap-3">
               <Switch
-                checked={form.ativo}
+                checked={form.active}
                 id="ativo"
-                onCheckedChange={(v) => setForm({ ...form, ativo: v })}
+                onCheckedChange={(v) => setForm({ ...form, active: v })}
               />
               <Label htmlFor="ativo">Ativo</Label>
             </div>

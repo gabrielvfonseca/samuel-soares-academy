@@ -24,86 +24,86 @@ import { Textarea } from "@repo/ui/components/textarea";
 import { Pencil, Plus, Trash2 } from "@repo/ui/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/data/client";
 import {
-  type Clube,
-  DIAS_SEMANA,
+  type Club,
+  DAY_NAMES,
   formatEuros,
-  formatHoraSimples,
-  listCampos,
-  listClubeSessoes,
-  listClubes,
-  listTreinadores,
+  formatTimeShort,
+  listClubSessions,
+  listClubs,
+  listCoaches,
+  listFields,
 } from "@/lib/gk";
 
 interface SessaoForm {
-  dia_semana: string;
-  hora_fim: string;
-  hora_inicio: string;
+  day_of_week: string;
+  end_time: string;
+  start_time: string;
 }
 
 const SESSAO_VAZIA: SessaoForm = {
-  dia_semana: "",
-  hora_fim: "",
-  hora_inicio: "",
+  day_of_week: "",
+  end_time: "",
+  start_time: "",
 };
 
 const VAZIO = {
-  ativo: true,
-  campo_id: "",
-  contacto: "",
+  active: true,
+  coach_id: "",
+  contact: "",
   email: "",
-  nif: "",
-  nome: "",
-  notas: "",
-  treinador_id: "",
-  valor_mensal: "",
+  field_id: "",
+  monthly_fee: "",
+  name: "",
+  notes: "",
+  tax_id: "",
 };
 
 function Clubes() {
   const qc = useQueryClient();
-  const clubes = useQuery({ queryFn: listClubes, queryKey: ["clubes"] });
+  const clubes = useQuery({ queryFn: listClubs, queryKey: ["clubes"] });
   const treinadores = useQuery({
-    queryFn: listTreinadores,
+    queryFn: listCoaches,
     queryKey: ["treinadores"],
   });
-  const campos = useQuery({ queryFn: listCampos, queryKey: ["campos"] });
+  const campos = useQuery({ queryFn: listFields, queryKey: ["campos"] });
   const sessoes = useQuery({
-    queryFn: listClubeSessoes,
+    queryFn: listClubSessions,
     queryKey: ["clube_sessoes"],
   });
 
   const [open, setOpen] = useState(false);
-  const [atual, setAtual] = useState<Clube | null>(null);
+  const [atual, setAtual] = useState<Club | null>(null);
   const [form, setForm] = useState(VAZIO);
   const [listaSessoes, setListaSessoes] = useState<SessaoForm[]>([]);
   const [novaSessao, setNovaSessao] = useState<SessaoForm>(SESSAO_VAZIA);
 
-  function abrir(c?: Clube) {
+  function abrir(c?: Club) {
     setAtual(c ?? null);
     setForm(
       c
         ? {
-            ativo: c.ativo,
-            campo_id: c.campo_id ?? "",
-            contacto: c.contacto ?? "",
+            active: c.active,
+            coach_id: c.coach_id ?? "",
+            contact: c.contact ?? "",
             email: c.email ?? "",
-            nif: c.nif ?? "",
-            nome: c.nome,
-            notas: c.notas ?? "",
-            treinador_id: c.treinador_id ?? "",
-            valor_mensal: String(c.valor_mensal ?? ""),
+            field_id: c.field_id ?? "",
+            monthly_fee: String(c.monthly_fee ?? ""),
+            name: c.name,
+            notes: c.notes ?? "",
+            tax_id: c.tax_id ?? "",
           }
         : VAZIO
     );
     const existentes = c
-      ? (sessoes.data ?? []).filter((s) => s.clube_id === c.id)
+      ? (sessoes.data ?? []).filter((s) => s.club_id === c.id)
       : [];
     setListaSessoes(
       existentes.map((s) => ({
-        dia_semana: String(s.dia_semana),
-        hora_fim: s.hora_fim.slice(0, 5),
-        hora_inicio: s.hora_inicio.slice(0, 5),
+        day_of_week: String(s.day_of_week),
+        end_time: s.end_time.slice(0, 5),
+        start_time: s.start_time.slice(0, 5),
       }))
     );
     setNovaSessao(SESSAO_VAZIA);
@@ -112,22 +112,22 @@ function Clubes() {
 
   function adicionarSessao() {
     if (
-      novaSessao.dia_semana === "" ||
-      !novaSessao.hora_inicio ||
-      !novaSessao.hora_fim
+      novaSessao.day_of_week === "" ||
+      !novaSessao.start_time ||
+      !novaSessao.end_time
     ) {
       toast.error("Escolhe o dia e as horas da sessão");
       return;
     }
-    if (novaSessao.hora_fim <= novaSessao.hora_inicio) {
+    if (novaSessao.end_time <= novaSessao.start_time) {
       toast.error("A hora de fim tem de ser depois da hora de início");
       return;
     }
     if (
       listaSessoes.some(
         (s) =>
-          s.dia_semana === novaSessao.dia_semana &&
-          s.hora_inicio === novaSessao.hora_inicio
+          s.day_of_week === novaSessao.day_of_week &&
+          s.start_time === novaSessao.start_time
       )
     ) {
       toast.error("Essa sessão já está na lista");
@@ -139,28 +139,28 @@ function Clubes() {
 
   const guardar = useMutation({
     mutationFn: async () => {
-      if (!form.nome.trim()) {
+      if (!form.name.trim()) {
         throw new Error("Indica o nome do clube");
       }
       const primeira = listaSessoes[0];
       const payload = {
-        ativo: form.ativo,
-        campo_id: form.campo_id || null,
-        contacto: form.contacto || null,
-        dia_semana: primeira ? Number(primeira.dia_semana) : null,
+        active: form.active,
+        coach_id: form.coach_id || null,
+        contact: form.contact || null,
+        day_of_week: primeira ? Number(primeira.day_of_week) : null,
         email: form.email || null,
-        hora_fim: primeira?.hora_fim || null,
-        hora_inicio: primeira?.hora_inicio || null,
-        nif: form.nif || null,
-        nome: form.nome.trim(),
-        notas: form.notas || null,
-        treinador_id: form.treinador_id || null,
-        valor_mensal: form.valor_mensal === "" ? 0 : Number(form.valor_mensal),
+        end_time: primeira?.end_time || null,
+        field_id: form.field_id || null,
+        monthly_fee: form.monthly_fee === "" ? 0 : Number(form.monthly_fee),
+        name: form.name.trim(),
+        notes: form.notes || null,
+        start_time: primeira?.start_time || null,
+        tax_id: form.tax_id || null,
       };
       let clubeId = atual?.id;
       if (atual) {
         const res = await supabase
-          .from("clubes")
+          .from("clubs")
           .update(payload as never)
           .eq("id", atual.id);
         if (res.error) {
@@ -168,7 +168,7 @@ function Clubes() {
         }
       } else {
         const res = await supabase
-          .from("clubes")
+          .from("clubs")
           .insert(payload as never)
           .select("id")
           .single();
@@ -181,7 +181,7 @@ function Clubes() {
         throw new Error("Não foi possível identificar o clube");
       }
       const del = await supabase
-        .from("clube_sessoes")
+        .from("club_sessions")
         .delete()
         .eq("clube_id", clubeId);
       if (del.error) {
@@ -189,12 +189,12 @@ function Clubes() {
       }
       if (listaSessoes.length > 0) {
         const rows = listaSessoes.map((s) => ({
-          clube_id: clubeId,
-          dia_semana: Number(s.dia_semana),
-          hora_fim: s.hora_fim,
-          hora_inicio: s.hora_inicio,
+          club_id: clubeId,
+          day_of_week: Number(s.day_of_week),
+          end_time: s.end_time,
+          start_time: s.start_time,
         }));
-        const ins = await supabase.from("clube_sessoes").insert(rows as never);
+        const ins = await supabase.from("club_sessions").insert(rows as never);
         if (ins.error) {
           throw new Error(ins.error.message);
         }
@@ -203,10 +203,10 @@ function Clubes() {
       // Adapta os treinos futuros existentes em vez de os apagar e recriar.
       const agora = new Date();
       const futuros = await supabase
-        .from("treinos")
+        .from("trainings")
         .select("id,data_hora_inicio,data_hora_fim")
         .eq("clube_id", clubeId)
-        .eq("estado", "Agendado")
+        .eq("estado", "Scheduled")
         .gte("data_hora_inicio", agora.toISOString())
         .order("data_hora_inicio");
       if (futuros.error) {
@@ -215,28 +215,28 @@ function Clubes() {
 
       const treinosFuturos = (futuros.data ?? []) as Array<{
         id: string;
-        data_hora_inicio: string;
-        data_hora_fim: string;
+        start_date: string;
+        end_date: string;
       }>;
       const sessoesPorDia = new Map<number, SessaoForm>();
       for (const sessao of listaSessoes) {
-        sessoesPorDia.set(Number(sessao.dia_semana), sessao);
+        sessoesPorDia.set(Number(sessao.day_of_week), sessao);
       }
 
       const diasExistentes = new Set<string>();
       const idsARemover: string[] = [];
       for (const treino of treinosFuturos) {
-        const inicioAtual = new Date(treino.data_hora_inicio);
+        const inicioAtual = new Date(treino.start_date);
         const sessao = sessoesPorDia.get(inicioAtual.getDay());
-        if (!(sessao && form.ativo)) {
+        if (!(sessao && form.active)) {
           idsARemover.push(treino.id);
           continue;
         }
 
-        const [horaInicio, minutoInicio] = sessao.hora_inicio
+        const [horaInicio, minutoInicio] = sessao.start_time
           .split(":")
           .map(Number);
-        const [horaFim, minutoFim] = sessao.hora_fim.split(":").map(Number);
+        const [horaFim, minutoFim] = sessao.end_time.split(":").map(Number);
         const novoInicio = new Date(inicioAtual);
         novoInicio.setHours(horaInicio ?? 0, minutoInicio ?? 0, 0, 0);
         const novoFim = new Date(inicioAtual);
@@ -246,14 +246,14 @@ function Clubes() {
         );
 
         const atualizar = await supabase
-          .from("treinos")
+          .from("trainings")
           .update({
-            campo_local:
-              campos.data?.find((campo) => campo.id === form.campo_id)?.nome ??
+            coach_id: form.coach_id || null,
+            end_date: novoFim.toISOString(),
+            field:
+              campos.data?.find((campo) => campo.id === form.field_id)?.name ??
               null,
-            data_hora_fim: novoFim.toISOString(),
-            data_hora_inicio: novoInicio.toISOString(),
-            treinador_id: form.treinador_id || null,
+            start_date: novoInicio.toISOString(),
           } as never)
           .eq("id", treino.id);
         if (atualizar.error) {
@@ -263,7 +263,7 @@ function Clubes() {
 
       if (idsARemover.length > 0) {
         const removerTreinos = await supabase
-          .from("treinos")
+          .from("trainings")
           .delete()
           .in("id", idsARemover);
         if (removerTreinos.error) {
@@ -273,8 +273,8 @@ function Clubes() {
 
       // Para dias semanais agora acrescentados, mantém o mesmo horizonte já existente.
       const ultimoTreino = treinosFuturos.at(-1);
-      if (form.ativo && ultimoTreino && listaSessoes.length > 0) {
-        const limite = new Date(ultimoTreino.data_hora_inicio);
+      if (form.active && ultimoTreino && listaSessoes.length > 0) {
+        const limite = new Date(ultimoTreino.start_date);
         const novosTreinos: Record<string, unknown>[] = [];
         const dia = new Date(agora);
         dia.setHours(0, 0, 0, 0);
@@ -282,27 +282,27 @@ function Clubes() {
           const sessao = sessoesPorDia.get(dia.getDay());
           const chaveDia = `${dia.getFullYear()}-${dia.getMonth()}-${dia.getDate()}`;
           if (sessao && !diasExistentes.has(chaveDia)) {
-            const [horaInicio, minutoInicio] = sessao.hora_inicio
+            const [horaInicio, minutoInicio] = sessao.start_time
               .split(":")
               .map(Number);
-            const [horaFim, minutoFim] = sessao.hora_fim.split(":").map(Number);
+            const [horaFim, minutoFim] = sessao.end_time.split(":").map(Number);
             const inicio = new Date(dia);
             inicio.setHours(horaInicio ?? 0, minutoInicio ?? 0, 0, 0);
             const fim = new Date(dia);
             fim.setHours(horaFim ?? 0, minutoFim ?? 0, 0, 0);
             if (inicio >= agora) {
               novosTreinos.push({
-                aluno_id: null,
-                campo_local:
-                  campos.data?.find((campo) => campo.id === form.campo_id)
-                    ?.nome ?? null,
-                clube_id: clubeId,
-                data_hora_fim: fim.toISOString(),
-                data_hora_inicio: inicio.toISOString(),
-                estado: "Agendado",
-                tipo: "Grupo",
-                treinador_id: form.treinador_id || null,
-                turma_id: null,
+                club_id: clubeId,
+                coach_id: form.coach_id || null,
+                end_date: fim.toISOString(),
+                field:
+                  campos.data?.find((campo) => campo.id === form.field_id)
+                    ?.name ?? null,
+                group_id: null,
+                start_date: inicio.toISOString(),
+                status: "Scheduled",
+                student_id: null,
+                type: "Group",
               });
             }
           }
@@ -310,7 +310,7 @@ function Clubes() {
         }
         if (novosTreinos.length > 0) {
           const inserirTreinos = await supabase
-            .from("treinos")
+            .from("trainings")
             .insert(novosTreinos as never);
           if (inserirTreinos.error) {
             throw new Error(inserirTreinos.error.message);
@@ -333,15 +333,15 @@ function Clubes() {
   const remover = useMutation({
     mutationFn: async (id: string) => {
       const limpar = await supabase
-        .from("treinos")
+        .from("trainings")
         .delete()
         .eq("clube_id", id)
-        .eq("estado", "Agendado")
+        .eq("estado", "Scheduled")
         .gte("data_hora_inicio", new Date().toISOString());
       if (limpar.error) {
         throw new Error(limpar.error.message);
       }
-      const { error } = await supabase.from("clubes").delete().eq("id", id);
+      const { error } = await supabase.from("clubs").delete().eq("id", id);
       if (error) {
         throw new Error(error.message);
       }
@@ -358,12 +358,12 @@ function Clubes() {
   });
 
   const sessoesDoClube = (id: string) =>
-    (sessoes.data ?? []).filter((s) => s.clube_id === id);
+    (sessoes.data ?? []).filter((s) => s.club_id === id);
 
   const nomeTreinador = (id: string | null) =>
-    treinadores.data?.find((t) => t.id === id)?.nome ?? "Sem treinador";
+    treinadores.data?.find((t) => t.id === id)?.name ?? "Sem treinador";
   const nomeCampo = (id: string | null) =>
-    campos.data?.find((c) => c.id === id)?.nome ?? "Sem campo";
+    campos.data?.find((c) => c.id === id)?.name ?? "Sem campo";
 
   return (
     <div className="space-y-6">
@@ -385,9 +385,9 @@ function Clubes() {
             <CardContent className="space-y-2 pt-6">
               <div className="flex items-start justify-between gap-3">
                 <div>
-                  <p className="font-semibold">{c.nome}</p>
+                  <p className="font-semibold">{c.name}</p>
                   <p className="text-muted-foreground text-sm">
-                    {nomeTreinador(c.treinador_id)} · {nomeCampo(c.campo_id)}
+                    {nomeTreinador(c.coach_id)} · {nomeCampo(c.field_id)}
                   </p>
                   <p className="text-muted-foreground text-sm">
                     {sessoesDoClube(c.id).length === 0
@@ -395,14 +395,14 @@ function Clubes() {
                       : sessoesDoClube(c.id)
                           .map(
                             (s) =>
-                              `${DIAS_SEMANA[s.dia_semana]} ${formatHoraSimples(s.hora_inicio)}–${formatHoraSimples(s.hora_fim)}`
+                              `${DAY_NAMES[s.day_of_week]} ${formatTimeShort(s.start_time)}–${formatTimeShort(s.end_time)}`
                           )
                           .join(" · ")}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Badge>{formatEuros(Number(c.valor_mensal))}/mês</Badge>
-                  {!c.ativo && <Badge variant="outline">Inativo</Badge>}
+                  <Badge>{formatEuros(Number(c.monthly_fee))}/mês</Badge>
+                  {!c.active && <Badge variant="outline">Inativo</Badge>}
                   <Button
                     onClick={() => abrir(c)}
                     size="icon"
@@ -419,9 +419,9 @@ function Clubes() {
                   </Button>
                 </div>
               </div>
-              {c.notas && (
+              {c.notes && (
                 <p className="border-border text-muted-foreground border-l-4 pl-3 text-sm">
-                  {c.notas}
+                  {c.notes}
                 </p>
               )}
             </CardContent>
@@ -446,8 +446,8 @@ function Clubes() {
               <Label htmlFor="nome">Nome do clube</Label>
               <Input
                 id="nome"
-                onChange={(e) => setForm({ ...form, nome: e.target.value })}
-                value={form.nome}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                value={form.name}
               />
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
@@ -456,8 +456,8 @@ function Clubes() {
                 <Input
                   id="nif"
                   inputMode="numeric"
-                  onChange={(e) => setForm({ ...form, nif: e.target.value })}
-                  value={form.nif}
+                  onChange={(e) => setForm({ ...form, tax_id: e.target.value })}
+                  value={form.tax_id}
                 />
               </div>
               <div className="space-y-2">
@@ -465,11 +465,11 @@ function Clubes() {
                 <Input
                   id="valor"
                   onChange={(e) =>
-                    setForm({ ...form, valor_mensal: e.target.value })
+                    setForm({ ...form, monthly_fee: e.target.value })
                   }
                   step="0.01"
                   type="number"
-                  value={form.valor_mensal}
+                  value={form.monthly_fee}
                 />
               </div>
               <div className="space-y-2">
@@ -477,9 +477,9 @@ function Clubes() {
                 <Input
                   id="contacto"
                   onChange={(e) =>
-                    setForm({ ...form, contacto: e.target.value })
+                    setForm({ ...form, contact: e.target.value })
                   }
-                  value={form.contacto}
+                  value={form.contact}
                 />
               </div>
               <div className="space-y-2">
@@ -494,10 +494,10 @@ function Clubes() {
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label>Treinador atribuído</Label>
+                <Label>Coach atribuído</Label>
                 <Select
-                  onValueChange={(v) => setForm({ ...form, treinador_id: v })}
-                  value={form.treinador_id}
+                  onValueChange={(v) => setForm({ ...form, coach_id: v })}
+                  value={form.coach_id}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Selecionar treinador" />
@@ -505,17 +505,17 @@ function Clubes() {
                   <SelectContent>
                     {(treinadores.data ?? []).map((t) => (
                       <SelectItem key={t.id} value={t.id}>
-                        {t.nome}
+                        {t.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Campo</Label>
+                <Label>Field</Label>
                 <Select
-                  onValueChange={(v) => setForm({ ...form, campo_id: v })}
-                  value={form.campo_id}
+                  onValueChange={(v) => setForm({ ...form, field_id: v })}
+                  value={form.field_id}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Selecionar campo" />
@@ -523,7 +523,7 @@ function Clubes() {
                   <SelectContent>
                     {(campos.data ?? []).map((c) => (
                       <SelectItem key={c.id} value={c.id}>
-                        {c.nome}
+                        {c.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -540,8 +540,8 @@ function Clubes() {
                       key={i}
                     >
                       <span>
-                        {DIAS_SEMANA[Number(s.dia_semana)]} {s.hora_inicio}–
-                        {s.hora_fim}
+                        {DAY_NAMES[Number(s.day_of_week)]} {s.start_time}–
+                        {s.end_time}
                       </span>
                       <Button
                         onClick={() =>
@@ -563,15 +563,15 @@ function Clubes() {
                   <Label>Dia da semana</Label>
                   <Select
                     onValueChange={(v) =>
-                      setNovaSessao({ ...novaSessao, dia_semana: v })
+                      setNovaSessao({ ...novaSessao, day_of_week: v })
                     }
-                    value={novaSessao.dia_semana}
+                    value={novaSessao.day_of_week}
                   >
                     <SelectTrigger>
                       <SelectValue placeholder="Dia" />
                     </SelectTrigger>
                     <SelectContent>
-                      {DIAS_SEMANA.map((d, i) => (
+                      {DAY_NAMES.map((d, i) => (
                         <SelectItem key={d} value={String(i)}>
                           {d}
                         </SelectItem>
@@ -586,11 +586,11 @@ function Clubes() {
                     onChange={(e) =>
                       setNovaSessao({
                         ...novaSessao,
-                        hora_inicio: e.target.value,
+                        start_time: e.target.value,
                       })
                     }
                     type="time"
-                    value={novaSessao.hora_inicio}
+                    value={novaSessao.start_time}
                   />
                 </div>
                 <div className="space-y-2">
@@ -598,10 +598,10 @@ function Clubes() {
                   <Input
                     id="hf"
                     onChange={(e) =>
-                      setNovaSessao({ ...novaSessao, hora_fim: e.target.value })
+                      setNovaSessao({ ...novaSessao, end_time: e.target.value })
                     }
                     type="time"
-                    value={novaSessao.hora_fim}
+                    value={novaSessao.end_time}
                   />
                 </div>
                 <Button
@@ -616,8 +616,8 @@ function Clubes() {
             <div className="space-y-2">
               <Label>Estado</Label>
               <Select
-                onValueChange={(v) => setForm({ ...form, ativo: v === "1" })}
-                value={form.ativo ? "1" : "0"}
+                onValueChange={(v) => setForm({ ...form, active: v === "1" })}
+                value={form.active ? "1" : "0"}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -632,8 +632,8 @@ function Clubes() {
               <Label htmlFor="notas">Notas</Label>
               <Textarea
                 id="notas"
-                onChange={(e) => setForm({ ...form, notas: e.target.value })}
-                value={form.notas}
+                onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                value={form.notes}
               />
             </div>
           </div>

@@ -19,7 +19,6 @@ const publisher = BRAND_NAME;
 const twitterHandle = SOCIAL_HANDLES.twitter;
 
 const protocol = env.NODE_ENV === "production" ? "https" : "http";
-const productionUrl = process.env.VERCEL_PROJECT_PRODUCTION_URL;
 
 export const createMetadata = ({
   title,
@@ -53,9 +52,7 @@ export const createMetadata = ({
       "futebol infantil porto",
       "desporto infantil",
     ],
-    metadataBase: productionUrl
-      ? new URL(`${protocol}://${productionUrl}`)
-      : undefined,
+    metadataBase: new URL(`${protocol}://${SITE_URL}`),
     openGraph: {
       description,
       locale: "pt_PT",

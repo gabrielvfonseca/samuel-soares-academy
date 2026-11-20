@@ -22,28 +22,28 @@ import { Textarea } from "@repo/ui/components/textarea";
 import { Plus, Send, Trash2 } from "@repo/ui/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/data/client";
 import {
-  DIAS_SEMANA,
-  formatHoraSimples,
-  listDisponibilidades,
-  listTreinadores,
+  DAY_NAMES,
+  formatTimeShort,
+  listAvailability,
+  listCoaches,
 } from "@/lib/gk";
 
 interface Slot {
-  dia_semana: number;
-  hora_fim: string;
-  hora_inicio: string;
+  day_of_week: number;
+  end_time: string;
+  start_time: string;
 }
 
 function DisponibilidadePublica() {
   const qc = useQueryClient();
   const { data: treinadores } = useQuery({
-    queryFn: listTreinadores,
+    queryFn: listCoaches,
     queryKey: ["treinadores"],
   });
   const { data: disp } = useQuery({
-    queryFn: listDisponibilidades,
+    queryFn: listAvailability,
     queryKey: ["disponibilidades"],
   });
 
@@ -54,7 +54,7 @@ function DisponibilidadePublica() {
   const [notas, setNotas] = useState("");
   const [slots, setSlots] = useState<Slot[]>([]);
 
-  const minhas = (disp ?? []).filter((d) => d.treinador_id === treinadorId);
+  const minhas = (disp ?? []).filter((d) => d.coach_id === treinadorId);
 
   const adicionarSlot = () => {
     if (!treinadorId) {
@@ -69,9 +69,9 @@ function DisponibilidadePublica() {
     if (
       slots.some(
         (s) =>
-          s.dia_semana === dia &&
-          s.hora_inicio === horaInicio &&
-          s.hora_fim === horaFim
+          s.day_of_week === dia &&
+          s.start_time === horaInicio &&
+          s.end_time === horaFim
       )
     ) {
       toast.error("Esse horário já está na lista.");
@@ -79,16 +79,18 @@ function DisponibilidadePublica() {
     }
     setSlots([
       ...slots,
-      { dia_semana: dia, hora_fim: horaFim, hora_inicio: horaInicio },
+      { day_of_week: dia, end_time: horaFim, start_time: horaInicio },
     ]);
   };
 
-  const slotsPorDia = DIAS_SEMANA.map((nome, i) => ({
+  const slotsPorDia = DAY_NAMES.map((nome, i) => ({
     dia: i,
     items: slots
       .map((s, idx) => ({ ...s, idx }))
-      .filter((s) => s.dia_semana === i)
-      .sort((a, b) => a.hora_inicio.localeCompare(b.hora_inicio)),
+      .filter((s) => s.day_of_week === i)
+      .sort((a, b) => a.start_time.localeCompare(b.start_time)) as (Slot & {
+      idx: number;
+    })[],
     nome,
   })).filter((g) => g.items.length > 0);
 
@@ -100,13 +102,13 @@ function DisponibilidadePublica() {
       if (slots.length === 0) {
         throw new Error("Adiciona pelo menos um horário.");
       }
-      const { error } = await supabase.from("disponibilidades").insert(
+      const { error } = await supabase.from("availability").insert(
         slots.map((s) => ({
-          dia_semana: s.dia_semana,
-          hora_fim: s.hora_fim,
-          hora_inicio: s.hora_inicio,
-          notas: notas || null,
-          treinador_id: treinadorId,
+          coach_id: treinadorId,
+          day_of_week: s.day_of_week,
+          end_time: s.end_time,
+          notes: notas || null,
+          start_time: s.start_time,
         })) as never
       );
       if (error) {
@@ -115,7 +117,7 @@ function DisponibilidadePublica() {
     },
     onError: (e: Error) => toast.error(e.message),
     onSuccess: () => {
-      toast.success("Disponibilidade enviada. Obrigado!");
+      toast.success("Availability enviada. Obrigado!");
       setSlots([]);
       setNotas("");
       qc.invalidateQueries({ queryKey: ["disponibilidades"] });
@@ -135,7 +137,7 @@ function DisponibilidadePublica() {
             SAMUEL SOARES <span className="text-foreground">ACADEMY</span>
           </h1>
           <p className="text-muted-foreground text-xs tracking-widest uppercase">
-            Disponibilidade semanal
+            Availability semanal
           </p>
         </div>
       </header>
@@ -153,7 +155,7 @@ function DisponibilidadePublica() {
               <SelectContent>
                 {(treinadores ?? []).map((t) => (
                   <SelectItem key={t.id} value={t.id}>
-                    {t.nome}
+                    {t.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -176,7 +178,7 @@ function DisponibilidadePublica() {
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {DIAS_SEMANA.map((d, i) => (
+                    {DAY_NAMES.map((d, i) => (
                       <SelectItem key={d} value={String(i)}>
                         {d}
                       </SelectItem>
@@ -227,8 +229,8 @@ function DisponibilidadePublica() {
                         key={s.idx}
                         variant="secondary"
                       >
-                        {formatHoraSimples(s.hora_inicio)} –{" "}
-                        {formatHoraSimples(s.hora_fim)}
+                        {formatTimeShort(s.start_time)} –{" "}
+                        {formatTimeShort(s.end_time)}
                         <button
                           aria-label="Remover horário"
                           className="text-muted-foreground hover:text-destructive"
@@ -281,11 +283,10 @@ function DisponibilidadePublica() {
                 key={d.id}
               >
                 <span className="text-sm font-medium">
-                  {DIAS_SEMANA[d.dia_semana]} ·{" "}
-                  {formatHoraSimples(d.hora_inicio)} –{" "}
-                  {formatHoraSimples(d.hora_fim)}
+                  {DAY_NAMES[d.day_of_week]} · {formatTimeShort(d.start_time)} –{" "}
+                  {formatTimeShort(d.end_time)}
                 </span>
-                {d.notas && <Badge variant="secondary">{d.notas}</Badge>}
+                {d.notes && <Badge variant="secondary">{d.notes}</Badge>}
               </div>
             ))}
             <p className="text-muted-foreground text-xs">

@@ -20,8 +20,8 @@ import {
 import { cn } from "@repo/ui/lib/utils";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { type ReactNode, useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { type ReactNode, useCallback, useEffect, useState } from "react";
+import { supabase } from "@/integrations/data/client";
 
 const nav = [
   { icon: LayoutDashboard, label: "Dashboard", to: "/dashboard" },
@@ -66,6 +66,12 @@ export function AppShell({ children }: { children: ReactNode }) {
     };
   }, [router]);
 
+  const handleSignOut = useCallback(() => {
+    supabase.auth.signOut().then(() => {
+      router.replace("/");
+    });
+  }, [router]);
+
   if (!ready) {
     return null;
   }
@@ -74,10 +80,13 @@ export function AppShell({ children }: { children: ReactNode }) {
     <div className="flex min-h-screen">
       <aside className="border-sidebar-border bg-sidebar hidden w-60 shrink-0 flex-col border-r p-4 md:flex">
         <div className="mb-8 flex items-center gap-3 px-2">
+          {/* biome-ignore lint/performance/noImgElement: static SVG logo */}
           <img
             alt="Emblema da Samuel Soares Academy"
             className="size-12 rounded-full"
+            height={48}
             src="/logo.svg"
+            width={48}
           />
           <div>
             <p className="text-xl leading-none">
@@ -107,10 +116,7 @@ export function AppShell({ children }: { children: ReactNode }) {
         </nav>
         <Button
           className="justify-start gap-3"
-          onClick={async () => {
-            await supabase.auth.signOut();
-            router.replace("/");
-          }}
+          onClick={handleSignOut}
           variant="ghost"
         >
           <LogOut className="size-4" /> Sair

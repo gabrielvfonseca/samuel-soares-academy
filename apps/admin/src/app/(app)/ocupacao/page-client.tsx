@@ -24,15 +24,15 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { sugerirMarcacoes } from "@/lib/actions/sugestoes";
 import {
-  DIAS_SEMANA,
-  formatHoraSimples,
-  horaDeMinutos,
-  listCampos,
-  listDisponibilidades,
-  listDisponibilidadesCampos,
-  listTreinadores,
-  listTreinos,
-  minutosDeHora,
+  DAY_NAMES,
+  formatTimeShort,
+  listAvailability,
+  listCoaches,
+  listFieldAvailability,
+  listFields,
+  listTrainings,
+  minutesFromTime,
+  timeFromMinutes,
 } from "@/lib/gk";
 import { useAuthedAction } from "@/lib/use-authed-action";
 
@@ -78,29 +78,29 @@ function normalizar(v: string | null | undefined) {
 
 interface Vaga {
   campo: string;
-  campoId: string;
-  data: string;
+  coach_id: string;
+  date: string;
   diaSemana: string;
+  field_id: string;
   fim: string;
   inicio: string;
   minutos: number;
   treinador: string;
-  treinadorId: string;
 }
 
 function Ocupacao() {
-  const treinos = useQuery({ queryFn: listTreinos, queryKey: ["treinos"] });
+  const treinos = useQuery({ queryFn: listTrainings, queryKey: ["treinos"] });
   const treinadores = useQuery({
-    queryFn: listTreinadores,
+    queryFn: listCoaches,
     queryKey: ["treinadores"],
   });
   const dispTreinadores = useQuery({
-    queryFn: listDisponibilidades,
+    queryFn: listAvailability,
     queryKey: ["disponibilidades"],
   });
-  const campos = useQuery({ queryFn: listCampos, queryKey: ["campos"] });
+  const campos = useQuery({ queryFn: listFields, queryKey: ["campos"] });
   const dispCampos = useQuery({
-    queryFn: listDisponibilidadesCampos,
+    queryFn: listFieldAvailability,
     queryKey: ["disponibilidades-campos"],
   });
 
@@ -136,25 +136,25 @@ function Ocupacao() {
 
       const treinosDoDia = (treinos.data ?? []).filter(
         (t) =>
-          t.estado !== "Cancelado" &&
-          isoData(new Date(t.data_hora_inicio)) === dataIso
+          t.status !== "Cancelled" &&
+          isoData(new Date(t.start_date)) === dataIso
       );
       const ocupadosPorTreinador = new Map<string, Intervalo[]>();
       const ocupadosPorCampo = new Map<string, Intervalo[]>();
       for (const t of treinosDoDia) {
-        const ini = new Date(t.data_hora_inicio);
-        const fim = new Date(t.data_hora_fim);
+        const ini = new Date(t.start_date);
+        const fim = new Date(t.end_date);
         const iv = {
           fim: fim.getHours() * 60 + fim.getMinutes(),
           inicio: ini.getHours() * 60 + ini.getMinutes(),
         };
-        if (t.treinador_id) {
-          ocupadosPorTreinador.set(t.treinador_id, [
-            ...(ocupadosPorTreinador.get(t.treinador_id) ?? []),
+        if (t.coach_id) {
+          ocupadosPorTreinador.set(t.coach_id, [
+            ...(ocupadosPorTreinador.get(t.coach_id) ?? []),
             iv,
           ]);
         }
-        const chaveCampo = normalizar(t.campo_local);
+        const chaveCampo = normalizar(t.field);
         if (chaveCampo) {
           ocupadosPorCampo.set(chaveCampo, [
             ...(ocupadosPorCampo.get(chaveCampo) ?? []),
@@ -163,20 +163,20 @@ function Ocupacao() {
         }
       }
 
-      for (const dt of dispTreinadores.data.filter((d) => d.dia_semana === w)) {
-        const treinador = treinadores.data.find(
-          (t) => t.id === dt.treinador_id
-        );
-        if (!treinador?.ativo) {
+      for (const dt of dispTreinadores.data.filter(
+        (d) => d.day_of_week === w
+      )) {
+        const treinador = treinadores.data.find((t) => t.id === dt.coach_id);
+        if (!treinador?.active) {
           continue;
         }
         if (filtroTreinador !== "todos" && treinador.id !== filtroTreinador) {
           continue;
         }
 
-        for (const dc of dispCampos.data.filter((d) => d.dia_semana === w)) {
-          const campo = campos.data.find((c) => c.id === dc.campo_id);
-          if (!campo?.ativo) {
+        for (const dc of dispCampos.data.filter((d) => d.day_of_week === w)) {
+          const campo = campos.data.find((c) => c.id === dc.field_id);
+          if (!campo?.active) {
             continue;
           }
           if (filtroCampo !== "todos" && campo.id !== filtroCampo) {
@@ -185,12 +185,12 @@ function Ocupacao() {
 
           const comum = intersectar(
             {
-              fim: minutosDeHora(dt.hora_fim),
-              inicio: minutosDeHora(dt.hora_inicio),
+              fim: minutesFromTime(dt.end_time),
+              inicio: minutesFromTime(dt.start_time),
             },
             {
-              fim: minutosDeHora(dc.hora_fim),
-              inicio: minutosDeHora(dc.hora_inicio),
+              fim: minutesFromTime(dc.end_time),
+              inicio: minutesFromTime(dc.start_time),
             }
           );
           if (!comum) {
@@ -199,7 +199,7 @@ function Ocupacao() {
 
           const ocupados = [
             ...(ocupadosPorTreinador.get(treinador.id) ?? []),
-            ...(ocupadosPorCampo.get(normalizar(campo.nome)) ?? []),
+            ...(ocupadosPorCampo.get(normalizar(campo.name)) ?? []),
           ];
           for (const livre of subtrair(comum, ocupados)) {
             const minutos = livre.fim - livre.inicio;
@@ -207,24 +207,24 @@ function Ocupacao() {
               continue;
             }
             lista.push({
-              campo: campo.nome,
-              campoId: campo.id,
-              data: dataIso,
-              diaSemana: DIAS_SEMANA[w] as string,
-              fim: horaDeMinutos(livre.fim),
-              inicio: horaDeMinutos(livre.inicio),
+              campo: campo.name,
+              coach_id: treinador.id,
+              date: dataIso,
+              diaSemana: DAY_NAMES[w] as string,
+              field_id: campo.id,
+              fim: timeFromMinutes(livre.fim),
+              inicio: timeFromMinutes(livre.inicio),
               minutos,
-              treinador: treinador.nome,
-              treinadorId: treinador.id,
+              treinador: treinador.name,
             });
           }
         }
       }
     }
     return lista.sort((a, b) =>
-      a.data === b.data
+      a.date === b.date
         ? a.inicio.localeCompare(b.inicio)
-        : a.data.localeCompare(b.data)
+        : a.date.localeCompare(b.date)
     );
   }, [
     treinos.data,
@@ -241,7 +241,7 @@ function Ocupacao() {
   const porDia = useMemo(() => {
     const mapa = new Map<string, Vaga[]>();
     for (const v of vagas) {
-      mapa.set(v.data, [...(mapa.get(v.data) ?? []), v]);
+      mapa.set(v.date, [...(mapa.get(v.date) ?? []), v]);
     }
     return [...mapa.entries()];
   }, [vagas]);
@@ -254,7 +254,7 @@ function Ocupacao() {
       const res = await chamarIA({
         vagas: vagas.slice(0, 120).map((v) => ({
           campo: v.campo,
-          data: v.data,
+          date: v.date,
           diaSemana: v.diaSemana,
           fim: v.fim,
           inicio: v.inicio,
@@ -301,7 +301,7 @@ function Ocupacao() {
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Treinador</Label>
+            <Label>Coach</Label>
             <Select onValueChange={setFiltroTreinador} value={filtroTreinador}>
               <SelectTrigger>
                 <SelectValue />
@@ -310,14 +310,14 @@ function Ocupacao() {
                 <SelectItem value="todos">Todos</SelectItem>
                 {(treinadores.data ?? []).map((t) => (
                   <SelectItem key={t.id} value={t.id}>
-                    {t.nome}
+                    {t.name}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
           <div className="space-y-2">
-            <Label>Campo</Label>
+            <Label>Field</Label>
             <Select onValueChange={setFiltroCampo} value={filtroCampo}>
               <SelectTrigger>
                 <SelectValue />
@@ -326,7 +326,7 @@ function Ocupacao() {
                 <SelectItem value="todos">Todos</SelectItem>
                 {(campos.data ?? []).map((c) => (
                   <SelectItem key={c.id} value={c.id}>
-                    {c.nome}
+                    {c.name}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -359,7 +359,7 @@ function Ocupacao() {
             <div className="flex gap-2">
               <Button asChild variant="secondary">
                 <Link href="/horarios">
-                  <Users className="size-4" /> Disponibilidade dos treinadores
+                  <Users className="size-4" /> Availability dos treinadores
                 </Link>
               </Button>
               <Button asChild variant="secondary">
@@ -426,7 +426,7 @@ function Ocupacao() {
                     key={`${data}-${i}`}
                   >
                     <span className="font-semibold">
-                      {formatHoraSimples(v.inicio)} – {formatHoraSimples(v.fim)}
+                      {formatTimeShort(v.inicio)} – {formatTimeShort(v.fim)}
                     </span>
                     <div className="flex flex-wrap gap-2">
                       <Badge variant="secondary">

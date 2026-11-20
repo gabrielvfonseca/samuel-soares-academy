@@ -21,25 +21,25 @@ import { toast } from "@repo/ui/components/sonner";
 import { Textarea } from "@repo/ui/components/textarea";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import type { Aluno, Treinador, Treino } from "@/lib/gk";
+import { supabase } from "@/integrations/data/client";
+import type { Coach, Student, Training } from "@/lib/gk";
 import {
-  ESTADOS,
-  ESTADOS_FATURA,
-  ESTADOS_PAGAMENTO,
-  encontrarSerie,
-  listTurmas,
-  TIPOS_TREINO,
+  findSeries,
+  INVOICE_STATUSES,
+  listGroups,
+  PAYMENT_STATUSES,
+  TRAINING_STATUSES,
+  TRAINING_TYPES,
   toLocalInput,
 } from "@/lib/gk";
 
 interface Props {
-  alunos: Aluno[];
+  alunos: Student[];
   dataInicial?: Date;
   onOpenChange: (open: boolean) => void;
   open: boolean;
-  treinadores: Treinador[];
-  treino?: Treino | null;
+  treinadores: Coach[];
+  treino?: Training | null;
 }
 
 export function TreinoDialog({
@@ -56,22 +56,20 @@ export function TreinoDialog({
   const [treinadorId, setTreinadorId] = useState("");
   const [alunoId, setAlunoId] = useState("");
   const [turmaId, setTurmaId] = useState("");
-  const turmas = useQuery({ queryFn: listTurmas, queryKey: ["turmas"] });
+  const turmas = useQuery({ queryFn: listGroups, queryKey: ["turmas"] });
   const [local, setLocal] = useState("");
-  const [estado, setEstado] = useState<string>("Agendado");
+  const [estado, setEstado] = useState<string>("Scheduled");
   const [tipo, setTipo] = useState<string>("Individual");
-  const [estadoPagamento, setEstadoPagamento] = useState<string>(
-    "A aguardar pagamento"
-  );
-  const [fatura, setFatura] = useState<string>("Sem fatura");
+  const [estadoPagamento, setEstadoPagamento] = useState<string>("Pending");
+  const [fatura, setFatura] = useState<string>("No invoice");
   const [nif, setNif] = useState("");
   const [notas, setNotas] = useState("");
   const [repeticao, setRepeticao] = useState<string>("nenhuma");
   const [ocorrencias, setOcorrencias] = useState<string>("4");
 
-  function alterarInicio(valor: string) {
-    setInicio(valor);
-    const d = new Date(valor);
+  function alterarInicio(value: string) {
+    setInicio(value);
+    const d = new Date(value);
     if (!Number.isNaN(d.getTime())) {
       setFim(toLocalInput(new Date(d.getTime() + 60 * 60_000)));
     }
@@ -83,23 +81,23 @@ export function TreinoDialog({
     }
     const base = dataInicial ?? new Date();
     const inicioBase = treino
-      ? new Date(treino.data_hora_inicio)
+      ? new Date(treino.start_date)
       : new Date(base.setHours(18, 0, 0, 0));
     const fimBase = treino
-      ? new Date(treino.data_hora_fim)
+      ? new Date(treino.end_date)
       : new Date(inicioBase.getTime() + 60 * 60_000);
     setInicio(toLocalInput(inicioBase));
     setFim(toLocalInput(fimBase));
-    setTreinadorId(treino?.treinador_id ?? "");
-    setAlunoId(treino?.aluno_id ?? "");
-    setTurmaId(treino?.turma_id ?? "");
-    setLocal(treino?.campo_local ?? "");
-    setEstado(treino?.estado ?? "Agendado");
-    setTipo(treino?.tipo ?? "Individual");
-    setEstadoPagamento(treino?.estado_pagamento ?? "A aguardar pagamento");
-    setFatura(treino?.fatura ?? "Sem fatura");
-    setNif(treino?.nif ?? "");
-    setNotas(treino?.notas ?? "");
+    setTreinadorId(treino?.coach_id ?? "");
+    setAlunoId(treino?.student_id ?? "");
+    setTurmaId(treino?.group_id ?? "");
+    setLocal(treino?.field ?? "");
+    setEstado(treino?.status ?? "Scheduled");
+    setTipo(treino?.type ?? "Individual");
+    setEstadoPagamento(treino?.payment_status ?? "Pending");
+    setFatura(treino?.invoice ?? "No invoice");
+    setNif(treino?.tax_id ?? "");
+    setNotas(treino?.notes ?? "");
     setRepeticao("nenhuma");
     setOcorrencias("4");
   }, [open, treino, dataInicial]);
@@ -107,32 +105,32 @@ export function TreinoDialog({
   const guardar = useMutation({
     mutationFn: async () => {
       const payload = {
-        aluno_id: tipo === "Grupo" ? null : alunoId || null,
-        campo_local: local || null,
-        data_hora_fim: new Date(fim).toISOString(),
-        data_hora_inicio: new Date(inicio).toISOString(),
+        coach_id: treinadorId || null,
+        end_date: new Date(fim).toISOString(),
         estado,
-        estado_pagamento:
-          tipo === "Individual" && estado === "Concluído"
-            ? estadoPagamento
-            : "A aguardar pagamento",
-        fatura:
+        field: local || null,
+        group_id: tipo === "Group" ? turmaId || null : null,
+        invoice:
           tipo === "Individual" &&
-          estado === "Concluído" &&
-          estadoPagamento === "Pago"
+          estado === "Completed" &&
+          estadoPagamento === "Paid"
             ? fatura
             : null,
-        nif:
+        notes: notas || null,
+        payment_status:
+          tipo === "Individual" && estado === "Completed"
+            ? estadoPagamento
+            : "Pending",
+        start_date: new Date(inicio).toISOString(),
+        student_id: tipo === "Group" ? null : alunoId || null,
+        tax_id:
           tipo === "Individual" &&
-          estado === "Concluído" &&
-          estadoPagamento === "Pago" &&
-          fatura === "Com fatura"
+          estado === "Completed" &&
+          estadoPagamento === "Paid" &&
+          fatura === "Invoiced"
             ? nif || null
             : null,
-        notas: notas || null,
         tipo,
-        treinador_id: treinadorId || null,
-        turma_id: tipo === "Grupo" ? turmaId || null : null,
       };
       const repetir =
         !treino && tipo === "Individual" && repeticao !== "nenhuma";
@@ -152,13 +150,13 @@ export function TreinoDialog({
           f.setDate(f.getDate() + i * dias);
           return {
             ...payload,
-            data_hora_fim: f.toISOString(),
-            data_hora_inicio: ini.toISOString(),
-            serie_id: serieId,
+            end_date: f.toISOString(),
+            series_id: serieId,
+            start_date: ini.toISOString(),
           };
         });
         const { error } = await supabase
-          .from("treinos")
+          .from("trainings")
           .insert(registos as never);
         if (error) {
           throw new Error(error.message);
@@ -168,10 +166,10 @@ export function TreinoDialog({
 
       const res = treino
         ? await supabase
-            .from("treinos")
+            .from("trainings")
             .update(payload as never)
             .eq("id", treino.id)
-        : await supabase.from("treinos").insert(payload as never);
+        : await supabase.from("trainings").insert(payload as never);
       if (res.error) {
         throw new Error(res.error.message);
       }
@@ -182,10 +180,10 @@ export function TreinoDialog({
       qc.invalidateQueries({ queryKey: ["treinos"] });
       toast.success(
         treino
-          ? "Treino atualizado"
+          ? "Training atualizado"
           : total > 1
             ? `${total} treinos marcados`
-            : "Treino marcado"
+            : "Training marcado"
       );
       onOpenChange(false);
     },
@@ -197,7 +195,7 @@ export function TreinoDialog({
         return;
       }
       const { error } = await supabase
-        .from("treinos")
+        .from("trainings")
         .delete()
         .eq("id", treino.id);
       if (error) {
@@ -207,21 +205,21 @@ export function TreinoDialog({
     onError: (e: Error) => toast.error(e.message),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["treinos"] });
-      toast.success("Treino eliminado");
+      toast.success("Training eliminado");
       onOpenChange(false);
     },
   });
 
   const apagarSerie = useMutation({
-    mutationFn: async (modo: "seguintes" | "toda") => {
+    mutationFn: async (modo: "upcoming" | "all") => {
       if (!treino) {
         return 0;
       }
-      const ids = await encontrarSerie(treino, modo);
+      const ids = await findSeries(treino, modo);
       if (ids.length === 0) {
         return 0;
       }
-      const { error } = await supabase.from("treinos").delete().in("id", ids);
+      const { error } = await supabase.from("trainings").delete().in("id", ids);
       if (error) {
         throw new Error(error.message);
       }
@@ -237,14 +235,14 @@ export function TreinoDialog({
     },
   });
 
-  async function confirmarSerie(modo: "seguintes" | "toda") {
+  async function confirmarSerie(modo: "upcoming" | "all") {
     if (!treino) {
       return;
     }
     try {
-      const n = (await encontrarSerie(treino, modo)).length;
+      const n = (await findSeries(treino, modo)).length;
       const msg =
-        modo === "seguintes"
+        modo === "upcoming"
           ? `Eliminar este treino e os ${n - 1} seguintes da mesma série?`
           : `Eliminar toda a série (${n} treinos)? Os treinos já concluídos são mantidos.`;
       if (window.confirm(msg)) {
@@ -285,7 +283,7 @@ export function TreinoDialog({
             </div>
           </div>
           <div className="space-y-2">
-            <Label>Treinador</Label>
+            <Label>Coach</Label>
             <Select onValueChange={setTreinadorId} value={treinadorId}>
               <SelectTrigger>
                 <SelectValue placeholder="Selecionar treinador" />
@@ -293,25 +291,25 @@ export function TreinoDialog({
               <SelectContent>
                 {treinadores.map((t) => (
                   <SelectItem key={t.id} value={t.id}>
-                    {t.nome}
+                    {t.name}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
           </div>
-          {tipo === "Grupo" ? (
+          {tipo === "Group" ? (
             <div className="space-y-2">
-              <Label>Turma</Label>
+              <Label>Group</Label>
               <Select onValueChange={setTurmaId} value={turmaId}>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecionar turma" />
                 </SelectTrigger>
                 <SelectContent>
                   {(turmas.data ?? [])
-                    .filter((t) => t.ativo || t.id === turmaId)
+                    .filter((t) => t.active || t.id === turmaId)
                     .map((t) => (
                       <SelectItem key={t.id} value={t.id}>
-                        {t.nome}
+                        {t.name}
                       </SelectItem>
                     ))}
                 </SelectContent>
@@ -321,18 +319,18 @@ export function TreinoDialog({
                   Atletas:{" "}
                   {alunos
                     .filter((a) =>
-                      a.turma_ids?.length
-                        ? a.turma_ids.includes(turmaId)
-                        : a.turma_id === turmaId
+                      a.group_ids?.length
+                        ? a.group_ids.includes(turmaId)
+                        : a.group_id === turmaId
                     )
-                    .map((a) => a.nome)
+                    .map((a) => a.name)
                     .join(", ") || "ainda sem atletas nesta turma"}
                 </p>
               )}
             </div>
           ) : (
             <div className="space-y-2">
-              <Label>Aluno</Label>
+              <Label>Student</Label>
               <Select onValueChange={setAlunoId} value={alunoId}>
                 <SelectTrigger>
                   <SelectValue placeholder="Selecionar aluno" />
@@ -340,7 +338,7 @@ export function TreinoDialog({
                 <SelectContent>
                   {alunos.map((a) => (
                     <SelectItem key={a.id} value={a.id}>
-                      {a.nome}
+                      {a.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -349,7 +347,7 @@ export function TreinoDialog({
           )}
           <div className="grid gap-4 sm:grid-cols-2">
             <div className="space-y-2">
-              <Label htmlFor="local">Campo / Local</Label>
+              <Label htmlFor="local">Field / Local</Label>
               <Input
                 id="local"
                 onChange={(e) => setLocal(e.target.value)}
@@ -363,7 +361,7 @@ export function TreinoDialog({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {ESTADOS.map((e) => (
+                  {TRAINING_STATUSES.map((e) => (
                     <SelectItem key={e} value={e}>
                       {e}
                     </SelectItem>
@@ -379,11 +377,11 @@ export function TreinoDialog({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {TIPOS_TREINO.map((t) => (
+                {TRAINING_TYPES.map((t) => (
                   <SelectItem key={t} value={t}>
                     {t === "Individual"
-                      ? "Treino individual"
-                      : "Treino de grupo"}
+                      ? "Training individual"
+                      : "Training de grupo"}
                   </SelectItem>
                 ))}
               </SelectContent>
@@ -423,7 +421,7 @@ export function TreinoDialog({
               )}
             </div>
           )}
-          {tipo === "Individual" && estado === "Concluído" && (
+          {tipo === "Individual" && estado === "Completed" && (
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
                 <Label>Pagamento</Label>
@@ -435,7 +433,7 @@ export function TreinoDialog({
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent>
-                    {ESTADOS_PAGAMENTO.map((e) => (
+                    {PAYMENT_STATUSES.map((e) => (
                       <SelectItem key={e} value={e}>
                         {e}
                       </SelectItem>
@@ -443,7 +441,7 @@ export function TreinoDialog({
                   </SelectContent>
                 </Select>
               </div>
-              {estadoPagamento === "Pago" && (
+              {estadoPagamento === "Paid" && (
                 <div className="space-y-2">
                   <Label>Fatura</Label>
                   <Select onValueChange={setFatura} value={fatura}>
@@ -451,7 +449,7 @@ export function TreinoDialog({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {ESTADOS_FATURA.map((e) => (
+                      {INVOICE_STATUSES.map((e) => (
                         <SelectItem key={e} value={e}>
                           {e}
                         </SelectItem>
@@ -463,9 +461,9 @@ export function TreinoDialog({
             </div>
           )}
           {tipo === "Individual" &&
-            estado === "Concluído" &&
-            estadoPagamento === "Pago" &&
-            fatura === "Com fatura" && (
+            estado === "Completed" &&
+            estadoPagamento === "Paid" &&
+            fatura === "Invoiced" && (
               <div className="space-y-2">
                 <Label htmlFor="nif">NIF para a fatura</Label>
                 <Input
@@ -486,15 +484,15 @@ export function TreinoDialog({
             />
           </div>
         </div>
-        {treino && treino.tipo === "Individual" && (
+        {treino && treino.type === "Individual" && (
           <div className="border-border/60 flex flex-wrap items-center gap-2 rounded-md border p-3">
             <span className="text-muted-foreground text-xs">
-              Treino recorrente?
+              Training recorrente?
             </span>
             <Button
               className="text-destructive"
               disabled={apagarSerie.isPending}
-              onClick={() => confirmarSerie("seguintes")}
+              onClick={() => confirmarSerie("upcoming")}
               size="sm"
               type="button"
               variant="outline"
@@ -504,7 +502,7 @@ export function TreinoDialog({
             <Button
               className="text-destructive"
               disabled={apagarSerie.isPending}
-              onClick={() => confirmarSerie("toda")}
+              onClick={() => confirmarSerie("all")}
               size="sm"
               type="button"
               variant="outline"

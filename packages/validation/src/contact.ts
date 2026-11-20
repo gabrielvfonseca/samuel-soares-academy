@@ -49,7 +49,7 @@ export const contactSubmitResultSchema = z.object({
     .optional(),
   error: z.string().optional(),
   message: z.string(),
-  payload: z.record(z.unknown()).optional(),
+  payload: z.record(z.string(), z.unknown()).optional(),
   success: z.boolean(),
   whatsappUrl: z.string().optional(),
 });

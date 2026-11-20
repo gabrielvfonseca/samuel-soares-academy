@@ -1,20 +1,18 @@
 import { defineConfig } from "drizzle-kit";
 
 /**
- * Single source of truth for the database schema.
- * Migrations are emitted straight into the root `supabase/migrations` folder
- * (timestamp-prefixed, Supabase CLI compatible) so one folder serves both tools.
+ * Single source of truth for the database schema (Cloudflare D1).
+ * Migrations are emitted into `src/drizzle` — apply them with the D1 CLI:
+ * `pnpm db:deploy` (wraps `wrangler d1 migrations apply`).
  */
 export default defineConfig({
   dbCredentials: {
-    // Local Supabase default: postgresql://postgres:postgres@127.0.0.1:54322/postgres
-    url:
-      process.env.DATABASE_URL ??
-      "postgresql://postgres:postgres@127.0.0.1:54322/postgres",
+    // Local D1 via `wrangler d1` (no live URL needed for generate).
+    url: "file:./local.db",
   },
-  dialect: "postgresql",
-  migrations: { prefix: "supabase" },
-  out: "../../supabase/migrations",
+  dialect: "sqlite",
+  out: "./src/drizzle",
   schema: "./src/schema/index.ts",
-  schemaFilter: ["public"],
+  strict: true,
+  verbose: true,
 });

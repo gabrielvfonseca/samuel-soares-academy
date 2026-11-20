@@ -11,17 +11,14 @@
       "env": [
         "NEXT_PUBLIC_*",
         "VITE_*",
-        "SUPABASE_*",
         "CODIGO_ACESSO_INTERNO",
         "TREINOS_CRON_SECRET",
         "LOVABLE_API_KEY",
-        "DATABASE_URL",
         "RESEND_API_KEY",
         "CONTACT_EMAIL_*",
         "WHATSAPP_*",
-        "ARCJET_KEY",
-        "UPSTASH_*",
-        "LOGTAIL_*"
+        "BETTER_AUTH_URL",
+        "BETTER_AUTH_SECRET"
       ]
     },
     "transit": {

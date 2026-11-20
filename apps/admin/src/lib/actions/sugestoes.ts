@@ -2,7 +2,7 @@
 
 import { z } from "zod";
 
-import { requireSupabaseAuth } from "@/integrations/supabase/auth.server";
+import { requireAuth } from "@/integrations/auth/server";
 
 const schema = z.object({
   vagas: z
@@ -19,8 +19,8 @@ const schema = z.object({
     .max(200),
 });
 
-export async function sugerirMarcacoes(token: string, input: unknown) {
-  await requireSupabaseAuth(token);
+export async function sugerirMarcacoes(input: unknown) {
+  await requireAuth();
   const data = schema.parse(input);
   const { gerarSugestoes } = await import("../sugestoes.server");
   return { texto: await gerarSugestoes(data.vagas) };

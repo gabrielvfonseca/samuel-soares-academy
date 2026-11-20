@@ -11,13 +11,13 @@ catalog:
   "@tailwindcss/postcss": ^4.1.9
   postcss: ^8.5
   server-only: ^0.0.1
-  react: 19.2.0
-  react-dom: 19.2.0
+  react: 19.3.1
+  react-dom: 19.3.1
   "@types/react": ^19
   "@types/react-dom": ^19
   "@types/node": ^22
   typescript: ^5.8.3
-  zod: 3.25.76
+  zod: ^4.5.4
   tailwindcss: ^4.1.9
   tailwind-merge: ^3.3.1
   tw-animate-css: ^1.3.4
@@ -27,9 +27,10 @@ catalog:
   react-hook-form: ^7.60.0
   drizzle-orm: ^0.45.3
   drizzle-kit: ^0.31.11
-  postgres: ^3.4.9
+  "@cloudflare/workers-types": "^4.20250109.0"
   resend: ^6.9.2
   "@react-email/components": ^1.0.7
+  better-auth: 1.7.26
 
 overrides:
   rolldown: 1.2.1
@@ -37,3 +38,4 @@ overrides:
 allowBuilds:
   esbuild: true
   sharp: true
+  workerd: true

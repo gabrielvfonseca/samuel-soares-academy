@@ -1,40 +1,31 @@
-import {
-  boolean,
-  date,
-  pgTable,
-  text,
-  time,
-  timestamp,
-} from "drizzle-orm/pg-core";
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { createdAt, id, updatedAt } from "./_columns";
 
-export const configuracoesNotificacoes = pgTable("configuracoes_notificacoes", {
-  canalPreferencial: text("canal_preferencial").notNull().default("Email"),
-  chaveApiResend: text("chave_api_resend"),
-  chaveApiWhatsapp: text("chave_api_whatsapp"),
+// `notification_settings` is a single-row table (Postgres enforced it via
+// a boolean PK + check constraint). D1 cannot express that, so the
+// single-row guarantee is kept in app code: always upsert with a fixed id.
+export const notificationSettings = sqliteTable("notification_settings", {
   createdAt: createdAt(),
-  emailRemetente: text("email_remetente").default("onboarding@resend.dev"),
-  fusoHorario: text("fuso_horario").notNull().default("Europe/Lisbon"),
-  horaEnvioDiario: time("hora_envio_diario").notNull().default("20:00"),
+  // `time` stored as `text` ("HH:MM") — SQLite has no time type.
+  dailySendTime: text("daily_send_time").notNull().default("20:00"),
+  fromEmail: text("from_email").default("onboarding@resend.dev"),
   id: id(),
-  ultimoEnvioData: date("ultimo_envio_data"),
+  lastSentDate: text("last_sent_date"),
+  preferredChannel: text("preferred_channel").notNull().default("Email"),
+  resendApiKey: text("resend_api_key"),
+  timezone: text("timezone").notNull().default("Europe/Lisbon"),
   updatedAt: updatedAt(),
+  whatsappApiKey: text("whatsapp_api_key"),
   whatsappPhoneId: text("whatsapp_phone_id"),
 });
 
-export const cronConfig = pgTable("cron_config", {
-  endpoint: text("endpoint").notNull(),
-  id: boolean("id").primaryKey().default(true),
-  secret: text("secret").notNull(),
-});
-
-export const lembretesPessoais = pgTable("lembretes_pessoais", {
+export const personalReminders = sqliteTable("personal_reminders", {
   createdAt: createdAt(),
   email: text("email").notNull(),
-  enviado: boolean("enviado").notNull().default(false),
-  enviadoEm: timestamp("enviado_em", { mode: "string", withTimezone: true }),
-  erro: text("erro"),
+  error: text("error"),
   id: id(),
-  quando: timestamp("quando", { mode: "string", withTimezone: true }).notNull(),
-  texto: text("texto").notNull(),
+  sent: integer("sent", { mode: "boolean" }).notNull().default(false),
+  sentAt: text("sent_at"),
+  text: text("text").notNull(),
+  when: text("when").notNull(),
 });

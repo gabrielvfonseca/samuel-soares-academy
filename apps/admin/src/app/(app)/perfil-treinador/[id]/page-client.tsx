@@ -18,20 +18,20 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useMemo, useState } from "react";
 import { DocumentosPerfil } from "@/components/documentos-perfil";
-import { supabase } from "@/integrations/supabase/client";
-import { formatEuros, horasTreino, listTreinos } from "@/lib/gk";
+import { supabase } from "@/integrations/data/client";
+import { formatEuros, listTrainings, trainingHours } from "@/lib/gk";
 
 interface Perfil {
-  data_nascimento: string | null;
+  birthDate: string | null;
   email: string;
   id: string;
   morada: string | null;
-  nif: string | null;
-  nome: string;
+  name: string;
   observacoes: string | null;
-  telefone_whatsapp: string | null;
+  tax_id: string | null;
   valor_hora_grupo: number | null;
   valor_hora_individual: number | null;
+  whatsapp_phone: string | null;
 }
 
 function PerfilTreinador() {
@@ -41,7 +41,7 @@ function PerfilTreinador() {
   const treinador = useQuery({
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("treinadores")
+        .from("coaches")
         .select("*")
         .eq("id", id)
         .single();
@@ -53,16 +53,16 @@ function PerfilTreinador() {
     queryKey: ["treinador", id],
   });
 
-  const treinos = useQuery({ queryFn: listTreinos, queryKey: ["treinos"] });
+  const treinos = useQuery({ queryFn: listTrainings, queryKey: ["treinos"] });
 
   const [form, setForm] = useState({
-    data_nascimento: "",
+    birthDate: "",
     morada: "",
-    nif: "",
     observacoes: "",
-    telefone_whatsapp: "",
+    tax_id: "",
     valor_hora_grupo: "0",
     valor_hora_individual: "0",
+    whatsapp_phone: "",
   });
 
   useEffect(() => {
@@ -71,13 +71,13 @@ function PerfilTreinador() {
       return;
     }
     setForm({
-      data_nascimento: t.data_nascimento ?? "",
+      birthDate: t.birthDate ?? "",
       morada: t.morada ?? "",
-      nif: t.nif ?? "",
       observacoes: t.observacoes ?? "",
-      telefone_whatsapp: t.telefone_whatsapp ?? "",
+      tax_id: t.tax_id ?? "",
       valor_hora_grupo: String(t.valor_hora_grupo ?? 0),
       valor_hora_individual: String(t.valor_hora_individual ?? 0),
+      whatsapp_phone: t.whatsapp_phone ?? "",
     });
   }, [treinador.data]);
 
@@ -88,18 +88,18 @@ function PerfilTreinador() {
     let horasInd = 0;
     let horasGrupo = 0;
     for (const t of treinos.data ?? []) {
-      if (t.treinador_id !== id || t.estado === "Cancelado") {
+      if (t.coach_id !== id || t.status === "Cancelled") {
         continue;
       }
-      const d = new Date(t.data_hora_inicio);
+      const d = new Date(t.start_date);
       if (d.getMonth() !== mes || d.getFullYear() !== ano) {
         continue;
       }
-      if (new Date(t.data_hora_fim) > agora) {
+      if (new Date(t.end_date) > agora) {
         continue; // só treinos já dados
       }
-      const h = horasTreino(t.data_hora_inicio, t.data_hora_fim);
-      if (t.tipo === "Grupo") {
+      const h = trainingHours(t.start_date, t.end_date);
+      if (t.type === "Group") {
         horasGrupo += h;
       } else {
         horasInd += h;
@@ -113,16 +113,16 @@ function PerfilTreinador() {
   const guardar = useMutation({
     mutationFn: async () => {
       const payload = {
-        data_nascimento: form.data_nascimento || null,
+        birthDate: form.birthDate || null,
         morada: form.morada || null,
-        nif: form.nif || null,
         observacoes: form.observacoes || null,
-        telefone_whatsapp: form.telefone_whatsapp || null,
+        tax_id: form.tax_id || null,
         valor_hora_grupo: Number(form.valor_hora_grupo) || 0,
         valor_hora_individual: Number(form.valor_hora_individual) || 0,
+        whatsapp_phone: form.whatsapp_phone || null,
       };
       const { error } = await supabase
-        .from("treinadores")
+        .from("coaches")
         .update(payload as never)
         .eq("id", id);
       if (error) {
@@ -148,7 +148,7 @@ function PerfilTreinador() {
 
       <header>
         <h1 className="text-5xl leading-none">
-          {treinador.data?.nome ?? "Perfil"}
+          {treinador.data?.name ?? "Perfil"}
         </h1>
         <p className="text-muted-foreground">{treinador.data?.email}</p>
       </header>
@@ -166,28 +166,26 @@ function PerfilTreinador() {
             <Input
               id="tel"
               onChange={(e) =>
-                setForm({ ...form, telefone_whatsapp: e.target.value })
+                setForm({ ...form, whatsapp_phone: e.target.value })
               }
-              value={form.telefone_whatsapp}
+              value={form.whatsapp_phone}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="nasc">Data de nascimento</Label>
             <Input
               id="nasc"
-              onChange={(e) =>
-                setForm({ ...form, data_nascimento: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, birthDate: e.target.value })}
               type="date"
-              value={form.data_nascimento}
+              value={form.birthDate}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="nif">NIF</Label>
             <Input
               id="nif"
-              onChange={(e) => setForm({ ...form, nif: e.target.value })}
-              value={form.nif}
+              onChange={(e) => setForm({ ...form, tax_id: e.target.value })}
+              value={form.tax_id}
             />
           </div>
           <div className="space-y-2">
@@ -289,9 +287,9 @@ function PerfilTreinador() {
       </Card>
 
       <DocumentosPerfil
-        descricao="Contratos assinados, certificados e outros ficheiros do treinador."
-        prefixo={`treinadores/${id}`}
-        titulo="Contratos e documentos"
+        description="Contratos assinados, certificados e outros ficheiros do treinador."
+        prefix={`coaches/${id}`}
+        title="Contratos e documentos"
       />
     </div>
   );

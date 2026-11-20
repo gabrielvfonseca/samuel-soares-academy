@@ -35,5 +35,3 @@ export function JsonLd({ code }: JsonLdProps) {
     />
   );
 }
-
-export * from "schema-dts";
