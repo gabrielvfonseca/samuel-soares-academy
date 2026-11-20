@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "check-types": "tsc --noEmit",
+    "check-types": "pnpm build && tsc --noEmit",
     "deploy": "vinext-cloudflare deploy",
     "dev": "vite dev",
     "start": "vinext start",

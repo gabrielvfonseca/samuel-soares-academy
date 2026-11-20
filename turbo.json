@@ -25,11 +25,7 @@
       "dependsOn": ["^transit"]
     },
     "check-types": {
-      "dependsOn": ["transit", "check-types:prepare"],
-      "inputs": ["$TURBO_DEFAULT$", ".cloudflare/types/**/*.d.ts"]
-    },
-    "check-types:prepare": {
-      "cache": false
+      "dependsOn": ["transit"]
     },
     "dev": {
       "cache": false,
