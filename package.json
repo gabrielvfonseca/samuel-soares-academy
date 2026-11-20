@@ -25,14 +25,14 @@
     "*.{js,jsx,mjs,cjs,ts,tsx,mts,cts,json,jsonc,css,md,mdx,yaml,yml}": "ultracite fix"
   },
   "devDependencies": {
-    "@biomejs/biome": "2.6.6",
-    "@changesets/cli": "^2.29.8",
+    "@biomejs/biome": "2.6.8",
+    "@changesets/cli": "^3.0.3",
     "husky": "^9.1.7",
-    "lint-staged": "^16.2.7",
-    "supabase": "^2.0.0",
-    "turbo": "^2.11.10",
+    "lint-staged": "^17.6.1",
+    "supabase": "^3.2.0",
+    "turbo": "^2.11.11",
     "typescript": "catalog:",
-    "ultracite": "8.1.1"
+    "ultracite": "8.2.1"
   },
   "packageManager": "pnpm@12.18.0",
   "engines": {
