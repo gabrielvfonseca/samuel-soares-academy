@@ -30,7 +30,7 @@ import { Textarea } from "@repo/ui/components/textarea";
 import { IdCard, Pencil, Plus, Trash2 } from "@repo/ui/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { type ChangeEvent, useMemo, useState } from "react";
 import { supabase } from "@/integrations/data/client";
 import {
   ATHLETE_TYPES,
@@ -59,11 +59,13 @@ function Alunos() {
   const ehGrupo = (a: Student) =>
     a.athlete_type === "Group" || alunosGrupo.has(a.id);
   const grupo = useMemo(
-    () => (data ?? []).filter(ehGrupo),
+    () => (data ?? []).filter((a) => ehGrupo(a)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [data, alunosGrupo]
   );
   const individuais = useMemo(
     () => (data ?? []).filter((a) => !ehGrupo(a)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
     [data, alunosGrupo]
   );
   const [open, setOpen] = useState(false);
@@ -79,23 +81,75 @@ function Alunos() {
     technical_notes: "",
   });
 
+  function abrirNovo() {
+    abrir();
+  }
+
+  function handleNomeChange(e: ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, name: e.target.value });
+  }
+
+  function handleLevelChange(e: ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, level: e.target.value });
+  }
+
+  function handleParentChange(e: ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, parent_contact: e.target.value });
+  }
+
+  function handleAthleteTypeChange(v: string) {
+    setForm({ ...form, athlete_type: v });
+  }
+
+  function handleEnrollmentChange(v: string) {
+    setForm({ ...form, enrollment_type: v });
+  }
+
+  function handleEnrollDateChange(e: ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, enroll_date: e.target.value });
+  }
+
+  function handleNotesChange(e: ChangeEvent<HTMLTextAreaElement>) {
+    setForm({ ...form, technical_notes: e.target.value });
+  }
+
+  function handleGroupToggle(e: ChangeEvent<HTMLInputElement>) {
+    const tId = e.currentTarget.dataset.tid;
+    if (!tId) {
+      return;
+    }
+    setForm({
+      ...form,
+      group_ids: e.target.checked
+        ? [...form.group_ids, tId]
+        : form.group_ids.filter((x) => x !== tId),
+    });
+  }
+
+  function guardarSubmit() {
+    guardar.mutate();
+  }
+
   function abrir(a?: Student) {
     setAtual(a ?? null);
     setForm({
       athlete_type: a?.athlete_type ?? "Individual",
       enroll_date: a?.enroll_date ?? "",
       enrollment_type: a?.enrollment_type ?? "",
-      group_ids: a?.group_ids?.length
-        ? a.group_ids
-        : a?.group_id
-          ? [a.group_id]
-          : [],
+      group_ids: resolveGroupIds(a),
       level: a?.level ?? "",
       name: a?.name ?? "",
       parent_contact: a?.parent_contact ?? "",
       technical_notes: a?.technical_notes ?? "",
     });
     setOpen(true);
+  }
+
+  function resolveGroupIds(a: Student | undefined): string[] {
+    if (a?.group_ids?.length) {
+      return a.group_ids;
+    }
+    return a?.group_id ? [a.group_id] : [];
   }
 
   const guardar = useMutation({
@@ -154,7 +208,7 @@ function Alunos() {
             Guarda-redes inscritos na escola
           </p>
         </div>
-        <Button onClick={() => abrir()}>
+        <Button onClick={abrirNovo}>
           <Plus className="size-4" /> Novo aluno
         </Button>
       </header>
@@ -174,74 +228,73 @@ function Alunos() {
           return (
             <TabsContent className="mt-4" key={sep} value={sep}>
               <div className="grid gap-3 md:grid-cols-2">
-                {lista.map((a) => (
-                  <Card key={a.id}>
-                    <CardContent className="space-y-2 pt-6">
-                      <div className="flex items-start justify-between gap-3">
-                        <div>
-                          <p className="font-semibold">{a.name}</p>
-                          <p className="text-muted-foreground text-sm">
-                            {a.parent_contact ?? "—"}
-                          </p>
-                          {a.enroll_date && (
-                            <p className="text-muted-foreground text-xs">
-                              Connosco desde {formatMonthYear(a.enroll_date)}
+                {lista.map((a) => {
+                  const abrirAluno = () => abrir(a);
+                  const apagarAluno = () => remover.mutate(a.id);
+                  return (
+                    <Card key={a.id}>
+                      <CardContent className="space-y-2 pt-6">
+                        <div className="flex items-start justify-between gap-3">
+                          <div>
+                            <p className="font-semibold">{a.name}</p>
+                            <p className="text-muted-foreground text-sm">
+                              {a.parent_contact ?? "—"}
                             </p>
-                          )}
-                        </div>
-                        <div className="flex items-center gap-2">
-                          {a.level && (
-                            <Badge variant="secondary">{a.level}</Badge>
-                          )}
-                          {a.enrollment_type && (
-                            <Badge className="whitespace-nowrap">
-                              {a.enrollment_type}
-                            </Badge>
-                          )}
-                          {(a.group_ids?.length
-                            ? a.group_ids
-                            : a.group_id
-                              ? [a.group_id]
-                              : []
-                          ).map((tid) => (
-                            <Badge
-                              className="whitespace-nowrap"
-                              key={tid}
+                            {!!a.enroll_date && (
+                              <p className="text-muted-foreground text-xs">
+                                Connosco desde {formatMonthYear(a.enroll_date)}
+                              </p>
+                            )}
+                          </div>
+                          <div className="flex items-center gap-2">
+                            {!!a.level && (
+                              <Badge variant="secondary">{a.level}</Badge>
+                            )}
+                            {!!a.enrollment_type && (
+                              <Badge className="whitespace-nowrap">
+                                {a.enrollment_type}
+                              </Badge>
+                            )}
+                            {resolveGroupIds(a).map((tid) => (
+                              <Badge
+                                className="whitespace-nowrap"
+                                key={tid}
+                                variant="outline"
+                              >
+                                {turmas.data?.find((t) => t.id === tid)?.name ??
+                                  "Group"}
+                              </Badge>
+                            ))}
+                            <Button asChild size="sm" variant="secondary">
+                              <Link href={`/perfil-aluno/${a.id}`}>
+                                <IdCard className="size-4" /> Perfil
+                              </Link>
+                            </Button>
+                            <Button
+                              onClick={abrirAluno}
+                              size="icon"
                               variant="outline"
                             >
-                              {turmas.data?.find((t) => t.id === tid)?.name ??
-                                "Group"}
-                            </Badge>
-                          ))}
-                          <Button asChild size="sm" variant="secondary">
-                            <Link href={`/perfil-aluno/${a.id}`}>
-                              <IdCard className="size-4" /> Perfil
-                            </Link>
-                          </Button>
-                          <Button
-                            onClick={() => abrir(a)}
-                            size="icon"
-                            variant="outline"
-                          >
-                            <Pencil className="size-4" />
-                          </Button>
-                          <Button
-                            onClick={() => remover.mutate(a.id)}
-                            size="icon"
-                            variant="destructive"
-                          >
-                            <Trash2 className="size-4" />
-                          </Button>
+                              <Pencil className="size-4" />
+                            </Button>
+                            <Button
+                              onClick={apagarAluno}
+                              size="icon"
+                              variant="destructive"
+                            >
+                              <Trash2 className="size-4" />
+                            </Button>
+                          </div>
                         </div>
-                      </div>
-                      {a.technical_notes && (
-                        <p className="border-border text-muted-foreground border-l-4 pl-3 text-sm">
-                          {a.technical_notes}
-                        </p>
-                      )}
-                    </CardContent>
-                  </Card>
-                ))}
+                        {!!a.technical_notes && (
+                          <p className="border-border text-muted-foreground border-l-4 pl-3 text-sm">
+                            {a.technical_notes}
+                          </p>
+                        )}
+                      </CardContent>
+                    </Card>
+                  );
+                })}
                 {lista.length === 0 && (
                   <p className="text-muted-foreground text-sm">
                     {sep === "individual"
@@ -265,17 +318,13 @@ function Alunos() {
           <div className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="nome">Nome</Label>
-              <Input
-                id="nome"
-                onChange={(e) => setForm({ ...form, name: e.target.value })}
-                value={form.name}
-              />
+              <Input id="nome" onChange={handleNomeChange} value={form.name} />
             </div>
             <div className="space-y-2">
               <Label htmlFor="level">Escalão</Label>
               <Input
                 id="level"
-                onChange={(e) => setForm({ ...form, level: e.target.value })}
+                onChange={handleLevelChange}
                 placeholder="Sub-15"
                 value={form.level}
               />
@@ -284,16 +333,15 @@ function Alunos() {
               <Label htmlFor="ee">Contacto do encarregado de educação</Label>
               <Input
                 id="ee"
-                onChange={(e) =>
-                  setForm({ ...form, parent_contact: e.target.value })
-                }
+                onChange={handleParentChange}
                 value={form.parent_contact}
               />
             </div>
             <div className="space-y-2">
+              {/* biome-ignore lint/a11y/noLabelWithoutControl: Radix Select trigger has implicit label association */}
               <Label>Tipo de atleta</Label>
               <Select
-                onValueChange={(v) => setForm({ ...form, athlete_type: v })}
+                onValueChange={handleAthleteTypeChange}
                 value={form.athlete_type}
               >
                 <SelectTrigger>
@@ -313,9 +361,10 @@ function Alunos() {
             <div
               className={form.athlete_type === "Group" ? "space-y-2" : "hidden"}
             >
+              {/* biome-ignore lint/a11y/noLabelWithoutControl: Radix Select trigger has implicit label association */}
               <Label>Modalidade de inscrição</Label>
               <Select
-                onValueChange={(v) => setForm({ ...form, enrollment_type: v })}
+                onValueChange={handleEnrollmentChange}
                 value={form.enrollment_type}
               >
                 <SelectTrigger>
@@ -333,6 +382,7 @@ function Alunos() {
             <div
               className={form.athlete_type === "Group" ? "space-y-2" : "hidden"}
             >
+              {/* biome-ignore lint/a11y/noLabelWithoutControl: group of checkbox inputs */}
               <Label>Turmas</Label>
               <div className="space-y-2 rounded-md border p-3">
                 {(turmas.data ?? []).length === 0 && (
@@ -348,14 +398,8 @@ function Alunos() {
                     <input
                       checked={form.group_ids.includes(t.id)}
                       className="accent-primary size-4"
-                      onChange={(e) =>
-                        setForm({
-                          ...form,
-                          group_ids: e.target.checked
-                            ? [...form.group_ids, t.id]
-                            : form.group_ids.filter((x) => x !== t.id),
-                        })
-                      }
+                      data-tid={t.id}
+                      onChange={handleGroupToggle}
                       type="checkbox"
                     />
                     {t.name}
@@ -367,9 +411,7 @@ function Alunos() {
               <Label htmlFor="inscricao">Connosco desde</Label>
               <Input
                 id="inscricao"
-                onChange={(e) =>
-                  setForm({ ...form, enroll_date: e.target.value })
-                }
+                onChange={handleEnrollDateChange}
                 type="date"
                 value={form.enroll_date}
               />
@@ -378,18 +420,13 @@ function Alunos() {
               <Label htmlFor="notas">Notas técnicas</Label>
               <Textarea
                 id="notas"
-                onChange={(e) =>
-                  setForm({ ...form, technical_notes: e.target.value })
-                }
+                onChange={handleNotesChange}
                 value={form.technical_notes}
               />
             </div>
           </div>
           <DialogFooter>
-            <Button
-              disabled={guardar.isPending}
-              onClick={() => guardar.mutate()}
-            >
+            <Button disabled={guardar.isPending} onClick={guardarSubmit}>
               Guardar
             </Button>
           </DialogFooter>

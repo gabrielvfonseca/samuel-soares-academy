@@ -19,6 +19,8 @@ import {
 } from "@/lib/actions/assistente";
 import { useAuthedAction } from "@/lib/use-authed-action";
 
+type ChatMessage = MensagemChat & { key: number };
+
 interface Reminder {
   id: string;
   sent: boolean;
@@ -26,10 +28,12 @@ interface Reminder {
   when: string;
 }
 
+let chatKeyCounter = 0;
+
 function AssistentePage() {
   const conversar = useAuthedAction(conversarAssistente);
   const qc = useQueryClient();
-  const [mensagens, setMensagens] = useState<MensagemChat[]>([]);
+  const [mensagens, setMensagens] = useState<ChatMessage[]>([]);
   const [texto, setTexto] = useState("");
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const fimRef = useRef<HTMLDivElement>(null);
@@ -50,9 +54,9 @@ function AssistentePage() {
 
   const enviar = useMutation({
     mutationFn: async (pergunta: string) => {
-      const novas: MensagemChat[] = [
+      const novas: ChatMessage[] = [
         ...mensagens,
-        { content: pergunta, role: "user" },
+        { content: pergunta, key: ++chatKeyCounter, role: "user" },
       ];
       setMensagens(novas);
       const r = await conversar(novas);
@@ -61,8 +65,11 @@ function AssistentePage() {
     onError: (e: Error) => toast.error(e.message),
     onSettled: () => inputRef.current?.focus(),
     onSuccess: (resposta) => {
-      setMensagens((m) => [...m, { content: resposta, role: "assistant" }]);
-      void qc.invalidateQueries({ queryKey: ["lembretes-pessoais"] });
+      setMensagens((m) => [
+        ...m,
+        { content: resposta, key: ++chatKeyCounter, role: "assistant" },
+      ]);
+      qc.invalidateQueries({ queryKey: ["lembretes-pessoais"] });
     },
   });
 
@@ -77,8 +84,9 @@ function AssistentePage() {
       }
     },
     onError: (e: Error) => toast.error(e.message),
-    onSuccess: () =>
-      void qc.invalidateQueries({ queryKey: ["lembretes-pessoais"] }),
+    onSuccess: () => {
+      qc.invalidateQueries({ queryKey: ["lembretes-pessoais"] });
+    },
   });
 
   useEffect(() => {
@@ -87,7 +95,7 @@ function AssistentePage() {
 
   useEffect(() => {
     fimRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, [mensagens, enviar.isPending]);
+  }, [mensagens]);
 
   function submeter() {
     const t = texto.trim();
@@ -96,6 +104,17 @@ function AssistentePage() {
     }
     setTexto("");
     enviar.mutate(t);
+  }
+
+  function handleTextareaChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    setTexto(e.target.value);
+  }
+
+  function handleTextareaKeyDown(e: React.KeyboardEvent<HTMLTextAreaElement>) {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      submeter();
+    }
   }
 
   return (
@@ -117,12 +136,12 @@ function AssistentePage() {
                 faturas na sexta às 18h”.
               </p>
             )}
-            {mensagens.map((m, i) => (
+            {mensagens.map((m) => (
               <div
                 className={
                   m.role === "user" ? "flex justify-end" : "flex justify-start"
                 }
-                key={i}
+                key={m.key}
               >
                 <div
                   className={`max-w-[80%] rounded-lg px-3 py-2 text-sm whitespace-pre-wrap ${
@@ -147,13 +166,8 @@ function AssistentePage() {
           <div className="border-border flex items-end gap-2 border-t p-3">
             <Textarea
               className="min-h-[44px] resize-none"
-              onChange={(e) => setTexto(e.target.value)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter" && !e.shiftKey) {
-                  e.preventDefault();
-                  submeter();
-                }
-              }}
+              onChange={handleTextareaChange}
+              onKeyDown={handleTextareaKeyDown}
               placeholder="Escreve a tua mensagem…"
               ref={inputRef}
               value={texto}

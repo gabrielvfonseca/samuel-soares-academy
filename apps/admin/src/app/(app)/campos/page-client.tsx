@@ -146,6 +146,63 @@ function Campos() {
     },
   });
 
+  function abrirDialog() {
+    setOpen(true);
+  }
+
+  function handleNomeChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setNovoCampo({ ...novoCampo, name: e.target.value });
+  }
+
+  function handleMoradaChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setNovoCampo({ ...novoCampo, address: e.target.value });
+  }
+
+  function adicionarCampo() {
+    criarCampo.mutate();
+  }
+
+  function confirmarRemoverCampo(c: { id: string; name: string }) {
+    // biome-ignore lint/suspicious/noAlert: user confirmation before destructive delete
+    if (window.confirm(`Remover o campo ${c.name}?`)) {
+      removerCampo.mutate(c.id);
+    }
+  }
+
+  function removerDispItem(id: string) {
+    removerDisp.mutate(id);
+  }
+
+  function handleFieldChange(v: string) {
+    setForm({ ...form, field_id: v });
+  }
+
+  function toggleDay(i: number) {
+    const ativo = form.dias.includes(i);
+    setForm({
+      ...form,
+      dias: ativo
+        ? form.dias.filter((x) => x !== i)
+        : [...form.dias, i].sort((a, b) => a - b),
+    });
+  }
+
+  function handleStartTimeChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, start_time: e.target.value });
+  }
+
+  function handleEndTimeChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, end_time: e.target.value });
+  }
+
+  function handleNotesChange(e: React.ChangeEvent<HTMLTextAreaElement>) {
+    setForm({ ...form, notes: e.target.value });
+  }
+
+  function guardar() {
+    guardarDisp.mutate();
+  }
+
   return (
     <div className="space-y-6">
       <header className="flex flex-wrap items-end justify-between gap-4">
@@ -157,7 +214,7 @@ function Campos() {
         </div>
         <Button
           disabled={(campos.data ?? []).length === 0}
-          onClick={() => setOpen(true)}
+          onClick={abrirDialog}
         >
           <Plus className="size-4" /> Availability do campo
         </Button>
@@ -175,9 +232,7 @@ function Campos() {
             <Label htmlFor="nomecampo">Nome</Label>
             <Input
               id="nomecampo"
-              onChange={(e) =>
-                setNovoCampo({ ...novoCampo, name: e.target.value })
-              }
+              onChange={handleNomeChange}
               placeholder="Field sintético 1"
               value={novoCampo.name}
             />
@@ -186,16 +241,11 @@ function Campos() {
             <Label htmlFor="moradacampo">Morada</Label>
             <Input
               id="moradacampo"
-              onChange={(e) =>
-                setNovoCampo({ ...novoCampo, address: e.target.value })
-              }
+              onChange={handleMoradaChange}
               value={novoCampo.address}
             />
           </div>
-          <Button
-            disabled={criarCampo.isPending}
-            onClick={() => criarCampo.mutate()}
-          >
+          <Button disabled={criarCampo.isPending} onClick={adicionarCampo}>
             <Plus className="size-4" /> Adicionar
           </Button>
         </CardContent>
@@ -216,11 +266,7 @@ function Campos() {
                   </CardDescription>
                 </div>
                 <Button
-                  onClick={() => {
-                    if (window.confirm(`Remover o campo ${c.name}?`)) {
-                      removerCampo.mutate(c.id);
-                    }
-                  }}
+                  onClick={() => confirmarRemoverCampo(c)}
                   size="icon"
                   variant="destructive"
                 >
@@ -246,7 +292,7 @@ function Campos() {
                       {formatTimeShort(d.end_time)}
                     </div>
                     <Button
-                      onClick={() => removerDisp.mutate(d.id)}
+                      onClick={() => removerDispItem(d.id)}
                       size="icon"
                       variant="ghost"
                     >
@@ -274,11 +320,9 @@ function Campos() {
           </DialogHeader>
           <div className="space-y-3">
             <div className="space-y-1.5">
+              {/* biome-ignore lint/a11y/noLabelWithoutControl: Radix Select trigger has implicit label association */}
               <Label>Field</Label>
-              <Select
-                onValueChange={(v) => setForm({ ...form, field_id: v })}
-                value={form.field_id}
-              >
+              <Select onValueChange={handleFieldChange} value={form.field_id}>
                 <SelectTrigger>
                   <SelectValue placeholder="Escolher campo" />
                 </SelectTrigger>
@@ -292,6 +336,7 @@ function Campos() {
               </Select>
             </div>
             <div className="space-y-1.5">
+              {/* biome-ignore lint/a11y/noLabelWithoutControl: group of day-toggle buttons */}
               <Label>Dias da semana</Label>
               <div className="flex flex-wrap gap-2">
                 {DAY_NAMES.map((d, i) => {
@@ -299,14 +344,7 @@ function Campos() {
                   return (
                     <Button
                       key={d}
-                      onClick={() =>
-                        setForm({
-                          ...form,
-                          dias: ativo
-                            ? form.dias.filter((x) => x !== i)
-                            : [...form.dias, i].sort((a, b) => a - b),
-                        })
-                      }
+                      onClick={() => toggleDay(i)}
                       size="sm"
                       type="button"
                       variant={ativo ? "default" : "outline"}
@@ -323,40 +361,36 @@ function Campos() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
+                {/* biome-ignore lint/a11y/noLabelWithoutControl: paired with time input below */}
                 <Label>Início</Label>
                 <Input
-                  onChange={(e) =>
-                    setForm({ ...form, start_time: e.target.value })
-                  }
+                  onChange={handleStartTimeChange}
                   type="time"
                   value={form.start_time}
                 />
               </div>
               <div className="space-y-1.5">
+                {/* biome-ignore lint/a11y/noLabelWithoutControl: paired with time input below */}
                 <Label>Fim</Label>
                 <Input
-                  onChange={(e) =>
-                    setForm({ ...form, end_time: e.target.value })
-                  }
+                  onChange={handleEndTimeChange}
                   type="time"
                   value={form.end_time}
                 />
               </div>
             </div>
             <div className="space-y-1.5">
+              {/* biome-ignore lint/a11y/noLabelWithoutControl: paired with textarea below */}
               <Label>Notas</Label>
               <Textarea
-                onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                onChange={handleNotesChange}
                 placeholder="Ex.: campo com iluminação"
                 value={form.notes}
               />
             </div>
           </div>
           <DialogFooter>
-            <Button
-              disabled={guardarDisp.isPending}
-              onClick={() => guardarDisp.mutate()}
-            >
+            <Button disabled={guardarDisp.isPending} onClick={guardar}>
               Guardar
             </Button>
           </DialogFooter>

@@ -5,7 +5,7 @@ import vinext from "vinext";
 import { defineConfig, type Plugin } from "vite";
 
 const uiRequire = createRequire(
-  new URL("../../packages/ui/package.json", import.meta.url),
+  new URL("../../packages/ui/package.json", import.meta.url)
 );
 
 /**
@@ -28,14 +28,18 @@ const uiRequire = createRequire(
 function inlineNextThemes(): Plugin {
   let resolvedPath: string | null = null;
   return {
-    name: "inline-next-themes",
     enforce: "pre",
+    name: "inline-next-themes",
     resolveId(id) {
       const cleanId = id.split("?")[0] ?? id;
-      if (cleanId !== "next-themes") return null;
+      if (cleanId !== "next-themes") {
+        return null;
+      }
       if (!resolvedPath) {
-        const cjsMain = uiRequire.resolve("next-themes").replace(/[?#].*$/, "");
-        const mjsFile = cjsMain.replace(/\.js$/, ".mjs");
+        const cjsMain = uiRequire
+          .resolve("next-themes")
+          .replace(/[?#].*$/u, "");
+        const mjsFile = cjsMain.replace(/\.js$/u, ".mjs");
         resolvedPath = existsSync(mjsFile) ? mjsFile : cjsMain;
       }
       // No `external` flag: Vite bundles this file into the worker.

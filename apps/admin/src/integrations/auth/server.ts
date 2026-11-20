@@ -21,15 +21,6 @@ export function getInstance() {
   const db = createDb(env.DB);
   return betterAuth({
     baseURL: env.BETTER_AUTH_URL ?? "http://localhost:3101",
-    // Origins the browser may call from. The workers.dev URL is always allowed
-    // (prod); local dev origins come from BETTER_AUTH_TRUSTED_ORIGINS (.env), so
-    // `pnpm dev` on any port works without editing this file.
-    trustedOrigins: [
-      env.BETTER_AUTH_URL,
-      ...(env.BETTER_AUTH_TRUSTED_ORIGINS
-        ? env.BETTER_AUTH_TRUSTED_ORIGINS.split(",").map((s) => s.trim()).filter(Boolean)
-        : []),
-    ],
     database: drizzleAdapter(db, {
       provider: "sqlite",
       schema: {
@@ -45,6 +36,17 @@ export function getInstance() {
     session: {
       cookieCache: { enabled: true, maxAge: 30 * 60 },
     },
+    // Origins the browser may call from. The workers.dev URL is always allowed
+    // (prod); local dev origins come from BETTER_AUTH_TRUSTED_ORIGINS (.env), so
+    // `pnpm dev` on any port works without editing this file.
+    trustedOrigins: [
+      env.BETTER_AUTH_URL,
+      ...(env.BETTER_AUTH_TRUSTED_ORIGINS
+        ? env.BETTER_AUTH_TRUSTED_ORIGINS.split(",")
+            .map((s) => s.trim())
+            .filter(Boolean)
+        : []),
+    ],
   });
 }
 

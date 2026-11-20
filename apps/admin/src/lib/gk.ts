@@ -299,8 +299,10 @@ export function formatEuros(cents: number) {
  * so the input shows its placeholder.
  */
 export function centsToInputValue(cents: number | null | undefined): string {
-  if (cents == null || cents === 0) return "";
-  return (cents / 100).toFixed(2).replace(/\.00$/, "");
+  if (cents === null || cents === undefined || cents === 0) {
+    return "";
+  }
+  return (cents / 100).toFixed(2).replace(/\.00$/u, "");
 }
 
 /**
@@ -309,9 +311,13 @@ export function centsToInputValue(cents: number | null | undefined): string {
  */
 export function inputValueToCents(value: string): number | null {
   const trimmed = value.trim();
-  if (!trimmed) return null;
+  if (!trimmed) {
+    return null;
+  }
   const n = Number(trimmed);
-  if (!Number.isFinite(n)) return null;
+  if (!Number.isFinite(n)) {
+    return null;
+  }
   return Math.round(n * 100);
 }
 

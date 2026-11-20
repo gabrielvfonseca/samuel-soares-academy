@@ -1,4 +1,4 @@
-import { NextResponse, type NextRequest } from "next/server";
+import type { NextRequest } from "next/server";
 import { internationalizationMiddleware } from "@/lib/i18n";
 import { secureHeaders } from "@/lib/secure-headers";
 

@@ -52,6 +52,10 @@ function Dashboard() {
     queryFn: listCoaches,
     queryKey: ["treinadores"],
   });
+  const treinadoresAtivos = useMemo(
+    () => (treinadores.data ?? []).filter((t) => t.active).length,
+    [treinadores.data]
+  );
   const alunos = useQuery({ queryFn: listStudents, queryKey: ["alunos"] });
   const turmas = useQuery({ queryFn: listGroups, queryKey: ["turmas"] });
 
@@ -62,15 +66,24 @@ function Dashboard() {
       ? (turmas.data?.find((x) => x.id === t.group_id)?.name ?? "Group")
       : (alunos.data?.find((a) => a.id === t.student_id)?.name ?? "—");
 
-  const hoje = new Date();
+  function abrirDialog() {
+    setOpen(true);
+  }
+
+  function confirmarApagar(id: string) {
+    if (window.confirm("Eliminar este treino agendado?")) {
+      apagar.mutate(id);
+    }
+  }
+
+  const hoje = useMemo(() => new Date(), []);
   const { deHoje, proximos } = useMemo(() => {
     const lista = treinos.data ?? [];
     return {
       deHoje: lista.filter((t) => sameDay(new Date(t.start_date), hoje)),
       proximos: lista.filter((t) => new Date(t.start_date) > hoje).slice(0, 8),
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [treinos.data]);
+  }, [treinos.data, hoje]);
 
   return (
     <div className="space-y-8">
@@ -86,7 +99,7 @@ function Dashboard() {
             })}
           </p>
         </div>
-        <Button onClick={() => setOpen(true)}>
+        <Button onClick={abrirDialog}>
           <Plus className="size-4" /> Marcar treino
         </Button>
       </header>
@@ -100,7 +113,7 @@ function Dashboard() {
         <StatCard
           icon={Users}
           label="Treinadores ativos"
-          value={(treinadores.data ?? []).filter((t) => t.active).length}
+          value={treinadoresAtivos}
         />
         <StatCard
           icon={GraduationCap}
@@ -149,11 +162,7 @@ function Dashboard() {
                     <Button
                       className="text-destructive hover:text-destructive"
                       disabled={apagar.isPending}
-                      onClick={() => {
-                        if (window.confirm("Eliminar este treino agendado?")) {
-                          apagar.mutate(t.id);
-                        }
-                      }}
+                      onClick={() => confirmarApagar(t.id)}
                       size="icon"
                       variant="ghost"
                     >

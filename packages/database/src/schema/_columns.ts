@@ -50,27 +50,27 @@ export function utcOffset(timezone: string, date = new Date()): string {
 export const betterAuthAccount = sqliteTable(
   "account",
   {
+    accessToken: text("access_token"),
+    accessTokenExpiresAt: text("access_token_expires_at"),
     accountId: text("account_id").notNull(),
     createdAt: text("created_at")
       .notNull()
       .$defaultFn(() => new Date().toISOString()),
     id: text("id").primaryKey(),
-    providerId: text("provider_id").notNull(),
-    scope: text("scope"),
-    userId: text("user_id")
-      .notNull()
-      .references(() => betterAuthUser.id, { onDelete: "cascade" }),
-    accessToken: text("access_token"),
-    accessTokenExpiresAt: text("access_token_expires_at"),
     idToken: text("id_token"),
     password: text("password"),
+    providerId: text("provider_id").notNull(),
     refreshToken: text("refresh_token"),
     refreshTokenExpiresAt: text("refresh_token_expires_at"),
+    scope: text("scope"),
     updatedAt: text("updated_at")
       .notNull()
       .$onUpdate(() => new Date().toISOString()),
+    userId: text("user_id")
+      .notNull()
+      .references(() => betterAuthUser.id, { onDelete: "cascade" }),
   },
-  (table) => [index("idx_account_user_id").on(table.userId)],
+  (table) => [index("idx_account_user_id").on(table.userId)]
 );
 
 export const betterAuthSession = sqliteTable("session", {

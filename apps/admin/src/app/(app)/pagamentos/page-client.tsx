@@ -506,9 +506,9 @@ function Pagamentos() {
                   <div className="flex flex-wrap items-center gap-2">
                     <Input
                       className="w-32"
-                      defaultValue={
-                        centsToInputValue(m?.amount ?? c.monthly_fee)
-                      }
+                      defaultValue={centsToInputValue(
+                        m?.amount ?? c.monthly_fee
+                      )}
                       key={`${c.id}-${mes}`}
                       onBlur={(e) =>
                         guardarMensalidade.mutate({

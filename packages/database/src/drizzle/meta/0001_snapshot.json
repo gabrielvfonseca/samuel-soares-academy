@@ -102,9 +102,7 @@
       "indexes": {
         "idx_account_user_id": {
           "name": "idx_account_user_id",
-          "columns": [
-            "user_id"
-          ],
+          "columns": ["user_id"],
           "isUnique": false
         }
       },
@@ -113,12 +111,8 @@
           "name": "account_user_id_user_id_fk",
           "tableFrom": "account",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -197,9 +191,7 @@
       "indexes": {
         "session_token_unique": {
           "name": "session_token_unique",
-          "columns": [
-            "token"
-          ],
+          "columns": ["token"],
           "isUnique": true
         }
       },
@@ -208,12 +200,8 @@
           "name": "session_user_id_user_id_fk",
           "tableFrom": "session",
           "tableTo": "user",
-          "columnsFrom": [
-            "user_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["user_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -279,9 +267,7 @@
       "indexes": {
         "user_email_unique": {
           "name": "user_email_unique",
-          "columns": [
-            "email"
-          ],
+          "columns": ["email"],
           "isUnique": true
         }
       },
@@ -427,10 +413,7 @@
       "indexes": {
         "monthly_fees_unique": {
           "name": "monthly_fees_unique",
-          "columns": [
-            "student_id",
-            "month"
-          ],
+          "columns": ["student_id", "month"],
           "isUnique": true
         }
       },
@@ -439,12 +422,8 @@
           "name": "monthly_fees_club_id_clubs_id_fk",
           "tableFrom": "monthly_fees",
           "tableTo": "clubs",
-          "columnsFrom": [
-            "club_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["club_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -452,12 +431,8 @@
           "name": "monthly_fees_student_id_students_id_fk",
           "tableFrom": "monthly_fees",
           "tableTo": "students",
-          "columnsFrom": [
-            "student_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["student_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -563,12 +538,8 @@
           "name": "transactions_coach_id_coaches_id_fk",
           "tableFrom": "transactions",
           "tableTo": "coaches",
-          "columnsFrom": [
-            "coach_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["coach_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -576,12 +547,8 @@
           "name": "transactions_monthly_fee_id_monthly_fees_id_fk",
           "tableFrom": "transactions",
           "tableTo": "monthly_fees",
-          "columnsFrom": [
-            "monthly_fee_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["monthly_fee_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -589,12 +556,8 @@
           "name": "transactions_training_id_trainings_id_fk",
           "tableFrom": "transactions",
           "tableTo": "trainings",
-          "columnsFrom": [
-            "training_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["training_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -728,10 +691,7 @@
       "indexes": {
         "student_groups_unique": {
           "name": "student_groups_unique",
-          "columns": [
-            "student_id",
-            "group_id"
-          ],
+          "columns": ["student_id", "group_id"],
           "isUnique": true
         }
       },
@@ -740,12 +700,8 @@
           "name": "student_groups_group_id_groups_id_fk",
           "tableFrom": "student_groups",
           "tableTo": "groups",
-          "columnsFrom": [
-            "group_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["group_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         },
@@ -753,12 +709,8 @@
           "name": "student_groups_student_id_students_id_fk",
           "tableFrom": "student_groups",
           "tableTo": "students",
-          "columnsFrom": [
-            "student_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["student_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -883,12 +835,8 @@
           "name": "students_group_id_groups_id_fk",
           "tableFrom": "students",
           "tableTo": "groups",
-          "columnsFrom": [
-            "group_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["group_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -963,12 +911,8 @@
           "name": "availability_coach_id_coaches_id_fk",
           "tableFrom": "availability",
           "tableTo": "coaches",
-          "columnsFrom": [
-            "coach_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["coach_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1036,12 +980,8 @@
           "name": "club_sessions_club_id_clubs_id_fk",
           "tableFrom": "club_sessions",
           "tableTo": "clubs",
-          "columnsFrom": [
-            "club_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["club_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1167,12 +1107,8 @@
           "name": "clubs_coach_id_coaches_id_fk",
           "tableFrom": "clubs",
           "tableTo": "coaches",
-          "columnsFrom": [
-            "coach_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["coach_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1180,12 +1116,8 @@
           "name": "clubs_field_id_fields_id_fk",
           "tableFrom": "clubs",
           "tableTo": "fields",
-          "columnsFrom": [
-            "field_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["field_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1260,12 +1192,8 @@
           "name": "field_availability_field_id_fields_id_fk",
           "tableFrom": "field_availability",
           "tableTo": "fields",
-          "columnsFrom": [
-            "field_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["field_id"],
+          "columnsTo": ["id"],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
@@ -1429,12 +1357,8 @@
           "name": "groups_coach_id_coaches_id_fk",
           "tableFrom": "groups",
           "tableTo": "coaches",
-          "columnsFrom": [
-            "coach_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["coach_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1442,12 +1366,8 @@
           "name": "groups_field_id_fields_id_fk",
           "tableFrom": "groups",
           "tableTo": "fields",
-          "columnsFrom": [
-            "field_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["field_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1673,12 +1593,8 @@
           "name": "reminder_history_coach_id_coaches_id_fk",
           "tableFrom": "reminder_history",
           "tableTo": "coaches",
-          "columnsFrom": [
-            "coach_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["coach_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1686,12 +1602,8 @@
           "name": "reminder_history_training_id_trainings_id_fk",
           "tableFrom": "reminder_history",
           "tableTo": "trainings",
-          "columnsFrom": [
-            "training_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["training_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }
@@ -1832,12 +1744,8 @@
           "name": "trainings_club_id_clubs_id_fk",
           "tableFrom": "trainings",
           "tableTo": "clubs",
-          "columnsFrom": [
-            "club_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["club_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1845,12 +1753,8 @@
           "name": "trainings_coach_id_coaches_id_fk",
           "tableFrom": "trainings",
           "tableTo": "coaches",
-          "columnsFrom": [
-            "coach_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["coach_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1858,12 +1762,8 @@
           "name": "trainings_group_id_groups_id_fk",
           "tableFrom": "trainings",
           "tableTo": "groups",
-          "columnsFrom": [
-            "group_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["group_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         },
@@ -1871,12 +1771,8 @@
           "name": "trainings_student_id_students_id_fk",
           "tableFrom": "trainings",
           "tableTo": "students",
-          "columnsFrom": [
-            "student_id"
-          ],
-          "columnsTo": [
-            "id"
-          ],
+          "columnsFrom": ["student_id"],
+          "columnsTo": ["id"],
           "onDelete": "set null",
           "onUpdate": "no action"
         }

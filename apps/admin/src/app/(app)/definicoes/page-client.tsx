@@ -152,6 +152,53 @@ function Definicoes() {
   const nomeTreinador = (id: string | null) =>
     treinadores.data?.find((t) => t.id === id)?.name ?? "—";
 
+  function handleHoraChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, daily_send_time: e.target.value });
+  }
+
+  function handleCanalChange(v: string) {
+    setForm({
+      ...form,
+      preferred_channel: v as "Email" | "WhatsApp" | "Both",
+    });
+  }
+
+  function handleResendChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, resend_api_key: e.target.value });
+  }
+
+  function handleRemetenteChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, from_email: e.target.value });
+  }
+
+  function handleWaChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, whatsapp_api_key: e.target.value });
+  }
+
+  function handleWaidChange(e: React.ChangeEvent<HTMLInputElement>) {
+    setForm({ ...form, whatsapp_phone_id: e.target.value });
+  }
+
+  function guardarDef() {
+    guardar.mutate();
+  }
+
+  function testarEnvio() {
+    testar.mutate();
+  }
+
+  function testarFaturasEnvio() {
+    testarFaturas.mutate();
+  }
+
+  function testarOrdenadosEnvio() {
+    testarOrdenados.mutate();
+  }
+
+  function testarMensalidadesEnvio() {
+    testarMensalidades.mutate();
+  }
+
   return (
     <div className="space-y-8">
       <header>
@@ -176,21 +223,15 @@ function Definicoes() {
             <Label htmlFor="hora">Hora de envio diário</Label>
             <Input
               id="hora"
-              onChange={(e) =>
-                setForm({ ...form, daily_send_time: e.target.value })
-              }
+              onChange={handleHoraChange}
               type="time"
               value={form.daily_send_time}
             />
             <div className="space-y-2">
+              {/* biome-ignore lint/a11y/noLabelWithoutControl: Radix Select trigger has implicit label association */}
               <Label>Canal preferencial</Label>
               <Select
-                onValueChange={(v) =>
-                  setForm({
-                    ...form,
-                    preferred_channel: v as "Email" | "WhatsApp" | "Both",
-                  })
-                }
+                onValueChange={handleCanalChange}
                 value={form.preferred_channel}
               >
                 <SelectTrigger>
@@ -208,9 +249,7 @@ function Definicoes() {
             <Label htmlFor="resend">Chave API Resend</Label>
             <Input
               id="resend"
-              onChange={(e) =>
-                setForm({ ...form, resend_api_key: e.target.value })
-              }
+              onChange={handleResendChange}
               placeholder="re_..."
               type="password"
               value={form.resend_api_key}
@@ -220,7 +259,7 @@ function Definicoes() {
             <Label htmlFor="remetente">Email remetente</Label>
             <Input
               id="remetente"
-              onChange={(e) => setForm({ ...form, from_email: e.target.value })}
+              onChange={handleRemetenteChange}
               placeholder="treinos@aminhaescola.pt"
               value={form.from_email}
             />
@@ -229,9 +268,7 @@ function Definicoes() {
             <Label htmlFor="wa">Token API WhatsApp</Label>
             <Input
               id="wa"
-              onChange={(e) =>
-                setForm({ ...form, whatsapp_api_key: e.target.value })
-              }
+              onChange={handleWaChange}
               type="password"
               value={form.whatsapp_api_key}
             />
@@ -240,43 +277,38 @@ function Definicoes() {
             <Label htmlFor="waid">WhatsApp Phone Number ID</Label>
             <Input
               id="waid"
-              onChange={(e) =>
-                setForm({ ...form, whatsapp_phone_id: e.target.value })
-              }
+              onChange={handleWaidChange}
               value={form.whatsapp_phone_id}
             />
           </div>
           <div className="flex gap-2 md:col-span-2">
-            <Button
-              disabled={guardar.isPending}
-              onClick={() => guardar.mutate()}
-            >
+            <Button disabled={guardar.isPending} onClick={guardarDef}>
               Guardar definições
             </Button>
             <Button
               disabled={testar.isPending}
-              onClick={() => testar.mutate()}
+              onClick={testarEnvio}
               variant="outline"
             >
               <Send className="size-4" /> Enviar agora (teste)
             </Button>
             <Button
               disabled={testarFaturas.isPending}
-              onClick={() => testarFaturas.mutate()}
+              onClick={testarFaturasEnvio}
               variant="outline"
             >
               <Send className="size-4" /> Testar resumo de faturas
             </Button>
             <Button
               disabled={testarOrdenados.isPending}
-              onClick={() => testarOrdenados.mutate()}
+              onClick={testarOrdenadosEnvio}
               variant="outline"
             >
               <Send className="size-4" /> Testar resumo de ordenados
             </Button>
             <Button
               disabled={testarMensalidades.isPending}
-              onClick={() => testarMensalidades.mutate()}
+              onClick={testarMensalidadesEnvio}
               variant="outline"
             >
               <Send className="size-4" /> Testar mensalidades em atraso

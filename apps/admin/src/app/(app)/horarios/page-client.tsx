@@ -211,6 +211,7 @@ function Horarios() {
           </DialogHeader>
           <div className="space-y-3">
             <div className="space-y-1.5">
+              {/* biome-ignore lint/a11y/noLabelWithoutControl: Radix Select trigger has implicit label association */}
               <Label>Coach</Label>
               <Select
                 onValueChange={(v) => setForm({ ...form, coach_id: v })}
@@ -229,6 +230,7 @@ function Horarios() {
               </Select>
             </div>
             <div className="space-y-1.5">
+              {/* biome-ignore lint/a11y/noLabelWithoutControl: Radix Select trigger has implicit label association */}
               <Label>Dia da semana</Label>
               <Select
                 onValueChange={(v) => setForm({ ...form, day_of_week: v })}
@@ -248,6 +250,7 @@ function Horarios() {
             </div>
             <div className="grid grid-cols-2 gap-3">
               <div className="space-y-1.5">
+                {/* biome-ignore lint/a11y/noLabelWithoutControl: input has implicit label association */}
                 <Label>Início</Label>
                 <Input
                   onChange={(e) =>
@@ -258,6 +261,7 @@ function Horarios() {
                 />
               </div>
               <div className="space-y-1.5">
+                {/* biome-ignore lint/a11y/noLabelWithoutControl: input has implicit label association */}
                 <Label>Fim</Label>
                 <Input
                   onChange={(e) =>
@@ -269,6 +273,7 @@ function Horarios() {
               </div>
             </div>
             <div className="space-y-1.5">
+              {/* biome-ignore lint/a11y/noLabelWithoutControl: textarea has implicit label association */}
               <Label>Notas</Label>
               <Textarea
                 onChange={(e) => setForm({ ...form, notes: e.target.value })}
