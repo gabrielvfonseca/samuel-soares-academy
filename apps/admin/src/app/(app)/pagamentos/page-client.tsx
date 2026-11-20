@@ -25,73 +25,75 @@ import {
 } from "@repo/ui/components/tabs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/data/client";
 import {
-  ESTADOS_FATURA,
-  ESTADOS_PAGAMENTO,
-  formatData,
+  centsToInputValue,
+  currentMonth,
+  formatDate,
   formatEuros,
-  formatHora,
-  formatMes,
-  listAlunos,
-  listClubes,
-  listMensalidades,
-  listTreinos,
-  mesAtual,
+  formatMonth,
+  formatTime,
+  INVOICE_STATUSES,
+  inputValueToCents,
+  listClubs,
+  listMonthlyFees,
+  listStudents,
+  listTrainings,
+  PAYMENT_STATUSES,
 } from "@/lib/gk";
 
 function Pagamentos() {
   const qc = useQueryClient();
-  const treinos = useQuery({ queryFn: listTreinos, queryKey: ["treinos"] });
-  const alunos = useQuery({ queryFn: listAlunos, queryKey: ["alunos"] });
+  const treinos = useQuery({ queryFn: listTrainings, queryKey: ["treinos"] });
+  const alunos = useQuery({ queryFn: listStudents, queryKey: ["alunos"] });
   const mensalidades = useQuery({
-    queryFn: listMensalidades,
+    queryFn: listMonthlyFees,
     queryKey: ["mensalidades"],
   });
-  const clubes = useQuery({ queryFn: listClubes, queryKey: ["clubes"] });
+  const clubes = useQuery({ queryFn: listClubs, queryKey: ["clubes"] });
 
   const [filtro, setFiltro] = useState("todos");
-  const [mes, setMes] = useState(mesAtual().slice(0, 7));
+  const [mes, setMes] = useState(currentMonth().slice(0, 7));
 
   const nomeAluno = (id: string | null) =>
-    alunos.data?.find((a) => a.id === id)?.nome ?? "—";
+    alunos.data?.find((a) => a.id === id)?.name ?? "—";
 
   const individuais = useMemo(
     () =>
       (treinos.data ?? [])
-        .filter((t) => t.tipo === "Individual" && t.estado === "Concluído")
-        .filter((t) => filtro === "todos" || t.estado_pagamento === filtro)
-        .sort((a, b) => b.data_hora_inicio.localeCompare(a.data_hora_inicio)),
+        .filter((t) => t.type === "Individual" && t.status === "Completed")
+        .filter((t) => filtro === "todos" || t.payment_status === filtro)
+        .sort((a, b) => b.start_date.localeCompare(a.start_date)),
     [treinos.data, filtro]
   );
 
   const porReceber = (treinos.data ?? []).filter(
     (t) =>
-      t.tipo === "Individual" &&
-      t.estado === "Concluído" &&
-      t.estado_pagamento === "A aguardar pagamento"
+      t.type === "Individual" &&
+      t.status === "Completed" &&
+      t.payment_status === "Pending"
   ).length;
 
   const comFatura = (treinos.data ?? []).filter(
     (t) =>
-      t.tipo === "Individual" &&
-      t.estado_pagamento === "Pago" &&
-      t.fatura === "Com fatura"
+      t.type === "Individual" &&
+      t.payment_status === "Paid" &&
+      t.invoice === "Invoiced"
   ).length;
 
   const alunosGrupo = useMemo(() => {
     const ids = new Set(
       (treinos.data ?? [])
-        .filter((t) => t.tipo === "Grupo" && t.aluno_id)
-        .map((t) => t.aluno_id)
+        .filter((t) => t.type === "Group" && t.student_id)
+        .map((t) => t.student_id)
     );
     return (alunos.data ?? []).filter(
-      (a) => a.tipo_atleta === "Grupo" || ids.has(a.id)
+      (a) => a.athlete_type === "Group" || ids.has(a.id)
     );
   }, [treinos.data, alunos.data]);
 
   const clubesAtivos = useMemo(
-    () => (clubes.data ?? []).filter((c) => c.ativo),
+    () => (clubes.data ?? []).filter((c) => c.active),
     [clubes.data]
   );
 
@@ -99,10 +101,10 @@ function Pagamentos() {
     const registo = (id: string) =>
       (mensalidades.data ?? []).find(
         (m) =>
-          (m.aluno_id === id || m.clube_id === id) &&
-          m.mes_referencia.slice(0, 7) === mes
+          (m.student_id === id || m.club_id === id) &&
+          m.month.slice(0, 7) === mes
       );
-    const naoPago = (id: string) => registo(id)?.estado_pagamento !== "Pago";
+    const naoPago = (id: string) => registo(id)?.payment_status !== "Paid";
     return {
       clubesEmAtraso: clubesAtivos.filter((c) => naoPago(c.id)).length,
       emAtraso: alunosGrupo.filter((a) => naoPago(a.id)).length,
@@ -113,23 +115,23 @@ function Pagamentos() {
     mutationFn: async (v: {
       id: string;
       campo: "estado_pagamento" | "fatura" | "nif";
-      valor: string;
+      amount: string;
     }) => {
       const payload =
         v.campo === "estado_pagamento"
           ? {
-              estado_pagamento: v.valor,
-              fatura: v.valor === "Pago" ? "Sem fatura" : null,
-              ...(v.valor === "Pago" ? {} : { nif: null }),
+              invoice: v.amount === "Paid" ? "No invoice" : null,
+              payment_status: v.amount,
+              ...(v.amount === "Paid" ? {} : { tax_id: null }),
             }
           : v.campo === "fatura"
             ? {
-                fatura: v.valor,
-                ...(v.valor === "Com fatura" ? {} : { nif: null }),
+                invoice: v.amount,
+                ...(v.amount === "Invoiced" ? {} : { tax_id: null }),
               }
-            : { nif: v.valor || null };
+            : { tax_id: v.amount || null };
       const { error } = await supabase
-        .from("treinos")
+        .from("trainings")
         .update(payload as never)
         .eq("id", v.id);
       if (error) {
@@ -145,36 +147,34 @@ function Pagamentos() {
 
   const guardarMensalidade = useMutation({
     mutationFn: async (v: {
-      alunoId?: string;
-      clubeId?: string;
+      student_id?: string;
+      club_id?: string;
       campo: "estado_pagamento" | "fatura" | "valor" | "nif";
-      valor: string;
+      amount: string;
     }) => {
       const base: Record<string, unknown> = {
-        aluno_id: v.alunoId ?? null,
-        clube_id: v.clubeId ?? null,
-        mes_referencia: `${mes}-01`,
+        club_id: v.club_id ?? null,
+        month: `${mes}-01`,
+        student_id: v.student_id ?? null,
       };
       if (v.campo === "valor") {
-        base.valor = v.valor === "" ? null : Number(v.valor);
+        base.amount = inputValueToCents(v.amount);
       } else if (v.campo === "estado_pagamento") {
-        base.estado_pagamento = v.valor;
-        base.fatura = v.valor === "Pago" ? "Sem fatura" : null;
+        base.payment_status = v.amount;
+        base.invoice = v.amount === "Paid" ? "No invoice" : null;
       } else if (v.campo === "nif") {
-        base.nif = v.valor || null;
+        base.tax_id = v.amount || null;
       } else {
-        base.fatura = v.valor;
-        if (v.valor !== "Com fatura") {
-          base.nif = null;
+        base.invoice = v.amount;
+        if (v.amount !== "Invoiced") {
+          base.tax_id = null;
         }
       }
 
       const { error } = await supabase
-        .from("mensalidades")
+        .from("monthly_fees")
         .upsert(base as never, {
-          onConflict: v.clubeId
-            ? "clube_id,mes_referencia"
-            : "aluno_id,mes_referencia",
+          onConflict: v.club_id ? "club_id,month" : "student_id,month",
         });
       if (error) {
         throw new Error(error.message);
@@ -184,15 +184,14 @@ function Pagamentos() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["mensalidades"] });
       qc.invalidateQueries({ queryKey: ["movimentos"] });
-      toast.success("Mensalidade atualizada");
+      toast.success("MonthlyFee atualizada");
     },
   });
 
   const mensalidadeDe = (id: string) =>
     (mensalidades.data ?? []).find(
       (m) =>
-        (m.aluno_id === id || m.clube_id === id) &&
-        m.mes_referencia.slice(0, 7) === mes
+        (m.student_id === id || m.club_id === id) && m.month.slice(0, 7) === mes
     );
 
   return (
@@ -265,7 +264,7 @@ function Pagamentos() {
             </SelectTrigger>
             <SelectContent>
               <SelectItem value="todos">Todos os estados</SelectItem>
-              {ESTADOS_PAGAMENTO.map((e) => (
+              {PAYMENT_STATUSES.map((e) => (
                 <SelectItem key={e} value={e}>
                   {e}
                 </SelectItem>
@@ -277,51 +276,50 @@ function Pagamentos() {
             <Card key={t.id}>
               <CardContent className="flex flex-wrap items-center justify-between gap-3 pt-6">
                 <div>
-                  <p className="font-semibold">{nomeAluno(t.aluno_id)}</p>
+                  <p className="font-semibold">{nomeAluno(t.student_id)}</p>
                   <p className="text-muted-foreground text-sm">
-                    {formatData(t.data_hora_inicio)} ·{" "}
-                    {formatHora(t.data_hora_inicio)} –{" "}
-                    {formatHora(t.data_hora_fim)} · {t.campo_local ?? "—"}
+                    {formatDate(t.start_date)} · {formatTime(t.start_date)} –{" "}
+                    {formatTime(t.end_date)} · {t.field ?? "—"}
                   </p>
                 </div>
                 <div className="flex flex-wrap items-center gap-2">
                   <Select
                     onValueChange={(v) =>
                       atualizarTreino.mutate({
+                        amount: v,
                         campo: "estado_pagamento",
                         id: t.id,
-                        valor: v,
                       })
                     }
-                    value={t.estado_pagamento}
+                    value={t.payment_status}
                   >
                     <SelectTrigger className="w-52">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {ESTADOS_PAGAMENTO.map((e) => (
+                      {PAYMENT_STATUSES.map((e) => (
                         <SelectItem key={e} value={e}>
                           {e}
                         </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
-                  {t.estado_pagamento === "Pago" && (
+                  {t.payment_status === "Paid" && (
                     <Select
                       onValueChange={(v) =>
                         atualizarTreino.mutate({
+                          amount: v,
                           campo: "fatura",
                           id: t.id,
-                          valor: v,
                         })
                       }
-                      value={t.fatura ?? "Sem fatura"}
+                      value={t.invoice ?? "No invoice"}
                     >
                       <SelectTrigger className="w-40">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {ESTADOS_FATURA.map((e) => (
+                        {INVOICE_STATUSES.map((e) => (
                           <SelectItem key={e} value={e}>
                             {e}
                           </SelectItem>
@@ -329,24 +327,23 @@ function Pagamentos() {
                       </SelectContent>
                     </Select>
                   )}
-                  {t.estado_pagamento === "Pago" &&
-                    t.fatura === "Com fatura" && (
-                      <Input
-                        className="w-40"
-                        defaultValue={t.nif ?? ""}
-                        inputMode="numeric"
-                        onBlur={(e) => {
-                          if ((e.target.value || null) !== (t.nif ?? null)) {
-                            atualizarTreino.mutate({
-                              campo: "nif",
-                              id: t.id,
-                              valor: e.target.value,
-                            });
-                          }
-                        }}
-                        placeholder="NIF"
-                      />
-                    )}
+                  {t.payment_status === "Paid" && t.invoice === "Invoiced" && (
+                    <Input
+                      className="w-40"
+                      defaultValue={t.tax_id ?? ""}
+                      inputMode="numeric"
+                      onBlur={(e) => {
+                        if ((e.target.value || null) !== (t.tax_id ?? null)) {
+                          atualizarTreino.mutate({
+                            amount: e.target.value,
+                            campo: "nif",
+                            id: t.id,
+                          });
+                        }
+                      }}
+                      placeholder="NIF"
+                    />
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -371,7 +368,7 @@ function Pagamentos() {
               />
             </div>
             <Badge className="mb-2 capitalize" variant="secondary">
-              {formatMes(`${mes}-01`)}
+              {formatMonth(`${mes}-01`)}
             </Badge>
           </div>
 
@@ -381,20 +378,21 @@ function Pagamentos() {
               <Card key={a.id}>
                 <CardContent className="flex flex-wrap items-center justify-between gap-3 pt-6">
                   <div>
-                    <p className="font-semibold">{a.nome}</p>
+                    <p className="font-semibold">{a.name}</p>
                     <p className="text-muted-foreground text-sm">
-                      {a.escalao ?? "—"}
+                      {a.level ?? "—"}
                     </p>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
                     <Input
                       className="w-32"
-                      defaultValue={m?.valor ?? ""}
+                      defaultValue={centsToInputValue(m?.amount)}
+                      key={`${a.id}-${mes}`}
                       onBlur={(e) =>
                         guardarMensalidade.mutate({
-                          alunoId: a.id,
+                          amount: e.target.value,
                           campo: "valor",
-                          valor: e.target.value,
+                          student_id: a.id,
                         })
                       }
                       placeholder="Valor €"
@@ -404,40 +402,40 @@ function Pagamentos() {
                     <Select
                       onValueChange={(v) =>
                         guardarMensalidade.mutate({
-                          alunoId: a.id,
+                          amount: v,
                           campo: "estado_pagamento",
-                          valor: v,
+                          student_id: a.id,
                         })
                       }
-                      value={m?.estado_pagamento ?? "A aguardar pagamento"}
+                      value={m?.payment_status ?? "Pending"}
                     >
                       <SelectTrigger className="w-52">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {ESTADOS_PAGAMENTO.map((e) => (
+                        {PAYMENT_STATUSES.map((e) => (
                           <SelectItem key={e} value={e}>
                             {e}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
-                    {m?.estado_pagamento === "Pago" && (
+                    {m?.payment_status === "Paid" && (
                       <Select
                         onValueChange={(v) =>
                           guardarMensalidade.mutate({
-                            alunoId: a.id,
+                            amount: v,
                             campo: "fatura",
-                            valor: v,
+                            student_id: a.id,
                           })
                         }
-                        value={m.fatura ?? "Sem fatura"}
+                        value={m.invoice ?? "No invoice"}
                       >
                         <SelectTrigger className="w-40">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {ESTADOS_FATURA.map((e) => (
+                          {INVOICE_STATUSES.map((e) => (
                             <SelectItem key={e} value={e}>
                               {e}
                             </SelectItem>
@@ -445,18 +443,20 @@ function Pagamentos() {
                         </SelectContent>
                       </Select>
                     )}
-                    {m?.estado_pagamento === "Pago" &&
-                      m.fatura === "Com fatura" && (
+                    {m?.payment_status === "Paid" &&
+                      m.invoice === "Invoiced" && (
                         <Input
                           className="w-40"
-                          defaultValue={m.nif ?? ""}
+                          defaultValue={m.tax_id ?? ""}
                           inputMode="numeric"
                           onBlur={(e) => {
-                            if ((e.target.value || null) !== (m.nif ?? null)) {
+                            if (
+                              (e.target.value || null) !== (m.tax_id ?? null)
+                            ) {
                               guardarMensalidade.mutate({
-                                alunoId: a.id,
+                                amount: e.target.value,
                                 campo: "nif",
-                                valor: e.target.value,
+                                student_id: a.id,
                               });
                             }
                           }}
@@ -488,7 +488,7 @@ function Pagamentos() {
               />
             </div>
             <Badge className="mb-2 capitalize" variant="secondary">
-              {formatMes(`${mes}-01`)}
+              {formatMonth(`${mes}-01`)}
             </Badge>
           </div>
 
@@ -498,21 +498,23 @@ function Pagamentos() {
               <Card key={c.id}>
                 <CardContent className="flex flex-wrap items-center justify-between gap-3 pt-6">
                   <div>
-                    <p className="font-semibold">{c.nome}</p>
+                    <p className="font-semibold">{c.name}</p>
                     <p className="text-muted-foreground text-sm">
-                      Valor acordado: {formatEuros(Number(c.valor_mensal))}/mês
+                      Valor acordado: {formatEuros(Number(c.monthly_fee))}/mês
                     </p>
                   </div>
                   <div className="flex flex-wrap items-center gap-2">
                     <Input
                       className="w-32"
-                      defaultValue={m?.valor ?? c.valor_mensal ?? ""}
+                      defaultValue={
+                        centsToInputValue(m?.amount ?? c.monthly_fee)
+                      }
                       key={`${c.id}-${mes}`}
                       onBlur={(e) =>
                         guardarMensalidade.mutate({
+                          amount: e.target.value,
                           campo: "valor",
-                          clubeId: c.id,
-                          valor: e.target.value,
+                          club_id: c.id,
                         })
                       }
                       placeholder="Valor €"
@@ -522,40 +524,40 @@ function Pagamentos() {
                     <Select
                       onValueChange={(v) =>
                         guardarMensalidade.mutate({
+                          amount: v,
                           campo: "estado_pagamento",
-                          clubeId: c.id,
-                          valor: v,
+                          club_id: c.id,
                         })
                       }
-                      value={m?.estado_pagamento ?? "A aguardar pagamento"}
+                      value={m?.payment_status ?? "Pending"}
                     >
                       <SelectTrigger className="w-52">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
-                        {ESTADOS_PAGAMENTO.map((e) => (
+                        {PAYMENT_STATUSES.map((e) => (
                           <SelectItem key={e} value={e}>
                             {e}
                           </SelectItem>
                         ))}
                       </SelectContent>
                     </Select>
-                    {m?.estado_pagamento === "Pago" && (
+                    {m?.payment_status === "Paid" && (
                       <Select
                         onValueChange={(v) =>
                           guardarMensalidade.mutate({
+                            amount: v,
                             campo: "fatura",
-                            clubeId: c.id,
-                            valor: v,
+                            club_id: c.id,
                           })
                         }
-                        value={m.fatura ?? "Sem fatura"}
+                        value={m.invoice ?? "No invoice"}
                       >
                         <SelectTrigger className="w-40">
                           <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                          {ESTADOS_FATURA.map((e) => (
+                          {INVOICE_STATUSES.map((e) => (
                             <SelectItem key={e} value={e}>
                               {e}
                             </SelectItem>
@@ -563,18 +565,20 @@ function Pagamentos() {
                         </SelectContent>
                       </Select>
                     )}
-                    {m?.estado_pagamento === "Pago" &&
-                      m.fatura === "Com fatura" && (
+                    {m?.payment_status === "Paid" &&
+                      m.invoice === "Invoiced" && (
                         <Input
                           className="w-40"
-                          defaultValue={m.nif ?? c.nif ?? ""}
+                          defaultValue={m.tax_id ?? c.tax_id ?? ""}
                           inputMode="numeric"
                           onBlur={(e) => {
-                            if ((e.target.value || null) !== (m.nif ?? null)) {
+                            if (
+                              (e.target.value || null) !== (m.tax_id ?? null)
+                            ) {
                               guardarMensalidade.mutate({
+                                amount: e.target.value,
                                 campo: "nif",
-                                clubeId: c.id,
-                                valor: e.target.value,
+                                club_id: c.id,
                               });
                             }
                           }}

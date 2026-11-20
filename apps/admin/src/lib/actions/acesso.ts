@@ -1,61 +1,156 @@
 "use server";
 
+import { env } from "cloudflare:workers";
+import { createDb } from "@repo/database/client";
+import { betterAuthUser } from "@repo/database/schema";
+import { eq } from "drizzle-orm";
+import { cookies } from "next/headers";
+import { getInstance } from "@/integrations/auth/server";
+
 /**
  * Acesso restrito: a plataforma é interna e a única forma de entrar é o
  * código de acesso da academia (secret CODIGO_ACESSO_INTERNO).
- * O código é validado no servidor e devolve a sessão da conta interna.
+ * O código é validado no servidor e a sessão da conta interna é gravada
+ * num cookie first-party (Better Auth), lido de volta em cada pedido.
  */
 const EMAIL_INTERNO = "equipa@samuelsoaresacademy.internal";
 
-export async function entrarComCodigo(input: { codigo: string }) {
-  const codigo = String(input?.codigo ?? "").trim();
-  if (!codigo) {
-    throw new Error("Código de acesso em falta");
+interface Resultado {
+  erro?: string;
+  ok: boolean;
+}
+
+interface CookieOpts {
+  domain?: string;
+  expires?: Date;
+  httpOnly?: boolean;
+  maxAge?: number;
+  path?: string;
+  sameSite?: "lax" | "none" | "strict";
+  secure?: boolean;
+}
+
+/**
+ * Parse a `Set-Cookie` header value into name, value and attributes so it
+ * can be re-emitted via `cookies().set()` (the robust way to set cookies
+ * from a Next.js server action).
+ */
+function parseSetCookie(header: string): {
+  name: string;
+  opts: CookieOpts;
+  value: string;
+} | null {
+  const [pair, ...attrs] = header.split(";").map((s) => s.trim());
+  if (!pair) {
+    return null;
+  }
+  const eqIdx = pair.indexOf("=");
+  const name = pair.slice(0, eqIdx);
+  const value = pair.slice(eqIdx + 1);
+
+  const lookup = (key: string): string | null => {
+    for (const a of attrs) {
+      const lower = a.toLowerCase();
+      if (lower === key) {
+        return "true";
+      }
+      const prefix = `${key}=`;
+      if (lower.startsWith(prefix)) {
+        return a.slice(prefix.length);
+      }
+    }
+    return null;
+  };
+
+  const opts: CookieOpts = {
+    httpOnly: lookup("httponly") !== null,
+    path: lookup("path") ?? "/",
+    secure: lookup("secure") !== null,
+  };
+
+  const domain = lookup("domain");
+  if (domain !== null) {
+    opts.domain = domain;
   }
 
-  const esperado = process.env.CODIGO_ACESSO_INTERNO;
+  const maxAgeRaw = lookup("max-age");
+  if (maxAgeRaw !== null) {
+    opts.maxAge = Number(maxAgeRaw);
+  }
+
+  const expiresRaw = lookup("expires");
+  if (expiresRaw !== null) {
+    opts.expires = new Date(expiresRaw);
+  }
+
+  const sameSiteRaw = lookup("samesite");
+  if (sameSiteRaw !== null) {
+    opts.sameSite = sameSiteRaw.toLowerCase() as "lax" | "none" | "strict";
+  }
+
+  return { name, opts, value };
+}
+
+export async function entrarComCodigo(input: {
+  codigo: string;
+}): Promise<Resultado> {
+  const codigo = String(input?.codigo ?? "").trim();
+  if (!codigo) {
+    return { erro: "Código de acesso em falta", ok: false };
+  }
+
+  const esperado = env.CODIGO_ACESSO_INTERNO;
   if (!esperado) {
     throw new Error("Código de acesso não configurado");
   }
   if (codigo !== esperado) {
-    return { erro: "Código de acesso inválido", ok: false as const };
+    return { erro: "Código de acesso inválido", ok: false };
   }
+
+  const auth = getInstance();
+  const db = createDb(env.DB);
+
+  // Ensure the internal user exists (idempotent, by email).
+  const [existente] = await db
+    .select()
+    .from(betterAuthUser)
+    .where(eq(betterAuthUser.email, EMAIL_INTERNO))
+    .limit(1);
 
   const password = `interno::${esperado}`;
-  const { supabaseAdmin } = await import(
-    "@/integrations/supabase/client.server"
+  if (!existente) {
+    await auth.api.signUpEmail({
+      body: { email: EMAIL_INTERNO, name: "Equipa Interna", password },
+    });
+  }
+
+  // Sign in through Better Auth's request handler. The handler produces a
+  // Response whose `Set-Cookie` carries the signed session token.
+  const res = await auth.handler(
+    new Request(`${env.BETTER_AUTH_URL}/api/auth/sign-in/email`, {
+      body: JSON.stringify({
+        email: EMAIL_INTERNO,
+        password,
+        rememberMe: true,
+      }),
+      headers: { "Content-Type": "application/json" },
+      method: "POST",
+    })
   );
 
-  const { error: criarErro } = await supabaseAdmin.auth.admin.createUser({
-    email: EMAIL_INTERNO,
-    email_confirm: true,
-    password,
-  });
+  if (!res.ok) {
+    return { erro: "Não foi possível iniciar sessão", ok: false };
+  }
 
-  if (criarErro) {
-    // Conta já existe: garantir que a palavra-passe acompanha o código atual.
-    const { data: lista } = await supabaseAdmin.auth.admin.listUsers();
-    const utilizador = lista?.users.find((u) => u.email === EMAIL_INTERNO);
-    if (!utilizador) {
-      return { erro: criarErro.message, ok: false as const };
+  // Re-emit the signed cookie through the Next.js cookie store so the
+  // browser receives it on this response (server-action-safe).
+  const setCookieHeader = res.headers.get("Set-Cookie");
+  if (setCookieHeader) {
+    const parsed = parseSetCookie(setCookieHeader);
+    if (parsed) {
+      (await cookies()).set(parsed.name, parsed.value, parsed.opts);
     }
-    await supabaseAdmin.auth.admin.updateUserById(utilizador.id, { password });
   }
 
-  const { data: sessao, error } = await supabaseAdmin.auth.signInWithPassword({
-    email: EMAIL_INTERNO,
-    password,
-  });
-  if (error || !sessao.session) {
-    return {
-      erro: error?.message ?? "Não foi possível iniciar sessão",
-      ok: false as const,
-    };
-  }
-
-  return {
-    access_token: sessao.session.access_token,
-    ok: true as const,
-    refresh_token: sessao.session.refresh_token,
-  };
+  return { ok: true };
 }

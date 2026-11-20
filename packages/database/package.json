@@ -11,21 +11,22 @@
   "scripts": {
     "check-types": "tsc --noEmit",
     "db:check": "drizzle-kit check",
+    "db:deploy": "wrangler d1 migrations apply treninos-db",
+    "db:deploy:preview": "wrangler d1 migrations apply treninos-db --remote=false",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
-    "db:pull": "drizzle-kit pull",
-    "db:push": "drizzle-kit push",
-    "db:studio": "drizzle-kit studio",
+    "db:local": "wrangler d1 migrations apply treninos-db --local",
+    "db:studio": "wrangler d1 execute treninos-db --command='SELECT 1'",
     "transit": "echo transit"
   },
   "dependencies": {
-    "drizzle-orm": "catalog:",
-    "postgres": "catalog:"
+    "drizzle-orm": "catalog:"
   },
   "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250109.0",
     "@repo/typescript-config": "workspace:*",
     "@types/node": "catalog:",
     "drizzle-kit": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "wrangler": "^4.43.0"
   }
 }

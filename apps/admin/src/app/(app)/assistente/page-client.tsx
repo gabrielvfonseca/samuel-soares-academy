@@ -12,18 +12,18 @@ import { Textarea } from "@repo/ui/components/textarea";
 import { Bell, Send, Trash2 } from "@repo/ui/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/data/client";
 import {
   conversarAssistente,
   type MensagemChat,
 } from "@/lib/actions/assistente";
 import { useAuthedAction } from "@/lib/use-authed-action";
 
-interface Lembrete {
-  enviado: boolean;
+interface Reminder {
   id: string;
-  quando: string;
-  texto: string;
+  sent: boolean;
+  text: string;
+  when: string;
 }
 
 function AssistentePage() {
@@ -37,13 +37,13 @@ function AssistentePage() {
   const lembretes = useQuery({
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("lembretes_pessoais")
+        .from("personal_reminders")
         .select("id, texto, quando, enviado")
         .order("quando");
       if (error) {
         throw new Error(error.message);
       }
-      return (data ?? []) as Lembrete[];
+      return (data ?? []) as Reminder[];
     },
     queryKey: ["lembretes-pessoais"],
   });
@@ -69,7 +69,7 @@ function AssistentePage() {
   const apagar = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
-        .from("lembretes_pessoais")
+        .from("personal_reminders")
         .delete()
         .eq("id", id);
       if (error) {
@@ -185,16 +185,16 @@ function AssistentePage() {
                 key={l.id}
               >
                 <div>
-                  <p className="text-sm font-medium">{l.texto}</p>
+                  <p className="text-sm font-medium">{l.text}</p>
                   <p className="text-muted-foreground text-xs">
-                    {new Date(l.quando).toLocaleString("pt-PT", {
+                    {new Date(l.when).toLocaleString("pt-PT", {
                       day: "2-digit",
                       hour: "2-digit",
                       minute: "2-digit",
                       month: "short",
                       weekday: "short",
                     })}
-                    {l.enviado ? " · enviado" : ""}
+                    {l.sent ? " · enviado" : ""}
                   </p>
                 </div>
                 <Button

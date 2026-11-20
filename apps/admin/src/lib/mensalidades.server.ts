@@ -1,13 +1,15 @@
 import "server-only";
 
+import { clubs, monthlyFees, students } from "@repo/database/schema";
 import {
   envelopeEmail,
   estiloTabela,
   estiloTd,
   estiloTh,
 } from "@repo/email/layout";
-
-type Row = Record<string, unknown>;
+import { eq, lt } from "drizzle-orm";
+import { getDb } from "@/integrations/db/client.server";
+import { getConfig, mesNoFuso } from "./db-helpers.server";
 
 const EMAIL_PRINCIPAL = "ruijmorgadomarques@gmail.com";
 const EMAIL_ESCOLA = "geral@samuelsoares.academy";
@@ -17,17 +19,6 @@ export interface ResultadoMensalidades {
   enviado: boolean;
   mes: string;
   valorEmFalta: number;
-}
-
-function mesNoFuso(tz: string) {
-  return new Intl.DateTimeFormat("en-CA", {
-    day: "2-digit",
-    month: "2-digit",
-    timeZone: tz,
-    year: "numeric",
-  })
-    .format(new Date())
-    .slice(0, 7);
 }
 
 function euros(v: number) {
@@ -45,20 +36,12 @@ function mesLegivel(mes: string) {
 }
 
 export async function executarResumoMensalidades(): Promise<ResultadoMensalidades> {
-  const { supabaseAdmin } = await import(
-    "@/integrations/supabase/client.server"
-  );
+  const db = getDb();
 
-  const { data: cfg } = await supabaseAdmin
-    .from("configuracoes_notificacoes")
-    .select("*")
-    .limit(1)
-    .single();
-  const config = (cfg ?? {}) as Row;
-  const tz = (config.fuso_horario as string) || "Europe/Lisbon";
-  const resendKey = config.chave_api_resend as string | null;
-  const remetente =
-    (config.email_remetente as string) || "onboarding@resend.dev";
+  const config = await getConfig();
+  const tz = config?.timezone || "Europe/Lisbon";
+  const resendKey = config?.resendApiKey ?? null;
+  const remetente = config?.fromEmail || "onboarding@resend.dev";
   if (!resendKey) {
     throw new Error("Chave API Resend não configurada");
   }
@@ -70,37 +53,38 @@ export async function executarResumoMensalidades(): Promise<ResultadoMensalidade
       ? `${ano + 1}-01-01`
       : `${ano}-${String(mesNum + 1).padStart(2, "0")}-01`;
 
-  const { data: alunos, error: aErr } = await supabaseAdmin
-    .from("alunos")
-    .select("id, nome")
-    .eq("tipo_atleta", "Grupo");
-  if (aErr) {
-    throw new Error(aErr.message);
-  }
+  const grupoAlunos = await db
+    .select({ id: students.id, nome: students.name })
+    .from(students)
+    .where(eq(students.athleteType, "Group"));
 
-  const { data: clubes, error: cErr } = await supabaseAdmin
-    .from("clubes")
-    .select("id, nome, valor_mensal")
-    .eq("ativo", true);
-  if (cErr) {
-    throw new Error(cErr.message);
-  }
+  const clubesAtivos = await db
+    .select({
+      id: clubs.id,
+      monthlyFee: clubs.monthlyFee,
+      nome: clubs.name,
+    })
+    .from(clubs)
+    .where(eq(clubs.active, true));
 
-  const { data: mensalidades, error: mErr } = await supabaseAdmin
-    .from("mensalidades")
-    .select("aluno_id, clube_id, mes_referencia, valor, estado_pagamento")
-    .lt("mes_referencia", proximoMes);
-  if (mErr) {
-    throw new Error(mErr.message);
-  }
+  const mensalidadesPendentes = await db
+    .select({
+      amount: monthlyFees.amount,
+      clubId: monthlyFees.clubId,
+      month: monthlyFees.month,
+      paymentStatus: monthlyFees.paymentStatus,
+      studentId: monthlyFees.studentId,
+    })
+    .from(monthlyFees)
+    .where(lt(monthlyFees.month, proximoMes));
 
   const nomeAluno = new Map(
-    ((alunos ?? []) as Row[]).map((a) => [a.id as string, a.nome as string])
+    grupoAlunos.map((a) => [a.id as string, a.nome as string])
   );
   const clubeInfo = new Map(
-    ((clubes ?? []) as Row[]).map((c) => [
+    clubesAtivos.map((c) => [
       c.id as string,
-      { nome: c.nome as string, valor: Number(c.valor_mensal ?? 0) },
+      { nome: c.nome as string, valor: (c.monthlyFee ?? 0) / 100 },
     ])
   );
 
@@ -113,14 +97,14 @@ export async function executarResumoMensalidades(): Promise<ResultadoMensalidade
   const linhas: Linha[] = [];
   const registados = new Set<string>();
 
-  for (const m of (mensalidades ?? []) as Row[]) {
-    const mesRef = String(m.mes_referencia).slice(0, 7);
-    const alunoId = m.aluno_id as string | null;
-    const clubeId = m.clube_id as string | null;
+  for (const m of mensalidadesPendentes) {
+    const mesRef = String(m.month).slice(0, 7);
+    const alunoId = m.studentId as string | null;
+    const clubeId = m.clubId as string | null;
     if (mesRef === mes) {
       registados.add(alunoId ?? clubeId ?? "");
     }
-    if ((m.estado_pagamento as string) === "Pago") {
+    if (m.paymentStatus === "Paid") {
       continue;
     }
     if (alunoId && nomeAluno.has(alunoId)) {
@@ -128,14 +112,14 @@ export async function executarResumoMensalidades(): Promise<ResultadoMensalidade
         mes: mesRef,
         nome: nomeAluno.get(alunoId)!,
         tipo: "Atleta de grupo",
-        valor: Number(m.valor ?? 0),
+        valor: (m.amount ?? 0) / 100,
       });
     } else if (clubeId && clubeInfo.has(clubeId)) {
       linhas.push({
         mes: mesRef,
         nome: clubeInfo.get(clubeId)!.nome,
         tipo: "Clube (B2B)",
-        valor: Number(m.valor ?? clubeInfo.get(clubeId)!.valor),
+        valor: (m.amount ?? clubeInfo.get(clubeId)!.valor * 100) / 100,
       });
     }
   }
@@ -172,7 +156,7 @@ export async function executarResumoMensalidades(): Promise<ResultadoMensalidade
               `<tr><td style="${estiloTd}">${l.nome}</td><td style="${estiloTd}">${l.tipo}</td><td style="${estiloTd}">${mesLegivel(l.mes)}</td><td style="${estiloTd}">${l.valor > 0 ? euros(l.valor) : "—"}</td></tr>`
           )
           .join("")}</tbody>
-      </table>`
+    </table>`
     : `<p style="margin:0">Não há mensalidades em atraso. Está tudo em dia.</p>`;
 
   const html = envelopeEmail(

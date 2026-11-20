@@ -1,13 +1,15 @@
 import "server-only";
 
+import { coaches, trainings } from "@repo/database/schema";
 import {
   envelopeEmail,
   estiloTabela,
   estiloTd,
   estiloTh,
 } from "@repo/email/layout";
-
-type Row = Record<string, unknown>;
+import { ne } from "drizzle-orm";
+import { getDb } from "@/integrations/db/client.server";
+import { eurosDeCents, getConfig, mesNoFuso } from "./db-helpers.server";
 
 const EMAIL_PRINCIPAL = "ruijmorgadomarques@gmail.com";
 const EMAIL_ESCOLA = "geral@samuelsoares.academy";
@@ -19,17 +21,6 @@ export interface ResultadoOrdenados {
   treinadores: number;
 }
 
-function mesNoFuso(tz: string) {
-  return new Intl.DateTimeFormat("en-CA", {
-    day: "2-digit",
-    month: "2-digit",
-    timeZone: tz,
-    year: "numeric",
-  })
-    .format(new Date())
-    .slice(0, 7);
-}
-
 function euros(v: number) {
   return new Intl.NumberFormat("pt-PT", {
     currency: "EUR",
@@ -38,47 +29,51 @@ function euros(v: number) {
 }
 
 export async function executarResumoOrdenados(): Promise<ResultadoOrdenados> {
-  const { supabaseAdmin } = await import(
-    "@/integrations/supabase/client.server"
-  );
+  const db = getDb();
 
-  const { data: cfg } = await supabaseAdmin
-    .from("configuracoes_notificacoes")
-    .select("*")
-    .limit(1)
-    .single();
-  const config = (cfg ?? {}) as Row;
-  const tz = (config.fuso_horario as string) || "Europe/Lisbon";
-  const resendKey = config.chave_api_resend as string | null;
-  const remetente =
-    (config.email_remetente as string) || "onboarding@resend.dev";
+  const config = await getConfig();
+  const tz = config?.timezone || "Europe/Lisbon";
+  const resendKey = config?.resendApiKey ?? null;
+  const remetente = config?.fromEmail || "onboarding@resend.dev";
   if (!resendKey) {
     throw new Error("Chave API Resend não configurada");
   }
 
   const mes = mesNoFuso(tz);
-  const inicio = `${mes}-01T00:00:00.000Z`;
-  const fimData = new Date(inicio);
-  fimData.setUTCMonth(fimData.getUTCMonth() + 1);
 
-  const { data: treinadores, error: tErr } = await supabaseAdmin
-    .from("treinadores")
-    .select("id, nome, valor_hora_individual, valor_hora_grupo")
-    .order("nome");
-  if (tErr) {
-    throw new Error(tErr.message);
-  }
+  const todosTreinadores = await db
+    .select({
+      groupRate: coaches.groupRate,
+      id: coaches.id,
+      individualRate: coaches.individualRate,
+      nome: coaches.name,
+    })
+    .from(coaches);
 
-  const { data: treinos, error } = await supabaseAdmin
-    .from("treinos")
-    .select("treinador_id, tipo, estado, data_hora_inicio, data_hora_fim")
-    .neq("estado", "Cancelado")
-    .gte("data_hora_inicio", inicio)
-    .lt("data_hora_inicio", fimData.toISOString())
-    .lte("data_hora_fim", new Date().toISOString());
-  if (error) {
-    throw new Error(error.message);
-  }
+  // `startDate` is an RFC3339 string in the user's local timezone; the
+  // "in month" filter is done in JS (same pattern as `lembretes.server.ts`).
+  // Only finished sessions are paid (`endDate <= now`).
+  const agora = new Date().toISOString();
+  const treinosDoMes = (
+    await db
+      .select({
+        coachId: trainings.coachId,
+        endDate: trainings.endDate,
+        startDate: trainings.startDate,
+        type: trainings.type,
+      })
+      .from(trainings)
+      .where(ne(trainings.status, "Cancelled"))
+  ).filter((t) => {
+    const d = new Date(t.startDate);
+    const ymd = new Intl.DateTimeFormat("en-CA", {
+      day: "2-digit",
+      month: "2-digit",
+      timeZone: tz,
+      year: "numeric",
+    }).format(d);
+    return ymd.slice(0, 7) === mes && t.endDate <= agora;
+  });
 
   interface Linha {
     horasGrupo: number;
@@ -88,29 +83,28 @@ export async function executarResumoOrdenados(): Promise<ResultadoOrdenados> {
     valorInd: number;
   }
   const linhas = new Map<string, Linha>();
-  for (const t of (treinadores ?? []) as Row[]) {
-    linhas.set(t.id as string, {
+  for (const t of todosTreinadores) {
+    linhas.set(t.id, {
       horasGrupo: 0,
       horasInd: 0,
-      nome: t.nome as string,
-      valorGrupo: Number(t.valor_hora_grupo ?? 0),
-      valorInd: Number(t.valor_hora_individual ?? 0),
+      nome: t.nome,
+      valorGrupo: eurosDeCents(t.groupRate),
+      valorInd: eurosDeCents(t.individualRate),
     });
   }
 
-  for (const t of (treinos ?? []) as Row[]) {
-    const linha = linhas.get(t.treinador_id as string);
+  for (const t of treinosDoMes) {
+    const linha = t.coachId ? linhas.get(t.coachId) : undefined;
     if (!linha) {
       continue;
     }
     const horas =
-      (new Date(t.data_hora_fim as string).getTime() -
-        new Date(t.data_hora_inicio as string).getTime()) /
+      (new Date(t.endDate).getTime() - new Date(t.startDate).getTime()) /
       3_600_000;
     if (horas <= 0) {
       continue;
     }
-    if ((t.tipo as string) === "Grupo") {
+    if (t.type === "Group") {
       linha.horasGrupo += horas;
     } else {
       linha.horasInd += horas;
@@ -144,7 +138,7 @@ export async function executarResumoOrdenados(): Promise<ResultadoOrdenados> {
               `<tr><td style="${estiloTd}">${l.nome}</td><td style="${estiloTd}">${l.horasInd.toFixed(1)}h</td><td style="${estiloTd}">${l.horasGrupo.toFixed(1)}h</td><td style="${estiloTd}">${euros(l.total)}</td></tr>`
           )
           .join("")}</tbody>
-      </table>`
+    </table>`
     : `<p style="margin:0">Não há horas de treino registadas neste mês.</p>`;
 
   const html = envelopeEmail(

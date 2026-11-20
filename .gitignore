@@ -23,6 +23,10 @@ next-env.d.ts
 supabase/.branches
 supabase/.temp
 
+# cloudflare / vinext
+.vinext/
+.cloudflare/
+
 # vercel / editor / os
 .vercel
 .DS_Store

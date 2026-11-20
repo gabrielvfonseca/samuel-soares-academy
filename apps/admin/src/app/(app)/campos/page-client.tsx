@@ -30,45 +30,45 @@ import { Textarea } from "@repo/ui/components/textarea";
 import { Check, MapPin, Plus, Trash2 } from "@repo/ui/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/data/client";
 import {
-  DIAS_SEMANA,
-  formatHoraSimples,
-  listCampos,
-  listDisponibilidadesCampos,
+  DAY_NAMES,
+  formatTimeShort,
+  listFieldAvailability,
+  listFields,
 } from "@/lib/gk";
 
 function Campos() {
   const qc = useQueryClient();
-  const campos = useQuery({ queryFn: listCampos, queryKey: ["campos"] });
+  const campos = useQuery({ queryFn: listFields, queryKey: ["campos"] });
   const disp = useQuery({
-    queryFn: listDisponibilidadesCampos,
+    queryFn: listFieldAvailability,
     queryKey: ["disponibilidades-campos"],
   });
 
-  const [novoCampo, setNovoCampo] = useState({ morada: "", nome: "" });
+  const [novoCampo, setNovoCampo] = useState({ address: "", name: "" });
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
-    campo_id: "",
     dias: [1] as number[],
-    hora_fim: "21:00",
-    hora_inicio: "18:00",
-    notas: "",
+    end_time: "21:00",
+    field_id: "",
+    notes: "",
+    start_time: "18:00",
   });
 
   const nomes = useMemo(
-    () => Object.fromEntries((campos.data ?? []).map((c) => [c.id, c.nome])),
+    () => Object.fromEntries((campos.data ?? []).map((c) => [c.id, c.name])),
     [campos.data]
   );
 
   const criarCampo = useMutation({
     mutationFn: async () => {
-      if (!novoCampo.nome.trim()) {
+      if (!novoCampo.name.trim()) {
         throw new Error("Indica o nome do campo.");
       }
-      const { error } = await supabase.from("campos").insert({
-        morada: novoCampo.morada || null,
-        nome: novoCampo.nome.trim(),
+      const { error } = await supabase.from("fields").insert({
+        address: novoCampo.address || null,
+        name: novoCampo.name.trim(),
       } as never);
       if (error) {
         throw new Error(error.message);
@@ -76,15 +76,15 @@ function Campos() {
     },
     onError: (e: Error) => toast.error(e.message),
     onSuccess: () => {
-      setNovoCampo({ morada: "", nome: "" });
+      setNovoCampo({ address: "", name: "" });
       qc.invalidateQueries({ queryKey: ["campos"] });
-      toast.success("Campo adicionado.");
+      toast.success("Field adicionado.");
     },
   });
 
   const removerCampo = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("campos").delete().eq("id", id);
+      const { error } = await supabase.from("fields").delete().eq("id", id);
       if (error) {
         throw new Error(error.message);
       }
@@ -93,28 +93,28 @@ function Campos() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["campos"] });
       qc.invalidateQueries({ queryKey: ["disponibilidades-campos"] });
-      toast.success("Campo removido.");
+      toast.success("Field removido.");
     },
   });
 
   const guardarDisp = useMutation({
     mutationFn: async () => {
-      if (!form.campo_id) {
+      if (!form.field_id) {
         throw new Error("Escolhe o campo.");
       }
       if (form.dias.length === 0) {
         throw new Error("Escolhe pelo menos um dia da semana.");
       }
-      if (form.hora_fim <= form.hora_inicio) {
+      if (form.end_time <= form.start_time) {
         throw new Error("A hora de fim tem de ser depois do início.");
       }
-      const { error } = await supabase.from("disponibilidades_campos").insert(
+      const { error } = await supabase.from("field_availability").insert(
         form.dias.map((dia) => ({
-          campo_id: form.campo_id,
-          dia_semana: dia,
-          hora_fim: form.hora_fim,
-          hora_inicio: form.hora_inicio,
-          notas: form.notas || null,
+          day_of_week: dia,
+          end_time: form.end_time,
+          field_id: form.field_id,
+          notes: form.notes || null,
+          start_time: form.start_time,
         })) as never
       );
       if (error) {
@@ -125,14 +125,14 @@ function Campos() {
     onSuccess: () => {
       setOpen(false);
       qc.invalidateQueries({ queryKey: ["disponibilidades-campos"] });
-      toast.success("Disponibilidade do campo adicionada.");
+      toast.success("Availability do campo adicionada.");
     },
   });
 
   const removerDisp = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
-        .from("disponibilidades_campos")
+        .from("field_availability")
         .delete()
         .eq("id", id);
       if (error) {
@@ -142,7 +142,7 @@ function Campos() {
     onError: (e: Error) => toast.error(e.message),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["disponibilidades-campos"] });
-      toast.success("Disponibilidade removida.");
+      toast.success("Availability removida.");
     },
   });
 
@@ -159,7 +159,7 @@ function Campos() {
           disabled={(campos.data ?? []).length === 0}
           onClick={() => setOpen(true)}
         >
-          <Plus className="size-4" /> Disponibilidade do campo
+          <Plus className="size-4" /> Availability do campo
         </Button>
       </header>
 
@@ -176,10 +176,10 @@ function Campos() {
             <Input
               id="nomecampo"
               onChange={(e) =>
-                setNovoCampo({ ...novoCampo, nome: e.target.value })
+                setNovoCampo({ ...novoCampo, name: e.target.value })
               }
-              placeholder="Campo sintético 1"
-              value={novoCampo.nome}
+              placeholder="Field sintético 1"
+              value={novoCampo.name}
             />
           </div>
           <div className="space-y-2">
@@ -187,9 +187,9 @@ function Campos() {
             <Input
               id="moradacampo"
               onChange={(e) =>
-                setNovoCampo({ ...novoCampo, morada: e.target.value })
+                setNovoCampo({ ...novoCampo, address: e.target.value })
               }
-              value={novoCampo.morada}
+              value={novoCampo.address}
             />
           </div>
           <Button
@@ -203,21 +203,21 @@ function Campos() {
 
       <div className="grid gap-3 md:grid-cols-2">
         {(campos.data ?? []).map((c) => {
-          const horas = (disp.data ?? []).filter((d) => d.campo_id === c.id);
+          const horas = (disp.data ?? []).filter((d) => d.field_id === c.id);
           return (
             <Card key={c.id}>
               <CardHeader className="flex-row items-start justify-between gap-3 space-y-0">
                 <div>
                   <CardTitle className="flex items-center gap-2 text-2xl">
-                    <MapPin className="size-5" /> {c.nome}
+                    <MapPin className="size-5" /> {c.name}
                   </CardTitle>
                   <CardDescription>
-                    {c.morada ?? "Sem morada indicada"}
+                    {c.address ?? "Sem morada indicada"}
                   </CardDescription>
                 </div>
                 <Button
                   onClick={() => {
-                    if (window.confirm(`Remover o campo ${c.nome}?`)) {
+                    if (window.confirm(`Remover o campo ${c.name}?`)) {
                       removerCampo.mutate(c.id);
                     }
                   }}
@@ -240,10 +240,10 @@ function Campos() {
                   >
                     <div className="flex items-center gap-2 text-sm">
                       <Badge variant="secondary">
-                        {DIAS_SEMANA[d.dia_semana]}
+                        {DAY_NAMES[d.day_of_week]}
                       </Badge>
-                      {formatHoraSimples(d.hora_inicio)} –{" "}
-                      {formatHoraSimples(d.hora_fim)}
+                      {formatTimeShort(d.start_time)} –{" "}
+                      {formatTimeShort(d.end_time)}
                     </div>
                     <Button
                       onClick={() => removerDisp.mutate(d.id)}
@@ -269,15 +269,15 @@ function Campos() {
         <DialogContent>
           <DialogHeader>
             <DialogTitle className="text-2xl">
-              Disponibilidade do campo
+              Availability do campo
             </DialogTitle>
           </DialogHeader>
           <div className="space-y-3">
             <div className="space-y-1.5">
-              <Label>Campo</Label>
+              <Label>Field</Label>
               <Select
-                onValueChange={(v) => setForm({ ...form, campo_id: v })}
-                value={form.campo_id}
+                onValueChange={(v) => setForm({ ...form, field_id: v })}
+                value={form.field_id}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Escolher campo" />
@@ -294,7 +294,7 @@ function Campos() {
             <div className="space-y-1.5">
               <Label>Dias da semana</Label>
               <div className="flex flex-wrap gap-2">
-                {DIAS_SEMANA.map((d, i) => {
+                {DAY_NAMES.map((d, i) => {
                   const ativo = form.dias.includes(i);
                   return (
                     <Button
@@ -326,29 +326,29 @@ function Campos() {
                 <Label>Início</Label>
                 <Input
                   onChange={(e) =>
-                    setForm({ ...form, hora_inicio: e.target.value })
+                    setForm({ ...form, start_time: e.target.value })
                   }
                   type="time"
-                  value={form.hora_inicio}
+                  value={form.start_time}
                 />
               </div>
               <div className="space-y-1.5">
                 <Label>Fim</Label>
                 <Input
                   onChange={(e) =>
-                    setForm({ ...form, hora_fim: e.target.value })
+                    setForm({ ...form, end_time: e.target.value })
                   }
                   type="time"
-                  value={form.hora_fim}
+                  value={form.end_time}
                 />
               </div>
             </div>
             <div className="space-y-1.5">
               <Label>Notas</Label>
               <Textarea
-                onChange={(e) => setForm({ ...form, notas: e.target.value })}
+                onChange={(e) => setForm({ ...form, notes: e.target.value })}
                 placeholder="Ex.: campo com iluminação"
-                value={form.notas}
+                value={form.notes}
               />
             </div>
           </div>

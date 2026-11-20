@@ -1,9 +1,9 @@
 "use server";
 
-import { requireSupabaseAuth } from "@/integrations/supabase/auth.server";
+import { requireAuth } from "@/integrations/auth/server";
 
-export async function enviarResumoMensalidadesAgora(token: string) {
-  await requireSupabaseAuth(token);
+export async function enviarResumoMensalidadesAgora() {
+  await requireAuth();
   const { executarResumoMensalidades } = await import("../mensalidades.server");
   return executarResumoMensalidades();
 }

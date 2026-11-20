@@ -71,6 +71,15 @@
       "assist": { "enabled": false }
     },
     {
+      // Cloudflare Workers env type augmentation requires a namespace declaration.
+      "includes": ["apps/*/src/types/cloudflare-workers.d.ts"],
+      "linter": {
+        "rules": {
+          "style": { "noNamespace": "off" }
+        }
+      }
+    },
+    {
       // Barrel files are intentional public entry points of workspace packages.
       "includes": [
         "packages/*/src/index.ts",

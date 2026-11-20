@@ -1,19 +1,16 @@
 import "server-only";
 
+import { personalReminders } from "@repo/database/schema";
 import { envelopeEmail } from "@repo/email/layout";
+import { and, asc, eq, lte } from "drizzle-orm";
+import { getDb } from "@/integrations/db/client.server";
+import { getConfig } from "./db-helpers.server";
 
 const TZ = "Europe/Lisbon";
 const EMAIL_DESTINO = "ruijmorgadomarques@gmail.com";
 const EMAIL_ESCOLA = "geral@samuelsoares.academy";
 
 type Row = Record<string, unknown>;
-
-async function admin() {
-  const { supabaseAdmin } = await import(
-    "@/integrations/supabase/client.server"
-  );
-  return supabaseAdmin;
-}
 
 function agoraLisboa() {
   return new Date().toLocaleString("sv-SE", { timeZone: TZ }).replace(" ", "T");
@@ -41,47 +38,43 @@ function deHoraLisboa(local: string): string {
 }
 
 async function criarLembrete(args: { texto: string; quando: string }) {
-  const db = await admin();
+  const db = getDb();
   const iso = deHoraLisboa(args.quando);
-  const { error } = await db
-    .from("lembretes_pessoais")
-    .insert({ email: EMAIL_DESTINO, quando: iso, texto: args.texto } as never);
-  if (error) {
-    return { erro: error.message, ok: false };
-  }
+  await db.insert(personalReminders).values({
+    email: EMAIL_DESTINO,
+    id: crypto.randomUUID(),
+    text: args.texto,
+    when: iso,
+  });
   return { ok: true, quando: formatarQuando(iso), texto: args.texto };
 }
 
 async function listarLembretes() {
-  const db = await admin();
-  const { data, error } = await db
-    .from("lembretes_pessoais")
-    .select("id, texto, quando, enviado")
-    .order("quando");
-  if (error) {
-    return { erro: error.message, ok: false };
-  }
+  const db = getDb();
+  const data = await db
+    .select({
+      id: personalReminders.id,
+      sent: personalReminders.sent,
+      text: personalReminders.text,
+      when: personalReminders.when,
+    })
+    .from(personalReminders)
+    .orderBy(asc(personalReminders.when));
   return {
-    lembretes: (data ?? []).map((l) => {
-      const r = l as Row;
-      return {
-        enviado: r.enviado,
-        id: r.id,
-        quando: formatarQuando(r.quando as string),
-        texto: r.texto,
-      };
-    }),
+    lembretes: data.map((l) => ({
+      enviado: l.sent,
+      id: l.id,
+      quando: formatarQuando(l.when),
+      texto: l.text,
+    })),
     ok: true,
   };
 }
 
 async function apagarLembrete(args: { id: string }) {
-  const db = await admin();
-  const { error } = await db
-    .from("lembretes_pessoais")
-    .delete()
-    .eq("id", args.id);
-  return error ? { erro: error.message, ok: false } : { ok: true };
+  const db = getDb();
+  await db.delete(personalReminders).where(eq(personalReminders.id, args.id));
+  return { ok: true };
 }
 
 const TOOLS = [
@@ -257,29 +250,21 @@ async function enviarEmail(
 }
 
 export async function enviarLembretesPessoais() {
-  const db = await admin();
+  const db = getDb();
 
-  const { data: cfg } = await db
-    .from("configuracoes_notificacoes")
-    .select("*")
-    .limit(1)
-    .single();
-  const config = (cfg ?? {}) as Row;
-  const resendKey = config.chave_api_resend as string | null;
-  const remetente =
-    (config.email_remetente as string) || "onboarding@resend.dev";
+  const config = await getConfig();
+  const resendKey = config?.resendApiKey ?? null;
+  const remetente = config?.fromEmail || "onboarding@resend.dev";
 
-  const { data, error } = await db
-    .from("lembretes_pessoais")
-    .select("*")
-    .eq("enviado", false)
-    .lte("quando", new Date().toISOString())
-    .order("quando");
-  if (error) {
-    throw new Error(error.message);
-  }
+  const agora = new Date().toISOString();
+  const pendentes = await db
+    .select()
+    .from(personalReminders)
+    .where(
+      and(eq(personalReminders.sent, false), lte(personalReminders.when, agora))
+    )
+    .orderBy(asc(personalReminders.when));
 
-  const pendentes = (data ?? []) as Row[];
   let enviados = 0;
   let erros = 0;
 
@@ -288,33 +273,33 @@ export async function enviarLembretesPessoais() {
       if (!resendKey) {
         throw new Error("Chave API Resend não configurada");
       }
-      const quando = formatarQuando(l.quando as string);
+      const quando = formatarQuando(l.when);
       await enviarEmail(
         resendKey,
         remetente,
-        l.email as string,
-        `Lembrete: ${String(l.texto).slice(0, 60)}`,
+        l.email,
+        `Lembrete: ${String(l.text).slice(0, 60)}`,
         envelopeEmail(
           "Lembrete",
-          `<p style="margin:0 0 12px"><strong>${l.texto}</strong></p>
+          `<p style="margin:0 0 12px"><strong>${l.text}</strong></p>
            <p style="margin:0;color:#6b7d75">Agendado para ${quando}.</p>`
         )
       );
       await db
-        .from("lembretes_pessoais")
-        .update({
-          enviado: true,
-          enviado_em: new Date().toISOString(),
-          erro: null,
-        } as never)
-        .eq("id", l.id as string);
+        .update(personalReminders)
+        .set({
+          error: null,
+          sent: true,
+          sentAt: new Date().toISOString(),
+        })
+        .where(eq(personalReminders.id, l.id));
       enviados++;
     } catch (e) {
       erros++;
       await db
-        .from("lembretes_pessoais")
-        .update({ erro: e instanceof Error ? e.message : String(e) } as never)
-        .eq("id", l.id as string);
+        .update(personalReminders)
+        .set({ error: e instanceof Error ? e.message : String(e) })
+        .where(eq(personalReminders.id, l.id));
     }
   }
 

@@ -1,56 +1,51 @@
-import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+import { sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { createdAt, id, updatedAt } from "./_columns";
-import { alunos, treinadores } from "./people";
-import { clubes, turmas } from "./places";
+import { coaches, students } from "./people";
+import { clubs, groups } from "./places";
 
-export const treinos = pgTable("treinos", {
-  alunoId: uuid("aluno_id").references(() => alunos.id, {
+// NOTE: datetime values are stored as `text` RFC3339 strings (SQLite has no
+// timestamp type). App code must pass/compare strings, never Date objects.
+
+export const trainings = sqliteTable("trainings", {
+  clubId: text("club_id").references(() => clubs.id, {
     onDelete: "set null",
   }),
-  campoLocal: text("campo_local"),
-  clubeId: uuid("clube_id").references(() => clubes.id, {
+  coachId: text("coach_id").references(() => coaches.id, {
     onDelete: "set null",
   }),
   createdAt: createdAt(),
-  dataHoraFim: timestamp("data_hora_fim", {
-    mode: "string",
-    withTimezone: true,
-  }).notNull(),
-  dataHoraInicio: timestamp("data_hora_inicio", {
-    mode: "string",
-    withTimezone: true,
-  }).notNull(),
-  estado: text("estado").notNull().default("Agendado"),
-  estadoPagamento: text("estado_pagamento")
-    .notNull()
-    .default("A aguardar pagamento"),
-  fatura: text("fatura"),
+  endDate: text("end_date").notNull(),
+  field: text("field"),
+  groupId: text("group_id").references(() => groups.id, {
+    onDelete: "set null",
+  }),
   id: id(),
-  nif: text("nif"),
-  notas: text("notas"),
-  serieId: uuid("serie_id"),
-  tipo: text("tipo").notNull().default("Individual"),
-  treinadorId: uuid("treinador_id").references(() => treinadores.id, {
+  invoice: text("invoice"),
+  notes: text("notes"),
+  paymentStatus: text("payment_status").notNull().default("Pending"),
+  seriesId: text("series_id"),
+  startDate: text("start_date").notNull(),
+  status: text("status").notNull().default("Scheduled"),
+  studentId: text("student_id").references(() => students.id, {
     onDelete: "set null",
   }),
-  turmaId: uuid("turma_id").references(() => turmas.id, {
-    onDelete: "set null",
-  }),
+  taxId: text("tax_id"),
+  type: text("type").notNull().default("Individual"),
   updatedAt: updatedAt(),
 });
 
-export const historicoLembretes = pgTable("historico_lembretes", {
-  canal: text("canal").notNull(),
-  dataEnvio: timestamp("data_envio", { mode: "string", withTimezone: true })
-    .notNull()
-    .defaultNow(),
-  detalhe: text("detalhe"),
-  estadoEnvio: text("estado_envio").notNull(),
-  id: id(),
-  treinadorId: uuid("treinador_id").references(() => treinadores.id, {
+export const reminderHistory = sqliteTable("reminder_history", {
+  channel: text("channel").notNull(),
+  coachId: text("coach_id").references(() => coaches.id, {
     onDelete: "set null",
   }),
-  treinoId: uuid("treino_id").references(() => treinos.id, {
+  detail: text("detail"),
+  id: id(),
+  sentAt: text("sent_at")
+    .notNull()
+    .$defaultFn(() => new Date().toISOString()),
+  status: text("status").notNull(),
+  trainingId: text("training_id").references(() => trainings.id, {
     onDelete: "set null",
   }),
 });

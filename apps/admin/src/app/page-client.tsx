@@ -13,14 +13,13 @@ import { toast } from "@repo/ui/components/sonner";
 import { BellRing, CalendarClock, ShieldCheck } from "@repo/ui/icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/data/client";
 import { entrarComCodigo } from "@/lib/actions/acesso";
 
 function Landing() {
   const router = useRouter();
   const [codigo, setCodigo] = useState("");
   const [loading, setLoading] = useState(false);
-  const entrar = entrarComCodigo;
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
@@ -34,19 +33,15 @@ function Landing() {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await entrar({ codigo });
+      const res = await entrarComCodigo({ codigo });
       if (!res.ok) {
         toast.error(res.erro);
         return;
       }
-      const { error } = await supabase.auth.setSession({
-        access_token: res.access_token,
-        refresh_token: res.refresh_token,
-      });
-      if (error) {
-        throw error;
-      }
+      // The session cookie is set server-side by the login action (Better
+      // Auth). Reload to pick up the cookie and redirect to the dashboard.
       router.replace("/dashboard");
+      router.refresh();
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Ocorreu um erro");
     } finally {

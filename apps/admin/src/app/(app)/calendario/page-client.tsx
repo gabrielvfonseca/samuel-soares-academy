@@ -16,18 +16,18 @@ import { ChevronLeft, ChevronRight, Plus, Trash2 } from "@repo/ui/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { TreinoDialog } from "@/components/treino-dialog";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/data/client";
 import {
-  formatHora,
-  listAlunos,
-  listCampos,
-  listClubeSessoes,
-  listClubes,
-  listTreinadores,
-  listTreinos,
-  listTurmas,
+  formatTime,
+  listClubSessions,
+  listClubs,
+  listCoaches,
+  listFields,
+  listGroups,
+  listStudents,
+  listTrainings,
   sameDay,
-  type Treino,
+  type Training,
 } from "@/lib/gk";
 
 type Vista = "mes" | "semana" | "dia";
@@ -45,13 +45,13 @@ function Calendario() {
   const [ref, setRef] = useState(new Date());
   const [filtro, setFiltro] = useState("todos");
   const [open, setOpen] = useState(false);
-  const [selecionado, setSelecionado] = useState<Treino | null>(null);
+  const [selecionado, setSelecionado] = useState<Training | null>(null);
   const [diaSelecionado, setDiaSelecionado] = useState<Date>(new Date());
 
   const qc = useQueryClient();
   const apagar = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("treinos").delete().eq("id", id);
+      const { error } = await supabase.from("trainings").delete().eq("id", id);
       if (error) {
         throw new Error(error.message);
       }
@@ -59,32 +59,32 @@ function Calendario() {
     onError: (e: Error) => toast.error(e.message),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["treinos"] });
-      toast.success("Treino eliminado");
+      toast.success("Training eliminado");
     },
   });
 
-  const treinos = useQuery({ queryFn: listTreinos, queryKey: ["treinos"] });
+  const treinos = useQuery({ queryFn: listTrainings, queryKey: ["treinos"] });
   const treinadores = useQuery({
-    queryFn: listTreinadores,
+    queryFn: listCoaches,
     queryKey: ["treinadores"],
   });
-  const alunos = useQuery({ queryFn: listAlunos, queryKey: ["alunos"] });
-  const turmas = useQuery({ queryFn: listTurmas, queryKey: ["turmas"] });
-  const clubes = useQuery({ queryFn: listClubes, queryKey: ["clubes"] });
+  const alunos = useQuery({ queryFn: listStudents, queryKey: ["alunos"] });
+  const turmas = useQuery({ queryFn: listGroups, queryKey: ["turmas"] });
+  const clubes = useQuery({ queryFn: listClubs, queryKey: ["clubes"] });
   const clubeSessoes = useQuery({
-    queryFn: listClubeSessoes,
+    queryFn: listClubSessions,
     queryKey: ["clube_sessoes"],
   });
 
   const filtrados = useMemo(
     () =>
       (treinos.data ?? []).filter(
-        (t) => filtro === "todos" || t.treinador_id === filtro
+        (t) => filtro === "todos" || t.coach_id === filtro
       ),
     [treinos.data, filtro]
   );
 
-  const campos = useQuery({ queryFn: listCampos, queryKey: ["campos"] });
+  const campos = useQuery({ queryFn: listFields, queryKey: ["campos"] });
 
   const dias = useMemo(() => {
     if (vista === "dia") {
@@ -118,26 +118,26 @@ function Calendario() {
       }> = [];
       const esperadosClube = new Set<string>();
       const esperadosTurma = new Set<string>();
-      const chaveDia = (id: string, data: Date) =>
-        `${id}|${data.getFullYear()}-${data.getMonth()}-${data.getDate()}`;
+      const chaveDia = (id: string, date: Date) =>
+        `${id}|${date.getFullYear()}-${date.getMonth()}-${date.getDate()}`;
       for (const dia of dias) {
         if (dia < hoje) {
           continue;
         }
         for (const turma of turmas.data ?? []) {
           if (
-            !turma.ativo ||
-            turma.dia_semana === null ||
-            !turma.hora_inicio ||
-            !turma.hora_fim
+            !turma.active ||
+            turma.day_of_week === null ||
+            !turma.start_time ||
+            !turma.end_time
           ) {
             continue;
           }
-          if (dia.getDay() !== turma.dia_semana) {
+          if (dia.getDay() !== turma.day_of_week) {
             continue;
           }
-          const [hi, mi] = turma.hora_inicio.slice(0, 5).split(":").map(Number);
-          const [hf, mf] = turma.hora_fim.slice(0, 5).split(":").map(Number);
+          const [hi, mi] = turma.start_time.slice(0, 5).split(":").map(Number);
+          const [hf, mf] = turma.end_time.slice(0, 5).split(":").map(Number);
           const inicio = new Date(dia);
           inicio.setHours(hi ?? 0, mi ?? 0, 0, 0);
           const fim = new Date(dia);
@@ -145,58 +145,53 @@ function Calendario() {
           esperadosTurma.add(chaveDia(turma.id, inicio));
           const jaExiste = existentes.find(
             (t) =>
-              t.turma_id === turma.id &&
-              sameDay(new Date(t.data_hora_inicio), inicio)
+              t.group_id === turma.id && sameDay(new Date(t.start_date), inicio)
           );
           if (jaExiste) {
             if (
-              new Date(jaExiste.data_hora_inicio).getTime() !==
-                inicio.getTime() ||
-              new Date(jaExiste.data_hora_fim).getTime() !== fim.getTime() ||
-              jaExiste.treinador_id !== turma.treinador_id ||
-              jaExiste.campo_local !==
-                (campos.data?.find((c) => c.id === turma.campo_id)?.nome ??
+              new Date(jaExiste.start_date).getTime() !== inicio.getTime() ||
+              new Date(jaExiste.end_date).getTime() !== fim.getTime() ||
+              jaExiste.coach_id !== turma.coach_id ||
+              jaExiste.field !==
+                (campos.data?.find((c) => c.id === turma.field_id)?.name ??
                   null)
             ) {
               atualizacoes.push({
                 id: jaExiste.id,
                 valores: {
-                  campo_local:
-                    campos.data?.find((c) => c.id === turma.campo_id)?.nome ??
+                  coach_id: turma.coach_id,
+                  end_date: fim.toISOString(),
+                  field:
+                    campos.data?.find((c) => c.id === turma.field_id)?.name ??
                     null,
-                  data_hora_fim: fim.toISOString(),
-                  data_hora_inicio: inicio.toISOString(),
-                  treinador_id: turma.treinador_id,
+                  start_date: inicio.toISOString(),
                 },
               });
             }
             continue;
           }
           novos.push({
-            aluno_id: null,
-            campo_local:
-              campos.data?.find((c) => c.id === turma.campo_id)?.nome ?? null,
-            data_hora_fim: fim.toISOString(),
-            data_hora_inicio: inicio.toISOString(),
-            estado: "Agendado",
-            tipo: "Grupo",
-            treinador_id: turma.treinador_id,
-            turma_id: turma.id,
+            coach_id: turma.coach_id,
+            end_date: fim.toISOString(),
+            field:
+              campos.data?.find((c) => c.id === turma.field_id)?.name ?? null,
+            group_id: turma.id,
+            start_date: inicio.toISOString(),
+            status: "Scheduled",
+            student_id: null,
+            type: "Group",
           });
         }
         for (const sessao of clubeSessoes.data ?? []) {
-          if (dia.getDay() !== sessao.dia_semana) {
+          if (dia.getDay() !== sessao.day_of_week) {
             continue;
           }
-          const clube = clubes.data?.find((c) => c.id === sessao.clube_id);
-          if (!clube?.ativo) {
+          const clube = clubes.data?.find((c) => c.id === sessao.club_id);
+          if (!clube?.active) {
             continue;
           }
-          const [hi, mi] = sessao.hora_inicio
-            .slice(0, 5)
-            .split(":")
-            .map(Number);
-          const [hf, mf] = sessao.hora_fim.slice(0, 5).split(":").map(Number);
+          const [hi, mi] = sessao.start_time.slice(0, 5).split(":").map(Number);
+          const [hf, mf] = sessao.end_time.slice(0, 5).split(":").map(Number);
           const inicio = new Date(dia);
           inicio.setHours(hi ?? 0, mi ?? 0, 0, 0);
           const fim = new Date(dia);
@@ -204,44 +199,42 @@ function Calendario() {
           esperadosClube.add(chaveDia(clube.id, inicio));
           const jaExiste = existentes.find(
             (t) =>
-              t.clube_id === clube.id &&
-              sameDay(new Date(t.data_hora_inicio), inicio)
+              t.club_id === clube.id && sameDay(new Date(t.start_date), inicio)
           );
           if (jaExiste) {
             if (
-              new Date(jaExiste.data_hora_inicio).getTime() !==
-                inicio.getTime() ||
-              new Date(jaExiste.data_hora_fim).getTime() !== fim.getTime() ||
-              jaExiste.treinador_id !== clube.treinador_id ||
-              jaExiste.campo_local !==
-                (campos.data?.find((c) => c.id === clube.campo_id)?.nome ??
+              new Date(jaExiste.start_date).getTime() !== inicio.getTime() ||
+              new Date(jaExiste.end_date).getTime() !== fim.getTime() ||
+              jaExiste.coach_id !== clube.coach_id ||
+              jaExiste.field !==
+                (campos.data?.find((c) => c.id === clube.field_id)?.name ??
                   null)
             ) {
               atualizacoes.push({
                 id: jaExiste.id,
                 valores: {
-                  campo_local:
-                    campos.data?.find((c) => c.id === clube.campo_id)?.nome ??
+                  coach_id: clube.coach_id,
+                  end_date: fim.toISOString(),
+                  field:
+                    campos.data?.find((c) => c.id === clube.field_id)?.name ??
                     null,
-                  data_hora_fim: fim.toISOString(),
-                  data_hora_inicio: inicio.toISOString(),
-                  treinador_id: clube.treinador_id,
+                  start_date: inicio.toISOString(),
                 },
               });
             }
             continue;
           }
           novos.push({
-            aluno_id: null,
-            campo_local:
-              campos.data?.find((c) => c.id === clube.campo_id)?.nome ?? null,
-            clube_id: clube.id,
-            data_hora_fim: fim.toISOString(),
-            data_hora_inicio: inicio.toISOString(),
-            estado: "Agendado",
-            tipo: "Grupo",
-            treinador_id: clube.treinador_id,
-            turma_id: null,
+            club_id: clube.id,
+            coach_id: clube.coach_id,
+            end_date: fim.toISOString(),
+            field:
+              campos.data?.find((c) => c.id === clube.field_id)?.name ?? null,
+            group_id: null,
+            start_date: inicio.toISOString(),
+            status: "Scheduled",
+            student_id: null,
+            type: "Group",
           });
         }
       }
@@ -252,13 +245,13 @@ function Calendario() {
       const ultimoDia = dias.at(-1);
       const obsoletos = existentes
         .filter((t) => {
-          if (t.estado !== "Agendado") {
+          if (t.status !== "Scheduled") {
             return false;
           }
-          if (!(t.clube_id || t.turma_id)) {
+          if (!(t.club_id || t.group_id)) {
             return false;
           }
-          const inicio = new Date(t.data_hora_inicio);
+          const inicio = new Date(t.start_date);
           if (inicio < agora) {
             return false;
           }
@@ -272,15 +265,18 @@ function Calendario() {
               return false;
             }
           }
-          const chave = chaveDia(t.clube_id ?? t.turma_id ?? "", inicio);
-          return t.clube_id
+          const chave = chaveDia(t.club_id ?? t.group_id ?? "", inicio);
+          return t.club_id
             ? !esperadosClube.has(chave)
             : !esperadosTurma.has(chave);
         })
         .map((t) => t.id);
 
       if (obsoletos.length) {
-        const del = await supabase.from("treinos").delete().in("id", obsoletos);
+        const del = await supabase
+          .from("trainings")
+          .delete()
+          .in("id", obsoletos);
         if (del.error) {
           throw new Error(del.error.message);
         }
@@ -288,7 +284,7 @@ function Calendario() {
 
       for (const atualizacao of atualizacoes) {
         const res = await supabase
-          .from("treinos")
+          .from("trainings")
           .update(atualizacao.valores as never)
           .eq("id", atualizacao.id);
         if (res.error) {
@@ -297,7 +293,9 @@ function Calendario() {
       }
 
       if (novos.length) {
-        const { error } = await supabase.from("treinos").insert(novos as never);
+        const { error } = await supabase
+          .from("trainings")
+          .insert(novos as never);
         if (error) {
           throw new Error(error.message);
         }
@@ -345,14 +343,14 @@ function Calendario() {
     }
     const assinatura = [
       ...(clubeSessoes.data ?? []).map(
-        (s) => `${s.clube_id}|${s.dia_semana}|${s.hora_inicio}|${s.hora_fim}`
+        (s) => `${s.club_id}|${s.day_of_week}|${s.start_time}|${s.end_time}`
       ),
       ...(clubes.data ?? []).map(
-        (c) => `${c.id}|${c.ativo}|${c.treinador_id}|${c.campo_id}`
+        (c) => `${c.id}|${c.active}|${c.coach_id}|${c.field_id}`
       ),
       ...(turmas.data ?? []).map(
         (t) =>
-          `${t.id}|${t.ativo}|${t.dia_semana}|${t.hora_inicio}|${t.hora_fim}|${t.treinador_id}|${t.campo_id}`
+          `${t.id}|${t.active}|${t.day_of_week}|${t.start_time}|${t.end_time}|${t.coach_id}|${t.field_id}`
       ),
     ]
       .sort()
@@ -392,14 +390,14 @@ function Calendario() {
     setRef(d);
   }
 
-  const nomeAluno = (t: Treino) => {
-    if (t.tipo !== "Grupo") {
-      return alunos.data?.find((a) => a.id === t.aluno_id)?.nome ?? "—";
+  const nomeAluno = (t: Training) => {
+    if (t.type !== "Group") {
+      return alunos.data?.find((a) => a.id === t.student_id)?.name ?? "—";
     }
-    if (t.clube_id) {
-      return clubes.data?.find((c) => c.id === t.clube_id)?.nome ?? "Clube";
+    if (t.club_id) {
+      return clubes.data?.find((c) => c.id === t.club_id)?.name ?? "Clube";
     }
-    return turmas.data?.find((x) => x.id === t.turma_id)?.nome ?? "Turma";
+    return turmas.data?.find((x) => x.id === t.group_id)?.name ?? "Group";
   };
 
   const titulo = ref.toLocaleDateString("pt-PT", {
@@ -453,7 +451,7 @@ function Calendario() {
             <SelectItem value="todos">Todos os treinadores</SelectItem>
             {(treinadores.data ?? []).map((t) => (
               <SelectItem key={t.id} value={t.id}>
-                {t.nome}
+                {t.name}
               </SelectItem>
             ))}
           </SelectContent>
@@ -480,7 +478,7 @@ function Calendario() {
           >
             {dias.map((dia) => {
               const doDia = filtrados.filter((t) =>
-                sameDay(new Date(t.data_hora_inicio), dia)
+                sameDay(new Date(t.start_date), dia)
               );
               const foraDoMes =
                 vista === "mes" && dia.getMonth() !== ref.getMonth();
@@ -513,7 +511,7 @@ function Calendario() {
                         role="button"
                         tabIndex={0}
                       >
-                        {formatHora(t.data_hora_inicio)} {nomeAluno(t)}
+                        {formatTime(t.start_date)} {nomeAluno(t)}
                       </span>
                     ))}
                   </div>
@@ -527,33 +525,33 @@ function Calendario() {
       {vista === "dia" && (
         <div className="space-y-2">
           {filtrados
-            .filter((t) => sameDay(new Date(t.data_hora_inicio), ref))
+            .filter((t) => sameDay(new Date(t.start_date), ref))
             .map((t) => (
               <div
                 className="border-border/60 flex items-center justify-between rounded-md border p-3"
                 key={t.id}
               >
                 <span className="font-semibold">
-                  {formatHora(t.data_hora_inicio)} –{" "}
-                  {formatHora(t.data_hora_fim)} · {nomeAluno(t)}
+                  {formatTime(t.start_date)} – {formatTime(t.end_date)} ·{" "}
+                  {nomeAluno(t)}
                 </span>
                 <div className="flex items-center gap-2">
-                  <Badge variant="outline">{t.estado}</Badge>
-                  {t.tipo === "Grupo" && (
+                  <Badge variant="outline">{t.status}</Badge>
+                  {t.type === "Group" && (
                     <Badge variant="secondary">Grupo</Badge>
                   )}
-                  {t.tipo === "Individual" && t.estado === "Concluído" && (
+                  {t.type === "Individual" && t.status === "Completed" && (
                     <Badge
                       variant={
-                        t.estado_pagamento === "Pago" ? "default" : "secondary"
+                        t.payment_status === "Paid" ? "default" : "secondary"
                       }
                     >
-                      {t.estado_pagamento}
+                      {t.payment_status}
                     </Badge>
                   )}
-                  {t.tipo === "Individual" &&
-                    t.estado_pagamento === "Pago" &&
-                    t.fatura && <Badge variant="outline">{t.fatura}</Badge>}
+                  {t.type === "Individual" &&
+                    t.payment_status === "Paid" &&
+                    t.invoice && <Badge variant="outline">{t.invoice}</Badge>}
                   <Button
                     className="text-destructive hover:text-destructive"
                     disabled={apagar.isPending}

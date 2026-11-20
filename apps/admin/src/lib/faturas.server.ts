@@ -1,13 +1,15 @@
 import "server-only";
 
+import { monthlyFees, students, trainings } from "@repo/database/schema";
 import {
   envelopeEmail,
   estiloTabela,
   estiloTd,
   estiloTh,
 } from "@repo/email/layout";
-
-type Row = Record<string, unknown>;
+import { and, eq } from "drizzle-orm";
+import { getDb } from "@/integrations/db/client.server";
+import { getConfig, mesNoFuso } from "./db-helpers.server";
 
 const EMAIL_PRINCIPAL = "ruijmorgadomarques@gmail.com";
 const EMAIL_ESCOLA = "geral@samuelsoares.academy";
@@ -19,63 +21,63 @@ export interface ResultadoFaturas {
   total: number;
 }
 
-function mesNoFuso(tz: string) {
-  return new Intl.DateTimeFormat("en-CA", {
-    day: "2-digit",
-    month: "2-digit",
-    timeZone: tz,
-    year: "numeric",
-  })
-    .format(new Date())
-    .slice(0, 7);
-}
-
 export async function executarResumoFaturas(): Promise<ResultadoFaturas> {
-  const { supabaseAdmin } = await import(
-    "@/integrations/supabase/client.server"
-  );
+  const db = getDb();
 
-  const { data: cfg } = await supabaseAdmin
-    .from("configuracoes_notificacoes")
-    .select("*")
-    .limit(1)
-    .single();
-  const config = (cfg ?? {}) as Row;
-  const tz = (config.fuso_horario as string) || "Europe/Lisbon";
-  const resendKey = config.chave_api_resend as string | null;
-  const remetente =
-    (config.email_remetente as string) || "onboarding@resend.dev";
+  const config = await getConfig();
+  const tz = config?.timezone || "Europe/Lisbon";
+  const resendKey = config?.resendApiKey ?? null;
+  const remetente = config?.fromEmail || "onboarding@resend.dev";
   if (!resendKey) {
     throw new Error("Chave API Resend não configurada");
   }
 
   const mes = mesNoFuso(tz);
-  const inicio = `${mes}-01T00:00:00.000Z`;
-  const fimData = new Date(`${mes}-01T00:00:00.000Z`);
-  fimData.setUTCMonth(fimData.getUTCMonth() + 1);
 
-  const { data: treinos, error } = await supabaseAdmin
-    .from("treinos")
-    .select("id, nif, data_hora_inicio, alunos(nome)")
-    .eq("tipo", "Individual")
-    .eq("estado_pagamento", "Pago")
-    .eq("fatura", "Com fatura")
-    .gte("data_hora_inicio", inicio)
-    .lt("data_hora_inicio", fimData.toISOString());
-  if (error) {
-    throw new Error(error.message);
-  }
+  // `startDate` is an RFC3339 string in the user's local timezone;
+  // the "in month" filter is done in JS (same pattern as `lembretes.server.ts`).
+  const treinosFaturados = (
+    await db
+      .select({
+        nif: trainings.taxId,
+        startDate: trainings.startDate,
+        studentId: trainings.studentId,
+      })
+      .from(trainings)
+      .where(
+        and(
+          eq(trainings.type, "Individual"),
+          eq(trainings.paymentStatus, "Paid"),
+          eq(trainings.invoice, "Invoiced")
+        )
+      )
+  ).filter((t) => {
+    const d = new Date(t.startDate);
+    const ymd = new Intl.DateTimeFormat("en-CA", {
+      day: "2-digit",
+      month: "2-digit",
+      timeZone: tz,
+      year: "numeric",
+    }).format(d);
+    return ymd.slice(0, 7) === mes;
+  });
 
-  const { data: mensalidades, error: mErr } = await supabaseAdmin
-    .from("mensalidades")
-    .select("id, nif, mes_referencia, alunos(nome)")
-    .eq("estado_pagamento", "Pago")
-    .eq("fatura", "Com fatura")
-    .gte("mes_referencia", `${mes}-01`)
-    .lt("mes_referencia", fimData.toISOString().slice(0, 10));
-  if (mErr) {
-    throw new Error(mErr.message);
-  }
+  const mensalidadesFaturadas = await db
+    .select({ nif: monthlyFees.taxId, studentId: monthlyFees.studentId })
+    .from(monthlyFees)
+    .where(
+      and(
+        eq(monthlyFees.paymentStatus, "Paid"),
+        eq(monthlyFees.invoice, "Invoiced"),
+        eq(monthlyFees.month, mes)
+      )
+    );
+
+  // Student names for the aggregated rows.
+  const todosAlunos = await db
+    .select({ id: students.id, nome: students.name })
+    .from(students);
+  const alunoNome = new Map(todosAlunos.map((a) => [a.id, a.nome]));
 
   interface Agregado {
     nif: string;
@@ -93,16 +95,16 @@ export async function executarResumoFaturas(): Promise<ResultadoFaturas> {
     }
   };
 
-  for (const t of (treinos ?? []) as Row[]) {
+  for (const t of treinosFaturados) {
     juntar(
-      ((t.alunos as Row | null)?.nome as string) ?? "Aluno sem nome",
-      t.nif as string | null
+      (t.studentId && alunoNome.get(t.studentId)) || "Aluno sem nome",
+      t.nif ?? null
     );
   }
-  for (const m of (mensalidades ?? []) as Row[]) {
+  for (const m of mensalidadesFaturadas) {
     juntar(
-      ((m.alunos as Row | null)?.nome as string) ?? "Aluno sem nome",
-      m.nif as string | null
+      (m.studentId && alunoNome.get(m.studentId)) || "Aluno sem nome",
+      m.nif ?? null
     );
   }
 
@@ -129,7 +131,7 @@ export async function executarResumoFaturas(): Promise<ResultadoFaturas> {
               `<tr><td style="${estiloTd}">${l.nome}</td><td style="${estiloTd}">${l.nif}</td><td style="${estiloTd}">${l.quantidade}</td></tr>`
           )
           .join("")}</tbody>
-      </table>`
+    </table>`
     : `<p style="margin:0">Não há faturas por emitir neste mês.</p>`;
 
   const html = envelopeEmail(

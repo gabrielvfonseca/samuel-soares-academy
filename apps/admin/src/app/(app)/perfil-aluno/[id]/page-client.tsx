@@ -26,22 +26,22 @@ import Link from "next/link";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { DocumentosPerfil } from "@/components/documentos-perfil";
-import { supabase } from "@/integrations/supabase/client";
-import { formatMesAno, MODALIDADES_INSCRICAO, TIPOS_ATLETA } from "@/lib/gk";
+import { supabase } from "@/integrations/data/client";
+import { ATHLETE_TYPES, ENROLLMENT_TYPES, formatMonthYear } from "@/lib/gk";
 
 interface Perfil {
-  contacto_ee: string | null;
-  data_inscricao: string | null;
-  data_nascimento: string | null;
+  athlete_type: string;
+  birthDate: string | null;
   email_ee: string | null;
-  escalao: string | null;
+  enroll_date: string | null;
+  enrollment_type: string | null;
   id: string;
-  modalidade_inscricao: string | null;
-  nome: string;
+  level: string | null;
+  name: string;
   nome_ee: string | null;
-  notas_tecnicas: string | null;
   observacoes: string | null;
-  tipo_atleta: string;
+  parent_contact: string | null;
+  technical_notes: string | null;
 }
 
 function PerfilAluno() {
@@ -51,7 +51,7 @@ function PerfilAluno() {
   const aluno = useQuery({
     queryFn: async () => {
       const { data, error } = await supabase
-        .from("alunos")
+        .from("students")
         .select("*")
         .eq("id", id)
         .single();
@@ -64,16 +64,16 @@ function PerfilAluno() {
   });
 
   const [form, setForm] = useState({
-    contacto_ee: "",
-    data_inscricao: "",
-    data_nascimento: "",
+    athlete_type: "Individual",
+    birthDate: "",
     email_ee: "",
-    escalao: "",
-    modalidade_inscricao: "",
+    enroll_date: "",
+    enrollment_type: "",
+    level: "",
     nome_ee: "",
-    notas_tecnicas: "",
     observacoes: "",
-    tipo_atleta: "Individual",
+    parent_contact: "",
+    technical_notes: "",
   });
 
   useEffect(() => {
@@ -82,38 +82,36 @@ function PerfilAluno() {
       return;
     }
     setForm({
-      contacto_ee: a.contacto_ee ?? "",
-      data_inscricao: a.data_inscricao ?? "",
-      data_nascimento: a.data_nascimento ?? "",
+      athlete_type: a.athlete_type ?? "Individual",
+      birthDate: a.birthDate ?? "",
       email_ee: a.email_ee ?? "",
-      escalao: a.escalao ?? "",
-      modalidade_inscricao: a.modalidade_inscricao ?? "",
+      enroll_date: a.enroll_date ?? "",
+      enrollment_type: a.enrollment_type ?? "",
+      level: a.level ?? "",
       nome_ee: a.nome_ee ?? "",
-      notas_tecnicas: a.notas_tecnicas ?? "",
       observacoes: a.observacoes ?? "",
-      tipo_atleta: a.tipo_atleta ?? "Individual",
+      parent_contact: a.parent_contact ?? "",
+      technical_notes: a.technical_notes ?? "",
     });
   }, [aluno.data]);
 
   const guardar = useMutation({
     mutationFn: async () => {
       const payload = {
-        contacto_ee: form.contacto_ee || null,
-        data_inscricao: form.data_inscricao || null,
-        data_nascimento: form.data_nascimento || null,
+        athlete_type: form.athlete_type,
+        birthDate: form.birthDate || null,
         email_ee: form.email_ee || null,
-        escalao: form.escalao || null,
-        modalidade_inscricao:
-          form.tipo_atleta === "Grupo"
-            ? form.modalidade_inscricao || null
-            : null,
+        enroll_date: form.enroll_date || null,
+        enrollment_type:
+          form.athlete_type === "Group" ? form.enrollment_type || null : null,
+        level: form.level || null,
         nome_ee: form.nome_ee || null,
-        notas_tecnicas: form.notas_tecnicas || null,
         observacoes: form.observacoes || null,
-        tipo_atleta: form.tipo_atleta,
+        parent_contact: form.parent_contact || null,
+        technical_notes: form.technical_notes || null,
       };
       const { error } = await supabase
-        .from("alunos")
+        .from("students")
         .update(payload as never)
         .eq("id", id);
       if (error) {
@@ -139,17 +137,17 @@ function PerfilAluno() {
 
       <header className="space-y-2">
         <h1 className="text-5xl leading-none">
-          {aluno.data?.nome ?? "Perfil"}
+          {aluno.data?.name ?? "Perfil"}
         </h1>
         <p className="text-muted-foreground">
-          {aluno.data?.data_inscricao
-            ? `Connosco desde ${formatMesAno(aluno.data.data_inscricao)}`
-            : form.tipo_atleta === "Grupo"
+          {aluno.data?.enroll_date
+            ? `Connosco desde ${formatMonthYear(aluno.data.enroll_date)}`
+            : form.athlete_type === "Group"
               ? "Atleta de treinos de grupo"
               : "Atleta de treinos individuais"}
         </p>
-        {aluno.data?.modalidade_inscricao && (
-          <Badge variant="secondary">{aluno.data.modalidade_inscricao}</Badge>
+        {aluno.data?.enrollment_type && (
+          <Badge variant="secondary">{aluno.data.enrollment_type}</Badge>
         )}
       </header>
 
@@ -162,16 +160,16 @@ function PerfilAluno() {
         </CardHeader>
         <CardContent className="max-w-sm">
           <Select
-            onValueChange={(v) => setForm({ ...form, tipo_atleta: v })}
-            value={form.tipo_atleta}
+            onValueChange={(v) => setForm({ ...form, athlete_type: v })}
+            value={form.athlete_type}
           >
             <SelectTrigger>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
-              {TIPOS_ATLETA.map((t) => (
+              {ATHLETE_TYPES.map((t) => (
                 <SelectItem key={t} value={t}>
-                  {t === "Grupo" ? "Treinos de grupo" : "Treinos individuais"}
+                  {t === "Group" ? "Treinos de grupo" : "Treinos individuais"}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -179,7 +177,7 @@ function PerfilAluno() {
         </CardContent>
       </Card>
 
-      {form.tipo_atleta === "Grupo" && (
+      {form.athlete_type === "Group" && (
         <Card>
           <CardHeader>
             <CardTitle className="text-2xl">Inscrição</CardTitle>
@@ -191,16 +189,14 @@ function PerfilAluno() {
             <div className="space-y-2">
               <Label>Modalidade de inscrição</Label>
               <Select
-                onValueChange={(v) =>
-                  setForm({ ...form, modalidade_inscricao: v })
-                }
-                value={form.modalidade_inscricao}
+                onValueChange={(v) => setForm({ ...form, enrollment_type: v })}
+                value={form.enrollment_type}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Selecionar modalidade" />
                 </SelectTrigger>
                 <SelectContent>
-                  {MODALIDADES_INSCRICAO.map((m) => (
+                  {ENROLLMENT_TYPES.map((m) => (
                     <SelectItem key={m} value={m}>
                       {m}
                     </SelectItem>
@@ -213,10 +209,10 @@ function PerfilAluno() {
               <Input
                 id="inscricao"
                 onChange={(e) =>
-                  setForm({ ...form, data_inscricao: e.target.value })
+                  setForm({ ...form, enroll_date: e.target.value })
                 }
                 type="date"
-                value={form.data_inscricao}
+                value={form.enroll_date}
               />
             </div>
           </CardContent>
@@ -230,22 +226,20 @@ function PerfilAluno() {
         </CardHeader>
         <CardContent className="grid gap-4 md:grid-cols-2">
           <div className="space-y-2">
-            <Label htmlFor="escalao">Escalão</Label>
+            <Label htmlFor="level">Escalão</Label>
             <Input
-              id="escalao"
-              onChange={(e) => setForm({ ...form, escalao: e.target.value })}
-              value={form.escalao}
+              id="level"
+              onChange={(e) => setForm({ ...form, level: e.target.value })}
+              value={form.level}
             />
           </div>
           <div className="space-y-2">
             <Label htmlFor="nasc">Data de nascimento</Label>
             <Input
               id="nasc"
-              onChange={(e) =>
-                setForm({ ...form, data_nascimento: e.target.value })
-              }
+              onChange={(e) => setForm({ ...form, birthDate: e.target.value })}
               type="date"
-              value={form.data_nascimento}
+              value={form.birthDate}
             />
           </div>
           <div className="space-y-2">
@@ -261,9 +255,9 @@ function PerfilAluno() {
             <Input
               id="ee"
               onChange={(e) =>
-                setForm({ ...form, contacto_ee: e.target.value })
+                setForm({ ...form, parent_contact: e.target.value })
               }
-              value={form.contacto_ee}
+              value={form.parent_contact}
             />
           </div>
           <div className="space-y-2">
@@ -280,9 +274,9 @@ function PerfilAluno() {
             <Textarea
               id="notas"
               onChange={(e) =>
-                setForm({ ...form, notas_tecnicas: e.target.value })
+                setForm({ ...form, technical_notes: e.target.value })
               }
-              value={form.notas_tecnicas}
+              value={form.technical_notes}
             />
           </div>
           <div className="space-y-2 md:col-span-2">
@@ -307,9 +301,9 @@ function PerfilAluno() {
       </Card>
 
       <DocumentosPerfil
-        descricao="Fichas de inscrição assinadas, autorizações e outros ficheiros do atleta."
-        prefixo={`alunos/${id}`}
-        titulo="Fichas de inscrição e documentos"
+        description="Fichas de inscrição assinadas, autorizações e outros ficheiros do atleta."
+        prefix={`students/${id}`}
+        title="Fichas de inscrição e documentos"
       />
     </div>
   );

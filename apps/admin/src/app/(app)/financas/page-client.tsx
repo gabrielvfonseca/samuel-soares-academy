@@ -35,17 +35,17 @@ import {
 import { Plus, Trash2 } from "@repo/ui/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/data/client";
 import {
-  CATEGORIAS_MOVIMENTO,
+  currentMonth,
   formatEuros,
-  formatMes,
-  listMovimentos,
-  listTreinadores,
-  type Movimento,
-  mesAtual,
-  TIPOS_MOVIMENTO,
-  type TipoMovimento,
+  formatMonth,
+  listCoaches,
+  listTransactions,
+  TRANSACTION_CATEGORIES,
+  TRANSACTION_TYPES,
+  type Transaction,
+  type TransactionType,
 } from "@/lib/gk";
 
 const hoje = () => new Date().toISOString().slice(0, 10);
@@ -53,45 +53,45 @@ const hoje = () => new Date().toISOString().slice(0, 10);
 function Financas() {
   const qc = useQueryClient();
   const movimentos = useQuery({
-    queryFn: listMovimentos,
+    queryFn: listTransactions,
     queryKey: ["movimentos"],
   });
   const treinadores = useQuery({
-    queryFn: listTreinadores,
+    queryFn: listCoaches,
     queryKey: ["treinadores"],
   });
 
   const [aberto, setAberto] = useState(false);
-  const [tipo, setTipo] = useState<TipoMovimento>("Saída");
+  const [tipo, setTipo] = useState<TransactionType>("Expense");
   const [categoria, setCategoria] = useState<string>("Ordenado treinador");
   const [descricao, setDescricao] = useState("");
   const [valor, setValor] = useState("");
   const [data, setData] = useState(hoje());
   const [treinadorId, setTreinadorId] = useState<string>("nenhum");
-  const [mesAtivo, setMesAtivo] = useState(mesAtual().slice(0, 7));
+  const [mesAtivo, setMesAtivo] = useState(currentMonth().slice(0, 7));
 
   const meses = useMemo(() => {
-    const set = new Set<string>([mesAtual().slice(0, 7)]);
+    const set = new Set<string>([currentMonth().slice(0, 7)]);
     for (const m of movimentos.data ?? []) {
-      set.add(m.data.slice(0, 7));
+      set.add(m.date.slice(0, 7));
     }
     return [...set].sort((a, b) => b.localeCompare(a));
   }, [movimentos.data]);
 
-  const porMes = (mes: string) =>
+  const porMes = (month: string) =>
     (movimentos.data ?? [])
-      .filter((m) => m.data.slice(0, 7) === mes)
-      .sort((a, b) => b.data.localeCompare(a.data));
+      .filter((m) => m.date.slice(0, 7) === month)
+      .sort((a, b) => b.date.localeCompare(a.date));
 
   const criar = useMutation({
     mutationFn: async () => {
-      const { error } = await supabase.from("movimentos").insert({
+      const { error } = await supabase.from("transactions").insert({
+        amount: Number(valor || 0),
         categoria,
+        coach_id: treinadorId === "nenhum" ? null : treinadorId,
         data,
-        descricao: descricao || null,
+        description: descricao || null,
         tipo,
-        treinador_id: treinadorId === "nenhum" ? null : treinadorId,
-        valor: Number(valor || 0),
       } as never);
       if (error) {
         throw new Error(error.message);
@@ -103,15 +103,15 @@ function Financas() {
       setAberto(false);
       setDescricao("");
       setValor("");
-      toast.success("Movimento registado");
+      toast.success("Transaction registado");
     },
   });
 
   const atualizarValor = useMutation({
-    mutationFn: async (v: { id: string; valor: number }) => {
+    mutationFn: async (v: { id: string; amount: number }) => {
       const { error } = await supabase
-        .from("movimentos")
-        .update({ valor: v.valor } as never)
+        .from("transactions")
+        .update({ amount: v.amount } as never)
         .eq("id", v.id);
       if (error) {
         throw new Error(error.message);
@@ -126,7 +126,10 @@ function Financas() {
 
   const apagar = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("movimentos").delete().eq("id", id);
+      const { error } = await supabase
+        .from("transactions")
+        .delete()
+        .eq("id", id);
       if (error) {
         throw new Error(error.message);
       }
@@ -134,14 +137,14 @@ function Financas() {
     onError: (e: Error) => toast.error(e.message),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["movimentos"] });
-      toast.success("Movimento apagado");
+      toast.success("Transaction apagado");
     },
   });
 
-  const somar = (lista: Movimento[], t: TipoMovimento) =>
+  const somar = (lista: Transaction[], t: TransactionType) =>
     lista
-      .filter((m) => m.tipo === t)
-      .reduce((acc, m) => acc + Number(m.valor), 0);
+      .filter((m) => m.type === t)
+      .reduce((acc, m) => acc + Number(m.amount), 0);
 
   return (
     <div className="space-y-6">
@@ -168,14 +171,14 @@ function Financas() {
                 <div className="space-y-2">
                   <Label>Tipo</Label>
                   <Select
-                    onValueChange={(v) => setTipo(v as TipoMovimento)}
+                    onValueChange={(v) => setTipo(v as TransactionType)}
                     value={tipo}
                   >
                     <SelectTrigger>
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {TIPOS_MOVIMENTO.map((t) => (
+                      {TRANSACTION_TYPES.map((t) => (
                         <SelectItem key={t} value={t}>
                           {t}
                         </SelectItem>
@@ -190,7 +193,7 @@ function Financas() {
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
-                      {CATEGORIAS_MOVIMENTO.map((c) => (
+                      {TRANSACTION_CATEGORIES.map((c) => (
                         <SelectItem key={c} value={c}>
                           {c}
                         </SelectItem>
@@ -221,7 +224,7 @@ function Financas() {
                 </div>
               </div>
               <div className="space-y-2">
-                <Label>Treinador (opcional)</Label>
+                <Label>Coach (opcional)</Label>
                 <Select onValueChange={setTreinadorId} value={treinadorId}>
                   <SelectTrigger>
                     <SelectValue />
@@ -230,7 +233,7 @@ function Financas() {
                     <SelectItem value="nenhum">Sem treinador</SelectItem>
                     {(treinadores.data ?? []).map((t) => (
                       <SelectItem key={t.id} value={t.id}>
-                        {t.nome}
+                        {t.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -258,15 +261,15 @@ function Financas() {
         <TabsList className="flex-wrap">
           {meses.map((m) => (
             <TabsTrigger className="capitalize" key={m} value={m}>
-              {formatMes(`${m}-01`)}
+              {formatMonth(`${m}-01`)}
             </TabsTrigger>
           ))}
         </TabsList>
 
         {meses.map((m) => {
           const lista = porMes(m);
-          const entradas = somar(lista, "Entrada");
-          const saidas = somar(lista, "Saída");
+          const entradas = somar(lista, "Income");
+          const saidas = somar(lista, "Expense");
           return (
             <TabsContent className="space-y-4 pt-4" key={m} value={m}>
               <div className="grid gap-3 sm:grid-cols-4">
@@ -317,31 +320,31 @@ function Financas() {
                   <CardContent className="flex flex-wrap items-center justify-between gap-3 pt-6">
                     <div>
                       <p className="font-semibold">
-                        {mov.categoria}
-                        {mov.descricao ? ` · ${mov.descricao}` : ""}
+                        {mov.category}
+                        {mov.description ? ` · ${mov.description}` : ""}
                       </p>
                       <p className="text-muted-foreground text-sm">
-                        {new Date(`${mov.data}T12:00:00`).toLocaleDateString(
+                        {new Date(`${mov.date}T12:00:00`).toLocaleDateString(
                           "pt-PT"
                         )}
-                        {mov.automatico ? " · automático" : ""}
+                        {mov.automatic ? " · automático" : ""}
                       </p>
                     </div>
                     <div className="flex items-center gap-2">
                       <Badge
                         variant={
-                          mov.tipo === "Entrada" ? "default" : "destructive"
+                          mov.type === "Income" ? "default" : "destructive"
                         }
                       >
-                        {mov.tipo}
+                        {mov.type}
                       </Badge>
                       <Input
                         className="w-32"
-                        defaultValue={mov.valor}
+                        defaultValue={mov.amount}
                         onBlur={(e) => {
                           const novo = Number(e.target.value);
-                          if (novo !== Number(mov.valor)) {
-                            atualizarValor.mutate({ id: mov.id, valor: novo });
+                          if (novo !== Number(mov.amount)) {
+                            atualizarValor.mutate({ amount: novo, id: mov.id });
                           }
                         }}
                         step="0.01"

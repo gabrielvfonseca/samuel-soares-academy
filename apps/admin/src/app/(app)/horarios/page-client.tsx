@@ -29,58 +29,58 @@ import { Textarea } from "@repo/ui/components/textarea";
 import { Copy, Plus, Trash2 } from "@repo/ui/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/data/client";
 import {
-  DIAS_SEMANA,
-  formatHoraSimples,
-  listDisponibilidades,
-  listTreinadores,
+  DAY_NAMES,
+  formatTimeShort,
+  listAvailability,
+  listCoaches,
 } from "@/lib/gk";
 
 function Horarios() {
   const qc = useQueryClient();
   const { data: treinadores } = useQuery({
-    queryFn: listTreinadores,
+    queryFn: listCoaches,
     queryKey: ["treinadores"],
   });
   const { data: disp } = useQuery({
-    queryFn: listDisponibilidades,
+    queryFn: listAvailability,
     queryKey: ["disponibilidades"],
   });
 
   const [filtro, setFiltro] = useState("todos");
   const [open, setOpen] = useState(false);
   const [form, setForm] = useState({
-    dia_semana: "1",
-    hora_fim: "19:00",
-    hora_inicio: "18:00",
-    notas: "",
-    treinador_id: "",
+    coach_id: "",
+    day_of_week: "1",
+    end_time: "19:00",
+    notes: "",
+    start_time: "18:00",
   });
 
   const nomes = useMemo(
-    () => Object.fromEntries((treinadores ?? []).map((t) => [t.id, t.nome])),
+    () => Object.fromEntries((treinadores ?? []).map((t) => [t.id, t.name])),
     [treinadores]
   );
 
   const lista = (disp ?? []).filter(
-    (d) => filtro === "todos" || d.treinador_id === filtro
+    (d) => filtro === "todos" || d.coach_id === filtro
   );
 
   const guardar = useMutation({
     mutationFn: async () => {
-      if (!form.treinador_id) {
+      if (!form.coach_id) {
         throw new Error("Escolhe o treinador.");
       }
-      if (form.hora_fim <= form.hora_inicio) {
+      if (form.end_time <= form.start_time) {
         throw new Error("A hora de fim tem de ser depois do início.");
       }
-      const { error } = await supabase.from("disponibilidades").insert({
-        dia_semana: Number(form.dia_semana),
-        hora_fim: form.hora_fim,
-        hora_inicio: form.hora_inicio,
-        notas: form.notas || null,
-        treinador_id: form.treinador_id,
+      const { error } = await supabase.from("availability").insert({
+        coach_id: form.coach_id,
+        day_of_week: Number(form.day_of_week),
+        end_time: form.end_time,
+        notes: form.notes || null,
+        start_time: form.start_time,
       } as never);
       if (error) {
         throw new Error(error.message);
@@ -88,7 +88,7 @@ function Horarios() {
     },
     onError: (e: Error) => toast.error(e.message),
     onSuccess: () => {
-      toast.success("Disponibilidade adicionada.");
+      toast.success("Availability adicionada.");
       setOpen(false);
       qc.invalidateQueries({ queryKey: ["disponibilidades"] });
     },
@@ -97,7 +97,7 @@ function Horarios() {
   const remover = useMutation({
     mutationFn: async (id: string) => {
       const { error } = await supabase
-        .from("disponibilidades")
+        .from("availability")
         .delete()
         .eq("id", id);
       if (error) {
@@ -106,7 +106,7 @@ function Horarios() {
     },
     onError: (e: Error) => toast.error(e.message),
     onSuccess: () => {
-      toast.success("Disponibilidade removida.");
+      toast.success("Availability removida.");
       qc.invalidateQueries({ queryKey: ["disponibilidades"] });
     },
   });
@@ -123,7 +123,7 @@ function Horarios() {
         <div>
           <h1 className="text-3xl">Horários Disponíveis</h1>
           <p className="text-muted-foreground text-sm">
-            Disponibilidade semanal declarada por cada treinador.
+            Availability semanal declarada por cada treinador.
           </p>
         </div>
         <div className="flex gap-2">
@@ -145,7 +145,7 @@ function Horarios() {
             <SelectItem value="todos">Todos os treinadores</SelectItem>
             {(treinadores ?? []).map((t) => (
               <SelectItem key={t.id} value={t.id}>
-                {t.nome}
+                {t.name}
               </SelectItem>
             ))}
           </SelectContent>
@@ -153,8 +153,8 @@ function Horarios() {
       </div>
 
       <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
-        {DIAS_SEMANA.map((dia, idx) => {
-          const doDia = lista.filter((d) => d.dia_semana === idx);
+        {DAY_NAMES.map((dia, idx) => {
+          const doDia = lista.filter((d) => d.day_of_week === idx);
           return (
             <Card key={dia}>
               <CardHeader className="pb-2">
@@ -173,15 +173,15 @@ function Horarios() {
                   >
                     <div>
                       <p className="text-sm font-semibold">
-                        {formatHoraSimples(d.hora_inicio)} –{" "}
-                        {formatHoraSimples(d.hora_fim)}
+                        {formatTimeShort(d.start_time)} –{" "}
+                        {formatTimeShort(d.end_time)}
                       </p>
                       <Badge className="mt-1" variant="secondary">
-                        {nomes[d.treinador_id] ?? "—"}
+                        {nomes[d.coach_id] ?? "—"}
                       </Badge>
-                      {d.notas && (
+                      {d.notes && (
                         <p className="text-muted-foreground mt-1 text-xs">
-                          {d.notas}
+                          {d.notes}
                         </p>
                       )}
                     </div>
@@ -211,10 +211,10 @@ function Horarios() {
           </DialogHeader>
           <div className="space-y-3">
             <div className="space-y-1.5">
-              <Label>Treinador</Label>
+              <Label>Coach</Label>
               <Select
-                onValueChange={(v) => setForm({ ...form, treinador_id: v })}
-                value={form.treinador_id}
+                onValueChange={(v) => setForm({ ...form, coach_id: v })}
+                value={form.coach_id}
               >
                 <SelectTrigger>
                   <SelectValue placeholder="Escolher treinador" />
@@ -222,7 +222,7 @@ function Horarios() {
                 <SelectContent>
                   {(treinadores ?? []).map((t) => (
                     <SelectItem key={t.id} value={t.id}>
-                      {t.nome}
+                      {t.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
@@ -231,14 +231,14 @@ function Horarios() {
             <div className="space-y-1.5">
               <Label>Dia da semana</Label>
               <Select
-                onValueChange={(v) => setForm({ ...form, dia_semana: v })}
-                value={form.dia_semana}
+                onValueChange={(v) => setForm({ ...form, day_of_week: v })}
+                value={form.day_of_week}
               >
                 <SelectTrigger>
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  {DIAS_SEMANA.map((d, i) => (
+                  {DAY_NAMES.map((d, i) => (
                     <SelectItem key={d} value={String(i)}>
                       {d}
                     </SelectItem>
@@ -251,29 +251,29 @@ function Horarios() {
                 <Label>Início</Label>
                 <Input
                   onChange={(e) =>
-                    setForm({ ...form, hora_inicio: e.target.value })
+                    setForm({ ...form, start_time: e.target.value })
                   }
                   type="time"
-                  value={form.hora_inicio}
+                  value={form.start_time}
                 />
               </div>
               <div className="space-y-1.5">
                 <Label>Fim</Label>
                 <Input
                   onChange={(e) =>
-                    setForm({ ...form, hora_fim: e.target.value })
+                    setForm({ ...form, end_time: e.target.value })
                   }
                   type="time"
-                  value={form.hora_fim}
+                  value={form.end_time}
                 />
               </div>
             </div>
             <div className="space-y-1.5">
               <Label>Notas</Label>
               <Textarea
-                onChange={(e) => setForm({ ...form, notas: e.target.value })}
+                onChange={(e) => setForm({ ...form, notes: e.target.value })}
                 placeholder="Ex.: apenas campo sintético"
-                value={form.notas}
+                value={form.notes}
               />
             </div>
           </div>

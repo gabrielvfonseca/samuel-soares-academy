@@ -1,0 +1,13 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "ssa-db",
+  "main": "noop.js",
+  "compatibility_date": "2026-01-01",
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "ssa-db",
+      "database_id": "69ad2764-ee50-487e-8816-205fbd6b512f"
+    }
+  ]
+}

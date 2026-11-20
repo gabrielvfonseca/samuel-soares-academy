@@ -18,19 +18,19 @@ import { toast } from "@repo/ui/components/sonner";
 import { Download, Eye, Trash2, Upload } from "@repo/ui/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/data/client";
 
 interface Props {
-  descricao: string;
-  prefixo: string;
-  titulo: string;
+  description: string;
+  prefix: string;
+  title: string;
 }
 
-export function DocumentosPerfil({ prefixo, titulo, descricao }: Props) {
+export function DocumentosPerfil({ prefix, title, description }: Props) {
   const qc = useQueryClient();
   const inputRef = useRef<HTMLInputElement>(null);
   const [visualizar, setVisualizar] = useState<{
-    nome: string;
+    name: string;
     url: string;
   } | null>(null);
 
@@ -43,95 +43,104 @@ export function DocumentosPerfil({ prefixo, titulo, descricao }: Props) {
     [visualizar]
   );
 
+  interface Ficheiro {
+    created_at: string;
+    id: string;
+    last_modified: string;
+    metadata: Record<string, unknown>;
+    name: string;
+    size: number;
+    updated_at: string;
+  }
+
   const ficheiros = useQuery({
-    queryFn: async () => {
+    queryFn: async (): Promise<Ficheiro[]> => {
       const { data, error } = await supabase.storage
         .from("documentos")
-        .list(prefixo, { sortBy: { column: "created_at", order: "desc" } });
+        .list(prefix, { sortBy: { column: "created_at", order: "desc" } });
       if (error) {
         throw new Error(error.message);
       }
-      return (data ?? []).filter((f) => f.name !== ".emptyFolderPlaceholder");
+      return ((data ?? []) as Ficheiro[]).filter(
+        (f) => f.name !== ".emptyFolderPlaceholder"
+      );
     },
-    queryKey: ["documentos", prefixo],
+    queryKey: ["documentos", prefix],
   });
 
   const carregar = useMutation({
     mutationFn: async (file: File) => {
-      const nome = `${Date.now()}-${file.name.replace(/[^\w.-]+/gu, "_")}`;
+      const fileName = `${Date.now()}-${file.name.replace(/[^\w.-]+/gu, "_")}`;
       const { error } = await supabase.storage
         .from("documentos")
-        .upload(`${prefixo}/${nome}`, file, { upsert: false });
+        .upload(`${prefix}/${fileName}`, file, { upsert: false });
       if (error) {
         throw new Error(error.message);
       }
     },
     onError: (e: Error) => toast.error(e.message),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["documentos", prefixo] });
+      qc.invalidateQueries({ queryKey: ["documentos", prefix] });
       toast.success("Ficheiro carregado");
     },
   });
 
   const apagar = useMutation({
-    mutationFn: async (nome: string) => {
+    mutationFn: async (name: string) => {
       const { error } = await supabase.storage
         .from("documentos")
-        .remove([`${prefixo}/${nome}`]);
+        .remove([`${prefix}/${name}`]);
       if (error) {
         throw new Error(error.message);
       }
     },
     onError: (e: Error) => toast.error(e.message),
     onSuccess: () => {
-      qc.invalidateQueries({ queryKey: ["documentos", prefixo] });
+      qc.invalidateQueries({ queryKey: ["documentos", prefix] });
       toast.success("Ficheiro apagado");
     },
   });
 
-  async function descarregarBlob(nome: string) {
-    const { data, error } = await supabase.storage
+  async function descarregarBlob(name: string) {
+    const { data } = await supabase.storage
       .from("documentos")
-      .download(`${prefixo}/${nome}`);
-    if (error || !data) {
-      toast.error(error?.message ?? "Não foi possível abrir o ficheiro");
+      .download(`${prefix}/${name}`);
+    if (!data) {
+      toast.error("Não foi possível abrir o ficheiro");
       return null;
     }
-    const tipo = /\.pdf$/iu.test(nome)
-      ? "application/pdf"
-      : data.type || "application/octet-stream";
-    return URL.createObjectURL(data.slice(0, data.size, tipo));
+    return URL.createObjectURL(data);
   }
 
-  async function abrirNoSite(nome: string) {
-    const url = await descarregarBlob(nome);
+  async function abrirNoSite(name: string) {
+    const url = await descarregarBlob(name);
     if (url) {
-      setVisualizar({ nome, url });
+      setVisualizar({ name, url });
     }
   }
 
-  async function transferir(nome: string) {
-    const url = await descarregarBlob(nome);
+  async function transferir(name: string) {
+    const url = await descarregarBlob(name);
     if (!url) {
       return;
     }
     const a = document.createElement("a");
     a.href = url;
-    a.download = nome.replace(/^\d+-/u, "");
+    a.download = name.replace(/^\d+-/u, "");
     document.body.appendChild(a);
     a.click();
     a.remove();
     setTimeout(() => URL.revokeObjectURL(url), 10_000);
   }
 
-  const eImagem = (nome: string) => /\.(png|jpe?g|gif|webp|avif)$/iu.test(nome);
+  const eImagem = (name: string) => /\.(png|jpe?g|gif|webp|avif)$/iu.test(name);
 
   return (
     <Card>
       <CardHeader className="flex-row items-start justify-between gap-4 space-y-0">
         <div>
-          <CardTitle className="text-2xl">{titulo}</CardTitle>
-          <CardDescription>{descricao}</CardDescription>
+          <CardTitle className="text-2xl">{title}</CardTitle>
+          <CardDescription>{description}</CardDescription>
         </div>
         <Button
           disabled={carregar.isPending}
@@ -204,13 +213,13 @@ export function DocumentosPerfil({ prefixo, titulo, descricao }: Props) {
         <DialogContent className="max-w-5xl">
           <DialogHeader>
             <DialogTitle className="truncate text-2xl">
-              {visualizar?.nome.replace(/^\d+-/u, "")}
+              {visualizar?.name.replace(/^\d+-/u, "")}
             </DialogTitle>
           </DialogHeader>
           {visualizar &&
-            (eImagem(visualizar.nome) ? (
+            (eImagem(visualizar.name) ? (
               <img
-                alt={`Documento ${visualizar.nome.replace(/^\d+-/u, "")}`}
+                alt={`Documento ${visualizar.name.replace(/^\d+-/u, "")}`}
                 className="max-h-[75vh] w-full rounded-md object-contain"
                 src={visualizar.url}
               />
@@ -224,7 +233,7 @@ export function DocumentosPerfil({ prefixo, titulo, descricao }: Props) {
                   Não foi possível pré-visualizar aqui.{" "}
                   <button
                     className="underline"
-                    onClick={() => transferir(visualizar.nome)}
+                    onClick={() => transferir(visualizar.name)}
                     type="button"
                   >
                     Transferir ficheiro

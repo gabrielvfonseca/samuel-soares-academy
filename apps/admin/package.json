@@ -3,33 +3,44 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build": "next build",
+    "build": "vite build",
     "check-types": "tsc --noEmit",
-    "dev": "next dev --port 3001",
-    "start": "next start --port 3001",
+    "deploy": "vinext-cloudflare deploy",
+    "dev": "vite dev --port 3001",
+    "start": "vinext start --port 3001",
     "transit": "echo transit"
   },
   "dependencies": {
     "@repo/database": "workspace:*",
     "@repo/email": "workspace:*",
     "@repo/ui": "workspace:*",
-    "@supabase/supabase-js": "^2.112.4",
     "@tanstack/react-query": "^5.101.1",
-    "next": "catalog:",
-    "react": "catalog:",
-    "react-dom": "catalog:",
+    "better-auth": "catalog:",
+    "drizzle-orm": "catalog:",
+    "next": "16.2.7",
+    "react": "19.3.1",
+    "react-dom": "19.3.1",
+    "react-server-dom-webpack": "19.3.1",
     "server-only": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@cloudflare/config": "1.0.0-rc.2",
+    "@cloudflare/vite-plugin": "^2.0.0-rc.2",
     "@repo/typescript-config": "workspace:*",
     "@tailwindcss/postcss": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
     "@types/react-dom": "catalog:",
+    "@vinext/cloudflare": "^1.4.0",
+    "@vitejs/plugin-rsc": "^0.5.0",
+    "baseline-browser-mapping": "^2.9.19",
+    "cf": "1.0.0-rc.2",
     "postcss": "catalog:",
     "tailwindcss": "catalog:",
     "tw-animate-css": "catalog:",
-    "typescript": "catalog:"
+    "typescript": "catalog:",
+    "vinext": "^1.4.6",
+    "vite": "^8.0.0"
   }
 }

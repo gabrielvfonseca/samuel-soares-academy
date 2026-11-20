@@ -1,8 +1,17 @@
 import "server-only";
 
+import {
+  clubs,
+  coaches,
+  groups,
+  reminderHistory,
+  students,
+  trainings,
+} from "@repo/database/schema";
 import { envelopeEmail } from "@repo/email/layout";
-
-type Row = Record<string, unknown>;
+import { asc, eq } from "drizzle-orm";
+import { getDb } from "@/integrations/db/client.server";
+import { dataNoFuso, getConfig, upsertConfig } from "./db-helpers.server";
 
 export interface ResultadoEnvio {
   enviados: number;
@@ -28,18 +37,6 @@ function fmtData(d: Date, tz: string) {
     timeZone: tz,
     weekday: "long",
   });
-}
-
-/** Data (YYYY-MM-DD) no fuso indicado, deslocada por `offsetDias`. */
-function dataNoFuso(tz: string, offsetDias = 0) {
-  const base = new Date(Date.now() + offsetDias * 86_400_000);
-  const parts = new Intl.DateTimeFormat("en-CA", {
-    day: "2-digit",
-    month: "2-digit",
-    timeZone: tz,
-    year: "numeric",
-  }).format(base);
-  return parts;
 }
 
 function minutosNoFuso(tz: string) {
@@ -118,26 +115,19 @@ async function enviarWhatsapp(
 export async function executarLembretes(
   forcar = false
 ): Promise<ResultadoEnvio> {
-  const { supabaseAdmin } = await import(
-    "@/integrations/supabase/client.server"
-  );
+  const db = getDb();
 
-  const { data: cfg, error: cfgErr } = await supabaseAdmin
-    .from("configuracoes_notificacoes")
-    .select("*")
-    .limit(1)
-    .single();
-  if (cfgErr || !cfg) {
-    throw new Error(cfgErr?.message ?? "Configuração não encontrada");
+  const config = await getConfig();
+  if (!config) {
+    throw new Error("Configuração não encontrada");
   }
 
-  const config = cfg as Row;
-  const tz = (config.fuso_horario as string) || "Europe/Lisbon";
-  const horaTexto = String(config.hora_envio_diario ?? "20:00");
+  const tz = config.timezone || "Europe/Lisbon";
+  const horaTexto = String(config.dailySendTime ?? "20:00");
   const [hCfg, mCfg] = horaTexto.split(":").map(Number);
   const minutosConfig = (hCfg ?? 20) * 60 + (mCfg ?? 0);
   const hoje = dataNoFuso(tz, 0);
-  const jaEnviado = (config.ultimo_envio_data as string | null) === hoje;
+  const jaEnviado = config.lastSentDate === hoje;
 
   if (!forcar && (jaEnviado || minutosNoFuso(tz) < minutosConfig)) {
     return {
@@ -151,55 +141,91 @@ export async function executarLembretes(
   }
 
   const dia = dataNoFuso(tz, 1);
-  const inicio = new Date(`${dia}T00:00:00`);
-  const fim = new Date(`${dia}T23:59:59`);
 
-  const { data: treinos, error: trErr } = await supabaseAdmin
-    .from("treinos")
-    .select("*, treinadores(*), alunos(nome), turmas(nome), clubes(nome)")
-    .eq("estado", "Agendado")
-    .gte("data_hora_inicio", inicio.toISOString())
-    .lte("data_hora_inicio", fim.toISOString())
-    .order("data_hora_inicio");
-  if (trErr) {
-    throw new Error(trErr.message);
-  }
+  const treinosAgendados = await db
+    .select({
+      clubId: trainings.clubId,
+      coachId: trainings.coachId,
+      endDate: trainings.endDate,
+      field: trainings.field,
+      groupId: trainings.groupId,
+      id: trainings.id,
+      startDate: trainings.startDate,
+      studentId: trainings.studentId,
+    })
+    .from(trainings)
+    .where(eq(trainings.status, "Scheduled"))
+    .orderBy(asc(trainings.startDate));
 
-  const lista = (treinos ?? []) as Row[];
-  const grupos = new Map<string, Row[]>();
-  for (const t of lista) {
-    const tid = t.treinador_id as string | null;
+  // Filter for the target day in the configured timezone.
+  const treinosDoDia = treinosAgendados.filter((t) => {
+    const d = new Date(t.startDate);
+    const dayStr = new Intl.DateTimeFormat("en-CA", {
+      day: "2-digit",
+      month: "2-digit",
+      timeZone: tz,
+      year: "numeric",
+    }).format(d);
+    return dayStr === dia;
+  });
+
+  // Resolve lookup tables for name resolution.
+  const [todosClubes, todasTurmas, todosAlunos, todosTreinadores] =
+    await Promise.all([
+      db.select({ id: clubs.id, nome: clubs.name }).from(clubs),
+      db.select({ id: groups.id, nome: groups.name }).from(groups),
+      db.select({ id: students.id, nome: students.name }).from(students),
+      db
+        .select({
+          active: coaches.active,
+          email: coaches.email,
+          id: coaches.id,
+          name: coaches.name,
+          whatsappPhone: coaches.whatsappPhone,
+        })
+        .from(coaches),
+    ]);
+
+  const clubeNome = new Map(todosClubes.map((c) => [c.id, c.nome]));
+  const turmaNome = new Map(todasTurmas.map((t) => [t.id, t.nome]));
+  const alunoNome = new Map(todosAlunos.map((a) => [a.id, a.nome]));
+  const treinadorPorId = new Map(todosTreinadores.map((t) => [t.id, t]));
+
+  // Group by coachId.
+  const grupos = new Map<string, typeof treinosDoDia>();
+  for (const t of treinosDoDia) {
+    const tid = t.coachId;
     if (!tid) {
       continue;
     }
     grupos.set(tid, [...(grupos.get(tid) ?? []), t]);
   }
 
-  const canal = (config.canal_preferencial as string) ?? "Email";
-  const resendKey = config.chave_api_resend as string | null;
-  const waToken = config.chave_api_whatsapp as string | null;
-  const waPhoneId = config.whatsapp_phone_id as string | null;
-  const remetente =
-    (config.email_remetente as string) || "onboarding@resend.dev";
+  const canal = config.preferredChannel ?? "Email";
+  const resendKey = config.resendApiKey ?? null;
+  const waToken = config.whatsappApiKey ?? null;
+  const waPhoneId = config.whatsappPhoneId ?? null;
+  const remetente = config.fromEmail || "onboarding@resend.dev";
 
   let enviados = 0;
   let erros = 0;
-  const registos: Row[] = [];
+  type Registo = typeof reminderHistory.$inferInsert;
+  const registos: Registo[] = [];
 
   for (const [treinadorId, treinosDoTreinador] of grupos) {
-    const treinador = treinosDoTreinador[0]?.treinadores as Row | null;
-    if (!treinador || treinador.ativo === false) {
+    const treinador = treinadorPorId.get(treinadorId);
+    if (!treinador?.active) {
       continue;
     }
 
     const linhas = treinosDoTreinador.map((t) => {
-      const clube = (t.clubes as Row | null)?.nome as string | undefined;
-      const turma = (t.turmas as Row | null)?.nome as string | undefined;
-      const aluno = (t.alunos as Row | null)?.nome as string | undefined;
+      const clube = t.clubId ? clubeNome.get(t.clubId) : undefined;
+      const turma = t.groupId ? turmaNome.get(t.groupId) : undefined;
+      const aluno = t.studentId ? alunoNome.get(t.studentId) : undefined;
       const nome = clube
         ? `Treino no ${clube}`
         : (turma ?? aluno ?? "Treino sem nome");
-      return `${fmtHora(t.data_hora_inicio as string, tz)}–${fmtHora(t.data_hora_fim as string, tz)} · ${nome} · ${t.campo_local ?? "Local a definir"}`;
+      return `${fmtHora(t.startDate, tz)}–${fmtHora(t.endDate, tz)} · ${nome} · ${t.field ?? "Local a definir"}`;
     });
     const dataLegivel = fmtData(new Date(`${dia}T12:00:00`), tz);
     const diaSemana = new Date(`${dia}T12:00:00`).toLocaleDateString("pt-PT", {
@@ -215,15 +241,14 @@ export async function executarLembretes(
     const assunto = forcar
       ? `Teste ${horaEnvio} · Treinos de ${diaSemana} · ${dataLegivel}`
       : `Treinos de ${diaSemana} · ${dataLegivel}`;
-    const texto = `Olá ${treinador.nome},\n\nLembrete dos teus treinos de amanhã (${dataLegivel}):\n\n${linhas.map((l) => `• ${l}`).join("\n")}\n\nBons treinos!`;
+    const texto = `Olá ${treinador.name},\n\nLembrete dos teus treinos de amanhã (${dataLegivel}):\n\n${linhas.map((l) => `• ${l}`).join("\n")}\n\nBons treinos!`;
     const html = envelopeEmail(
       "Treinos de amanhã",
-      `<p style="margin:0 0 16px">Olá <strong>${treinador.nome}</strong>, aqui está o teu plano para <strong>${dataLegivel}</strong>:</p>
+      `<p style="margin:0 0 16px">Olá <strong>${treinador.name}</strong>, aqui está o teu plano para <strong>${dataLegivel}</strong>:</p>
        <ul style="padding-left:18px;line-height:1.8;margin:0">${linhas.map((l) => `<li>${l}</li>`).join("")}</ul>`
     );
 
-    const canais: string[] =
-      canal === "Ambos" ? ["Email", "WhatsApp"] : [canal];
+    const canais: string[] = canal === "Both" ? ["Email", "WhatsApp"] : [canal];
 
     for (const c of canais) {
       let estado = "sucesso";
@@ -236,7 +261,7 @@ export async function executarLembretes(
           await enviarEmail(
             resendKey,
             remetente,
-            treinador.email as string,
+            treinador.email,
             assunto,
             html
           );
@@ -244,13 +269,13 @@ export async function executarLembretes(
           if (!(waToken && waPhoneId)) {
             throw new Error("Credenciais WhatsApp não configuradas");
           }
-          if (!treinador.telefone_whatsapp) {
+          if (!treinador.whatsappPhone) {
             throw new Error("Treinador sem telefone WhatsApp");
           }
           await enviarWhatsapp(
             waToken,
             waPhoneId,
-            treinador.telefone_whatsapp as string,
+            treinador.whatsappPhone,
             texto
           );
         }
@@ -262,25 +287,23 @@ export async function executarLembretes(
       }
       for (const t of treinosDoTreinador) {
         registos.push({
-          canal: c,
-          detalhe,
-          estado_envio: estado,
-          treinador_id: treinadorId,
-          treino_id: t.id,
+          channel: c,
+          coachId: treinadorId,
+          detail: detalhe,
+          id: crypto.randomUUID(),
+          status: estado,
+          trainingId: t.id,
         });
       }
     }
   }
 
   if (registos.length > 0) {
-    await supabaseAdmin.from("historico_lembretes").insert(registos as never);
+    await db.insert(reminderHistory).values(registos);
   }
 
   if (!forcar) {
-    await supabaseAdmin
-      .from("configuracoes_notificacoes")
-      .update({ ultimo_envio_data: hoje } as never)
-      .eq("id", config.id as string);
+    await upsertConfig({ lastSentDate: hoje });
   }
 
   return {
@@ -288,6 +311,6 @@ export async function executarLembretes(
     erros,
     executado: true,
     treinadores: grupos.size,
-    treinos: lista.length,
+    treinos: treinosDoDia.length,
   };
 }

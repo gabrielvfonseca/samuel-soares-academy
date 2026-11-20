@@ -24,106 +24,106 @@ import { Textarea } from "@repo/ui/components/textarea";
 import { Pencil, Plus, Trash2 } from "@repo/ui/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/data/client";
 import {
-  DIAS_SEMANA,
-  formatHoraSimples,
-  listAlunos,
-  listCampos,
-  listTreinadores,
-  listTurmas,
-  type Turma,
+  DAY_NAMES,
+  formatTimeShort,
+  type Group,
+  listCoaches,
+  listFields,
+  listGroups,
+  listStudents,
 } from "@/lib/gk";
 
 const SEM_VALOR = "__nenhum__";
 
 function Turmas() {
   const qc = useQueryClient();
-  const turmas = useQuery({ queryFn: listTurmas, queryKey: ["turmas"] });
+  const turmas = useQuery({ queryFn: listGroups, queryKey: ["turmas"] });
   const treinadores = useQuery({
-    queryFn: listTreinadores,
+    queryFn: listCoaches,
     queryKey: ["treinadores"],
   });
-  const campos = useQuery({ queryFn: listCampos, queryKey: ["campos"] });
-  const alunos = useQuery({ queryFn: listAlunos, queryKey: ["alunos"] });
+  const campos = useQuery({ queryFn: listFields, queryKey: ["campos"] });
+  const alunos = useQuery({ queryFn: listStudents, queryKey: ["alunos"] });
 
   const porTurma = useMemo(() => {
     const map = new Map<string, string[]>();
     for (const a of alunos.data ?? []) {
-      const ids = a.turma_ids?.length
-        ? a.turma_ids
-        : a.turma_id
-          ? [a.turma_id]
+      const ids = a.group_ids?.length
+        ? a.group_ids
+        : a.group_id
+          ? [a.group_id]
           : [];
       for (const tid of ids) {
-        map.set(tid, [...(map.get(tid) ?? []), a.nome]);
+        map.set(tid, [...(map.get(tid) ?? []), a.name]);
       }
     }
     return map;
   }, [alunos.data]);
 
   const [open, setOpen] = useState(false);
-  const [atual, setAtual] = useState<Turma | null>(null);
+  const [atual, setAtual] = useState<Group | null>(null);
   const [form, setForm] = useState({
-    ativo: true,
-    campo_id: "",
-    dia_semana: "",
-    escalao: "",
-    hora_fim: "",
-    hora_inicio: "",
-    nome: "",
-    notas: "",
-    treinador_id: "",
+    active: true,
+    coach_id: "",
+    day_of_week: "",
+    end_time: "",
+    field_id: "",
+    level: "",
+    name: "",
+    notes: "",
+    start_time: "",
   });
 
-  function abrir(t?: Turma) {
+  function abrir(t?: Group) {
     setAtual(t ?? null);
     setForm({
-      ativo: t?.ativo ?? true,
-      campo_id: t?.campo_id ?? "",
-      dia_semana:
-        t?.dia_semana === undefined || t.dia_semana === null
+      active: t?.active ?? true,
+      coach_id: t?.coach_id ?? "",
+      day_of_week:
+        t?.day_of_week === undefined || t.day_of_week === null
           ? ""
-          : String(t.dia_semana),
-      escalao: t?.escalao ?? "",
-      hora_fim: t?.hora_fim ? t.hora_fim.slice(0, 5) : "",
-      hora_inicio: t?.hora_inicio ? t.hora_inicio.slice(0, 5) : "",
-      nome: t?.nome ?? "",
-      notas: t?.notas ?? "",
-      treinador_id: t?.treinador_id ?? "",
+          : String(t.day_of_week),
+      end_time: t?.end_time ? t.end_time.slice(0, 5) : "",
+      field_id: t?.field_id ?? "",
+      level: t?.level ?? "",
+      name: t?.name ?? "",
+      notes: t?.notes ?? "",
+      start_time: t?.start_time ? t.start_time.slice(0, 5) : "",
     });
     setOpen(true);
   }
 
   const guardar = useMutation({
     mutationFn: async () => {
-      if (!form.nome.trim()) {
+      if (!form.name.trim()) {
         throw new Error("Indique o nome da turma");
       }
       if (
-        form.hora_inicio &&
-        form.hora_fim &&
-        form.hora_fim <= form.hora_inicio
+        form.start_time &&
+        form.end_time &&
+        form.end_time <= form.start_time
       ) {
         throw new Error("A hora de fim tem de ser depois da hora de início");
       }
       const payload = {
-        ativo: form.ativo,
-        campo_id: form.campo_id || null,
-        dia_semana: form.dia_semana ? Number(form.dia_semana) : null,
-        escalao: form.escalao || null,
-        hora_fim: form.hora_fim || null,
-        hora_inicio: form.hora_inicio || null,
-        nome: form.nome.trim(),
-        notas: form.notas || null,
-        treinador_id: form.treinador_id || null,
+        active: form.active,
+        coach_id: form.coach_id || null,
+        day_of_week: form.day_of_week ? Number(form.day_of_week) : null,
+        end_time: form.end_time || null,
+        field_id: form.field_id || null,
+        level: form.level || null,
+        name: form.name.trim(),
+        notes: form.notes || null,
+        start_time: form.start_time || null,
       };
       const res = atual
         ? await supabase
-            .from("turmas")
+            .from("groups")
             .update(payload as never)
             .eq("id", atual.id)
-        : await supabase.from("turmas").insert(payload as never);
+        : await supabase.from("groups").insert(payload as never);
       if (res.error) {
         throw new Error(res.error.message);
       }
@@ -131,14 +131,14 @@ function Turmas() {
     onError: (e: Error) => toast.error(e.message),
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["turmas"] });
-      toast.success("Turma guardada");
+      toast.success("Group guardada");
       setOpen(false);
     },
   });
 
   const remover = useMutation({
     mutationFn: async (id: string) => {
-      const { error } = await supabase.from("turmas").delete().eq("id", id);
+      const { error } = await supabase.from("groups").delete().eq("id", id);
       if (error) {
         throw new Error(error.message);
       }
@@ -147,14 +147,14 @@ function Turmas() {
     onSuccess: () => {
       qc.invalidateQueries({ queryKey: ["turmas"] });
       qc.invalidateQueries({ queryKey: ["alunos"] });
-      toast.success("Turma removida");
+      toast.success("Group removida");
     },
   });
 
   const nomeTreinador = (id: string | null) =>
-    treinadores.data?.find((t) => t.id === id)?.nome ?? "Sem treinador";
+    treinadores.data?.find((t) => t.id === id)?.name ?? "Sem treinador";
   const nomeCampo = (id: string | null) =>
-    campos.data?.find((c) => c.id === id)?.nome ?? "Sem campo";
+    campos.data?.find((c) => c.id === id)?.name ?? "Sem campo";
 
   return (
     <div className="space-y-6">
@@ -178,24 +178,22 @@ function Turmas() {
               <CardContent className="space-y-2 pt-6">
                 <div className="flex items-start justify-between gap-3">
                   <div>
-                    <p className="font-semibold">{t.nome}</p>
+                    <p className="font-semibold">{t.name}</p>
                     <p className="text-muted-foreground text-sm">
-                      {nomeTreinador(t.treinador_id)} · {nomeCampo(t.campo_id)}
+                      {nomeTreinador(t.coach_id)} · {nomeCampo(t.field_id)}
                     </p>
                     <p className="text-muted-foreground text-xs">
-                      {t.dia_semana === null
+                      {t.day_of_week === null
                         ? "Sem dia definido"
-                        : DIAS_SEMANA[t.dia_semana]}
-                      {t.hora_inicio && t.hora_fim
-                        ? ` · ${formatHoraSimples(t.hora_inicio)}–${formatHoraSimples(t.hora_fim)}`
+                        : DAY_NAMES[t.day_of_week]}
+                      {t.start_time && t.end_time
+                        ? ` · ${formatTimeShort(t.start_time)}–${formatTimeShort(t.end_time)}`
                         : ""}
                     </p>
                   </div>
                   <div className="flex items-center gap-2">
-                    {t.escalao && (
-                      <Badge variant="secondary">{t.escalao}</Badge>
-                    )}
-                    {!t.ativo && <Badge variant="outline">Inativa</Badge>}
+                    {t.level && <Badge variant="secondary">{t.level}</Badge>}
+                    {!t.active && <Badge variant="outline">Inativa</Badge>}
                     <Button
                       onClick={() => abrir(t)}
                       size="icon"
@@ -221,9 +219,9 @@ function Turmas() {
                     ? `${atletas.length} atleta(s): ${atletas.join(", ")}`
                     : "Ainda sem atletas atribuídos"}
                 </p>
-                {t.notas && (
+                {t.notes && (
                   <p className="border-border text-muted-foreground border-l-4 pl-3 text-sm">
-                    {t.notas}
+                    {t.notes}
                   </p>
                 )}
               </CardContent>
@@ -249,28 +247,28 @@ function Turmas() {
               <Label htmlFor="nome">Nome da turma</Label>
               <Input
                 id="nome"
-                onChange={(e) => setForm({ ...form, nome: e.target.value })}
-                placeholder="Ex.: Turma Sub-15 Terças"
-                value={form.nome}
+                onChange={(e) => setForm({ ...form, name: e.target.value })}
+                placeholder="Ex.: Group Sub-15 Terças"
+                value={form.name}
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="escalao">Escalão</Label>
+              <Label htmlFor="level">Escalão</Label>
               <Input
-                id="escalao"
-                onChange={(e) => setForm({ ...form, escalao: e.target.value })}
+                id="level"
+                onChange={(e) => setForm({ ...form, level: e.target.value })}
                 placeholder="Sub-15"
-                value={form.escalao}
+                value={form.level}
               />
             </div>
             <div className="grid gap-4 sm:grid-cols-2">
               <div className="space-y-2">
-                <Label>Treinador</Label>
+                <Label>Coach</Label>
                 <Select
                   onValueChange={(v) =>
-                    setForm({ ...form, treinador_id: v === SEM_VALOR ? "" : v })
+                    setForm({ ...form, coach_id: v === SEM_VALOR ? "" : v })
                   }
-                  value={form.treinador_id || SEM_VALOR}
+                  value={form.coach_id || SEM_VALOR}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Selecionar" />
@@ -279,19 +277,19 @@ function Turmas() {
                     <SelectItem value={SEM_VALOR}>Sem treinador</SelectItem>
                     {(treinadores.data ?? []).map((t) => (
                       <SelectItem key={t.id} value={t.id}>
-                        {t.nome}
+                        {t.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
               <div className="space-y-2">
-                <Label>Campo</Label>
+                <Label>Field</Label>
                 <Select
                   onValueChange={(v) =>
-                    setForm({ ...form, campo_id: v === SEM_VALOR ? "" : v })
+                    setForm({ ...form, field_id: v === SEM_VALOR ? "" : v })
                   }
-                  value={form.campo_id || SEM_VALOR}
+                  value={form.field_id || SEM_VALOR}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Selecionar" />
@@ -300,7 +298,7 @@ function Turmas() {
                     <SelectItem value={SEM_VALOR}>Sem campo</SelectItem>
                     {(campos.data ?? []).map((c) => (
                       <SelectItem key={c.id} value={c.id}>
-                        {c.nome}
+                        {c.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
@@ -312,16 +310,16 @@ function Turmas() {
                 <Label>Dia</Label>
                 <Select
                   onValueChange={(v) =>
-                    setForm({ ...form, dia_semana: v === SEM_VALOR ? "" : v })
+                    setForm({ ...form, day_of_week: v === SEM_VALOR ? "" : v })
                   }
-                  value={form.dia_semana || SEM_VALOR}
+                  value={form.day_of_week || SEM_VALOR}
                 >
                   <SelectTrigger>
                     <SelectValue placeholder="Dia" />
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value={SEM_VALOR}>Sem dia</SelectItem>
-                    {DIAS_SEMANA.map((d, i) => (
+                    {DAY_NAMES.map((d, i) => (
                       <SelectItem key={d} value={String(i)}>
                         {d}
                       </SelectItem>
@@ -334,10 +332,10 @@ function Turmas() {
                 <Input
                   id="hi"
                   onChange={(e) =>
-                    setForm({ ...form, hora_inicio: e.target.value })
+                    setForm({ ...form, start_time: e.target.value })
                   }
                   type="time"
-                  value={form.hora_inicio}
+                  value={form.start_time}
                 />
               </div>
               <div className="space-y-2">
@@ -345,10 +343,10 @@ function Turmas() {
                 <Input
                   id="hf"
                   onChange={(e) =>
-                    setForm({ ...form, hora_fim: e.target.value })
+                    setForm({ ...form, end_time: e.target.value })
                   }
                   type="time"
-                  value={form.hora_fim}
+                  value={form.end_time}
                 />
               </div>
             </div>
@@ -356,9 +354,9 @@ function Turmas() {
               <Label>Estado</Label>
               <Select
                 onValueChange={(v) =>
-                  setForm({ ...form, ativo: v === "ativa" })
+                  setForm({ ...form, active: v === "ativa" })
                 }
-                value={form.ativo ? "ativa" : "inativa"}
+                value={form.active ? "ativa" : "inativa"}
               >
                 <SelectTrigger>
                   <SelectValue />
@@ -373,8 +371,8 @@ function Turmas() {
               <Label htmlFor="notas">Notas</Label>
               <Textarea
                 id="notas"
-                onChange={(e) => setForm({ ...form, notas: e.target.value })}
-                value={form.notas}
+                onChange={(e) => setForm({ ...form, notes: e.target.value })}
+                value={form.notes}
               />
             </div>
           </div>

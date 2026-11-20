@@ -1,100 +1,97 @@
-import {
-  boolean,
-  numeric,
-  pgTable,
-  smallint,
-  text,
-  time,
-  uuid,
-} from "drizzle-orm/pg-core";
+import { integer, sqliteTable, text } from "drizzle-orm/sqlite-core";
 import { createdAt, id, updatedAt } from "./_columns";
-import { treinadores } from "./people";
+import { coaches } from "./people";
 
-export const campos = pgTable("campos", {
-  ativo: boolean("ativo").notNull().default(true),
+// NOTE: `time` columns are stored as `text` ("HH:MM"). SQLite has no time
+// type; the "HH:MM" string keeps lexicographic comparison correct and
+// matches the values the UI already sends and renders.
+
+export const fields = sqliteTable("fields", {
+  active: integer("active", { mode: "boolean" }).notNull().default(true),
+  address: text("address"),
   createdAt: createdAt(),
   id: id(),
-  morada: text("morada"),
-  nome: text("nome").notNull(),
-  notas: text("notas"),
+  name: text("name").notNull(),
+  notes: text("notes"),
   updatedAt: updatedAt(),
 });
 
-export const disponibilidades = pgTable("disponibilidades", {
-  createdAt: createdAt(),
-  diaSemana: smallint("dia_semana").notNull(),
-  horaFim: time("hora_fim").notNull(),
-  horaInicio: time("hora_inicio").notNull(),
-  id: id(),
-  notas: text("notas"),
-  treinadorId: uuid("treinador_id")
+export const availability = sqliteTable("availability", {
+  coachId: text("coach_id")
     .notNull()
-    .references(() => treinadores.id, { onDelete: "cascade" }),
+    .references(() => coaches.id, { onDelete: "cascade" }),
+  createdAt: createdAt(),
+  dayOfWeek: integer("day_of_week").notNull(),
+  endTime: text("end_time").notNull(),
+  id: id(),
+  notes: text("notes"),
+  startTime: text("start_time").notNull(),
   updatedAt: updatedAt(),
 });
 
-export const disponibilidadesCampos = pgTable("disponibilidades_campos", {
-  campoId: uuid("campo_id")
+export const fieldAvailability = sqliteTable("field_availability", {
+  createdAt: createdAt(),
+  dayOfWeek: integer("day_of_week").notNull(),
+  endTime: text("end_time").notNull(),
+  fieldId: text("field_id")
     .notNull()
-    .references(() => campos.id, { onDelete: "cascade" }),
-  createdAt: createdAt(),
-  diaSemana: smallint("dia_semana").notNull(),
-  horaFim: time("hora_fim").notNull(),
-  horaInicio: time("hora_inicio").notNull(),
+    .references(() => fields.id, { onDelete: "cascade" }),
   id: id(),
-  notas: text("notas"),
+  notes: text("notes"),
+  startTime: text("start_time").notNull(),
   updatedAt: updatedAt(),
 });
 
-export const turmas = pgTable("turmas", {
-  ativo: boolean("ativo").notNull().default(true),
-  campoId: uuid("campo_id").references(() => campos.id, {
+export const groups = sqliteTable("groups", {
+  active: integer("active", { mode: "boolean" }).notNull().default(true),
+  coachId: text("coach_id").references(() => coaches.id, {
     onDelete: "set null",
   }),
   createdAt: createdAt(),
-  diaSemana: smallint("dia_semana"),
-  escalao: text("escalao"),
-  horaFim: time("hora_fim"),
-  horaInicio: time("hora_inicio"),
-  id: id(),
-  nome: text("nome").notNull(),
-  notas: text("notas"),
-  treinadorId: uuid("treinador_id").references(() => treinadores.id, {
+  dayOfWeek: integer("day_of_week"),
+  endTime: text("end_time"),
+  fieldId: text("field_id").references(() => fields.id, {
     onDelete: "set null",
   }),
+  id: id(),
+  level: text("level"),
+  name: text("name").notNull(),
+  notes: text("notes"),
+  startTime: text("start_time"),
   updatedAt: updatedAt(),
 });
 
-export const clubes = pgTable("clubes", {
-  ativo: boolean("ativo").notNull().default(true),
-  campoId: uuid("campo_id").references(() => campos.id, {
+export const clubs = sqliteTable("clubs", {
+  active: integer("active", { mode: "boolean" }).notNull().default(true),
+  coachId: text("coach_id").references(() => coaches.id, {
     onDelete: "set null",
   }),
-  contacto: text("contacto"),
+  contact: text("contact"),
   createdAt: createdAt(),
-  diaSemana: smallint("dia_semana"),
+  dayOfWeek: integer("day_of_week"),
   email: text("email"),
-  horaFim: time("hora_fim"),
-  horaInicio: time("hora_inicio"),
-  id: id(),
-  nif: text("nif"),
-  nome: text("nome").notNull(),
-  notas: text("notas"),
-  treinadorId: uuid("treinador_id").references(() => treinadores.id, {
+  endTime: text("end_time"),
+  fieldId: text("field_id").references(() => fields.id, {
     onDelete: "set null",
   }),
+  id: id(),
+  // Money as integer cents (Postgres `numeric(10,2)` → `integer` cents).
+  monthlyFee: integer("monthly_fee").notNull().default(0),
+  name: text("name").notNull(),
+  notes: text("notes"),
+  startTime: text("start_time"),
+  taxId: text("tax_id"),
   updatedAt: updatedAt(),
-  valorMensal: numeric("valor_mensal").notNull().default("0"),
 });
 
-export const clubeSessoes = pgTable("clube_sessoes", {
-  clubeId: uuid("clube_id")
+export const clubSessions = sqliteTable("club_sessions", {
+  clubId: text("club_id")
     .notNull()
-    .references(() => clubes.id, { onDelete: "cascade" }),
+    .references(() => clubs.id, { onDelete: "cascade" }),
   createdAt: createdAt(),
-  diaSemana: smallint("dia_semana").notNull(),
-  horaFim: time("hora_fim").notNull(),
-  horaInicio: time("hora_inicio").notNull(),
+  dayOfWeek: integer("day_of_week").notNull(),
+  endTime: text("end_time").notNull(),
   id: id(),
+  startTime: text("start_time").notNull(),
   updatedAt: updatedAt(),
 });

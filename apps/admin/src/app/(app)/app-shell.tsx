@@ -21,7 +21,7 @@ import { cn } from "@repo/ui/lib/utils";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { type ReactNode, useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { supabase } from "@/integrations/data/client";
 
 const nav = [
   { icon: LayoutDashboard, label: "Dashboard", to: "/dashboard" },
