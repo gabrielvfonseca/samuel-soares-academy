@@ -9,7 +9,8 @@ Internal management app (vinext on Cloudflare Workers + D1). Monorepo rules live
   (`integrations/auth/server.ts`). In client code wrap them with `useAuthedAction(action)`.
   Business logic is in `src/lib/*.server.ts` (`server-only`).
 - Cron endpoints (`src/app/api/public/cron/*/route.ts`) are HTTP routes protected by `TREINOS_CRON_SECRET`
-  (`src/lib/cron-route.ts`). Cloudflare Cron Triggers POST to them on a schedule (see
-  `cloudflare.config.ts`). Keep their paths stable.
+  (`src/lib/cron-route.ts`). They are invoked by an external scheduler that POSTs a Bearer token
+  (the vinext worker entry only exposes `fetch()`, so Cloudflare Cron Triggers cannot target them
+  directly). Schedules are documented in `cloudflare.config.ts`. Keep their paths stable.
 - Icons, toasts, form hooks and UI primitives come from `@repo/ui` (`@repo/ui/icons`,
   `@repo/ui/components/sonner`, ...); do not add those libraries to this app.

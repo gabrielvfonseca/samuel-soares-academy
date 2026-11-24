@@ -1,67 +1,59 @@
-# Repository Guidelines
+# @repo/site
 
-## Project Structure & Module Organization
+Public marketing site (pt/en). Built with vinext (Next.js 16 on Vite) and
+deployed to Cloudflare Workers. Monorepo rules live in the root `AGENTS.md`.
+
+## Project Structure
 
 ```
-├─ src/                   # Application source
-│   ├─ app/               # Next.js pages & API routes
-│   ├─ components/       # Re‑usable UI components
-│   ├─ lib/               # Helper libraries (API client, utils, etc.)
-│   ├─ models/           # TypeScript data models
-│   ├─ styles/            # Global CSS / Tailwind config
-│   └─ ...
-├─ public/                # Static assets (images, favicons)
-├─ tests/ (optional)      # Future unit/e2e tests
-├─ biome.jsonc            # Lint/format configuration
-└─ package.json           # Scripts, dependencies
+src/
+  app/               Routes: [locale]/ (pt, en), actions/, metadata, robots, sitemap
+  components/        UI (sections, dialogs, forms, providers)
+  lib/               Helpers (i18n, fonts, metadata, security, rate-limit, redis)
+  models/            Typed content models (hero, about, coaches, pricing, ...)
+  dictionaries/      pt.json, en.json (next-international)
+  styles/            globals.css (Tailwind v4)
+  utils/             contact-utils, whatsapp-message
+  types/             cloudflare-workers.d.ts (typed env bindings)
+  env.ts             typed env (reads from cloudflare:workers)
+  proxy.ts           middleware (locale negotiation)
+public/              Static assets (images, favicons, og images)
 ```
 
-All source lives under **src**; keep new modules inside the most appropriate sub‑folder.
+## Commands
 
-## Build, Test, and Development Commands
+| Command              | What it does                                  |
+| -------------------- | --------------------------------------------- |
+| `pnpm dev`           | Vite dev server on http://localhost:9000      |
+| `pnpm build`         | Production build (vite build)                 |
+| `pnpm start`         | Run the built app (vinext start, :9000)       |
+| `pnpm check-types`   | Build + `tsc --noEmit`                        |
+| `pnpm deploy`        | Deploy to Cloudflare (vinext-cloudflare)      |
+| `pnpm check` (root)  | Biome + Ultracite lint/format                 |
+| `pnpm fix` (root)    | Auto-fix style issues                         |
 
-| Command                        | Description                                      |
-| ------------------------------ | ------------------------------------------------ |
-| `pnpm dev`                     | Starts the Next.js dev server (hot‑reload).      |
-| `pnpm build`                   | Produces an optimized production build.          |
-| `pnpm start`                   | Runs the compiled app with `next start`.         |
-| `pnpm check` (repo root) | Biome + Ultracite lint/format check. |
-| `pnpm fix` (repo root) | Auto-fix with Ultracite. |
-| `pnpm check-types`             | Type-checks the app.                             |
-| `npm test` _(not defined yet)_ | Placeholder for future Jest or Playwright tests. |
+## Coding Style
 
-## Coding Style & Naming Conventions
+- 2-space indent (Biome). Kebab-case filenames, PascalCase components,
+  camelCase functions/variables.
+- UI primitives come from `@repo/ui` — do not add UI libraries (lucide,
+  sonner, radix, ...) directly to this app.
+- Content is driven by the typed models in `src/models/` and the
+  dictionaries in `src/dictionaries/`.
 
-- Indentation: **2 spaces** (enforced by Biome).
-- Files: use **kebab‑case** for filenames, **PascalCase** for React components, and **camelCase** for functions/variables.
-- Types: Exported TypeScript types/interfaces use **PascalCase** (e.g., `UserProfile`).
-- Linting: `pnpm check` must pass before commits; run `pnpm fix` to auto‑fix style issues.
+## Environment
 
-## Testing Guidelines
+- Env vars are typed in `src/types/cloudflare-workers.d.ts` and read from
+  `cloudflare:workers` (the Cloudflare Workers runtime). The
+  `bindings.text("placeholder")` values in `cloudflare.config.ts` are
+  **local-dev only** — real values are set in the CF dashboard after deploy.
+- Public origin (`NEXT_PUBLIC_APP_URL`) is inlined into the browser bundle at
+  build time.
+- See `src/env.ts` for the canonical typed env list and `.env.example` for
+  the required vars.
 
-The project currently does not contain a test suite. When adding tests, follow these conventions:
+## Conventions
 
-- Use **Jest** for unit tests and **Playwright** for end‑to‑end tests under the `tests/` folder.
-- Name test files `{module}.test.ts` or `{module}.spec.ts`.
-- Run the suite with `npm test` (add a script when tests are introduced).
-
-## Commit & Pull Request Guidelines
-
-- **Commit messages** should follow the conventional format:
-  `type(scope): short summary`
-  where `type` is one of `feat`, `fix`, `chore`, `refactor`, `docs`, `style`, `test`, or `perf`.
-- PR titles mirror the commit type, and the description must:
-  - Reference the related issue (`#123`).
-  - Summarize changes and any migration steps.
-  - Include screenshots for UI changes.
-- Ensure the CI passes (`pnpm check` & `pnpm check-types`)
-
-## Security & Configuration Tips
-
-- Environment variables are defined in `src/env.ts` and loaded via **@t3-oss/env-nextjs**. Do **not** commit `.env*` files.
-- Secrets (e.g., API keys) must be stored in Vercel/Netlify env panels, not in source control.
-- Run `npm audit` periodically and address high‑severity findings.
-
----
-
-These guidelines aim to keep the codebase consistent, easy to navigate, and safe for contributors.
+- Server code is `"use server"`; client components are `"use client"`.
+- Pages under `[locale]/` are locale-scoped; `proxy.ts` negotiates the locale.
+- Run `pnpm check` and `pnpm check-types` before committing.

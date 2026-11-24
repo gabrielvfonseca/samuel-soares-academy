@@ -15,7 +15,7 @@ export default defineConfig({
       CONTACT_EMAIL_TO: bindings.text("ruijmorgadomarques@gmail.com"),
       IMAGES: bindings.images(),
       KV: bindings.kv({ id: "da9b99744fed4650a2c1240a3924e230" }),
-      NEXT_PUBLIC_APP_URL: bindings.text("http://localhost:3005"),
+      NEXT_PUBLIC_APP_URL: bindings.text("http://localhost:9000"),
       NEXT_PUBLIC_GA_MEASUREMENT_ID: bindings.text(""),
       RESEND_API_KEY: bindings.text(""),
       VINEXT_KV_CACHE: bindings.kv({

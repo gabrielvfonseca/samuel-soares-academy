@@ -34,13 +34,10 @@
     "db:generate": {
       "cache": false
     },
-    "db:migrate": {
+    "db:deploy": {
       "cache": false
     },
-    "db:push": {
-      "cache": false
-    },
-    "db:pull": {
+    "db:local": {
       "cache": false
     },
     "db:studio": {
@@ -49,6 +46,13 @@
     },
     "db:check": {
       "cache": false
+    },
+    "db:smoke": {
+      "cache": false
+    },
+    "test": {
+      "cache": false,
+      "dependsOn": []
     },
     "//#check": {
       "inputs": ["$TURBO_DEFAULT$", "biome.jsonc"]

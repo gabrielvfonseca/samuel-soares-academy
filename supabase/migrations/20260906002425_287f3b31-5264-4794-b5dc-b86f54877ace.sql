@@ -1,1 +1,0 @@
-REVOKE ALL ON FUNCTION public.sincronizar_movimento_mensalidade() FROM PUBLIC, anon, authenticated;

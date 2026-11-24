@@ -52,6 +52,7 @@ export default defineConfig({
   plugins: [
     vinext(),
     cloudflare({
+      inspectorPort: 9240,
       viteEnvironment: { childEnvironments: ["ssr"], name: "rsc" },
     }),
     inlineNextThemes(),

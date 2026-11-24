@@ -20,7 +20,7 @@ import { headers } from "next/headers";
 export function getInstance() {
   const db = createDb(env.DB);
   return betterAuth({
-    baseURL: env.BETTER_AUTH_URL ?? "http://localhost:3101",
+    baseURL: env.BETTER_AUTH_URL ?? "http://localhost:9001",
     database: drizzleAdapter(db, {
       provider: "sqlite",
       schema: {

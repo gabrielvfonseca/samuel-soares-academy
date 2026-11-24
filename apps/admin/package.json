@@ -6,8 +6,8 @@
     "build": "vite build",
     "check-types": "pnpm build && tsc --noEmit",
     "deploy": "vinext-cloudflare deploy",
-    "dev": "vite dev --port 3001",
-    "start": "vinext start --port 3001",
+    "dev": "vite dev --port 9001",
+    "start": "vinext start --port 9001",
     "transit": "echo transit"
   },
   "dependencies": {

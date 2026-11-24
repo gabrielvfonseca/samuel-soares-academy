@@ -7,7 +7,7 @@ minimumReleaseAge: 1440
 
 # Single version source for dependencies shared across workspaces
 catalog:
-  next: 16.0.10
+  vitest: ^3.2.0
   "@tailwindcss/postcss": ^4.1.9
   postcss: ^8.5
   server-only: ^0.0.1

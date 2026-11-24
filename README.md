@@ -1,18 +1,17 @@
 # Samuel Soares Academy
 
-Turborepo monorepo: public website, management app and a single Supabase/Postgres database.
+Turborepo monorepo: public website, management app and a single Cloudflare D1 (SQLite) database.
 
 ```
 apps/
   site/      @repo/site     Next.js 16 marketing site (pt/en)
-  admin/     @repo/admin   Next.js management app (Supabase auth + data)
+  admin/     @repo/admin   Next.js management app (Better Auth + D1 data)
 packages/
   ui/                @repo/ui                shadcn/ui components, hooks, `cn`
   database/          @repo/database               Drizzle schema, client, drizzle-kit (source of truth)
   email/             @repo/email             React Email templates, email layout, Resend client
   validation/        @repo/validation        shared zod schemas
   typescript-config/ @repo/typescript-config shared tsconfigs
-supabase/            Supabase CLI project (config.toml, migrations)
 ```
 
 ## Getting started
@@ -25,8 +24,8 @@ cp apps/admin/.env.example apps/admin/.env
 cp .env.example .env
 
 pnpm dev                   # both apps
-pnpm dev:site              # http://localhost:3000
-pnpm dev:admin             # http://localhost:3001
+pnpm dev:site              # http://localhost:9000
+pnpm dev:admin             # http://localhost:9001
 ```
 
 ## Common tasks
@@ -42,26 +41,25 @@ pnpm dev:admin             # http://localhost:3001
 Site builds need `NEXT_PUBLIC_APP_URL`, `RESEND_API_KEY`, `WHATSAPP_BUSINESS_PHONE`,
 `CONTACT_EMAIL_FROM`, `CONTACT_EMAIL_TO` (see `apps/site/.env.example`).
 
-## Database (single DB)
+## Database (single D1 DB)
 
 `packages/database` owns the schema (`src/schema/*`). Migrations are emitted into
-`supabase/migrations` (timestamp-prefixed) so the Supabase CLI and drizzle-kit share one folder.
+`packages/database/src/drizzle` (timestamp-prefixed) by drizzle-kit.
 
 ```bash
-supabase start                 # local Postgres on :54322
-pnpm db:generate               # schema change -> new migration in supabase/migrations
-pnpm db:migrate                # apply with drizzle-kit   (or: supabase db reset / db push)
-pnpm db:check                  # snapshot consistency
+pnpm db:local              # apply migrations to the local D1 (wrangler, --local)
+pnpm db:generate           # schema change -> new migration in src/drizzle
+pnpm db:deploy             # apply migrations to the remote D1 (wrangler)
+pnpm db:check              # snapshot consistency
 pnpm db:studio
 ```
 
 Notes:
 
-- `*_baseline.sql` is intentionally empty: the original tables come from the earlier Supabase
-  migrations; the baseline only anchors the Drizzle snapshot in `supabase/migrations/meta`.
-- Row Level Security policies, grants, functions and triggers are **not** modelled in Drizzle.
-  Add them as hand-written SQL migrations (`supabase migration new <name>`).
-- `apps/admin` still talks to the database through `@supabase/supabase-js` (auth, RLS-scoped
-  access). Use `@repo/database` (`createDb()`, server-side only) for new direct queries.
-- Always diff the Drizzle schema against the real database (`pnpm db:pull` into a scratch dir)
-  before the first production migration.
+- The database is a single Cloudflare D1 (`ssa-db`) bound as `DB` in both apps'
+  `cloudflare.config.ts`. The schema is modelled in Drizzle (`@repo/database`).
+- `apps/admin` talks to the database through a Supabase-shaped query chain
+  (`@/integrations/data/client`) that POSTs to `/api/pg`; server code uses
+  `@repo/database` (`createDb()`, server-side only) directly.
+- Always diff the Drizzle schema against the real database before the first
+  production migration (`pnpm db:check`).

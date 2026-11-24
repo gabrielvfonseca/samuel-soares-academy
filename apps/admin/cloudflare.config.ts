@@ -12,11 +12,11 @@ export default defineConfig({
     env: {
       ASSETS: bindings.assets(),
       // Secrets set in the CF dashboard after deploy (see migration docs).
-      BETTER_AUTH_SECRET: bindings.text(
-        "ssa-admin-auth-secret-2026-0123456789abcdef"
-      ),
+      // BETTER_AUTH_SECRET must be 32+ random chars — generate with
+      // `openssl rand -hex 32`. Never commit a real value here.
+      BETTER_AUTH_SECRET: bindings.text(""),
       BETTER_AUTH_TRUSTED_ORIGINS: bindings.text(
-        "https://admin.ssa-916.workers.dev,http://localhost:3101,http://localhost:3001,http://127.0.0.1:3101"
+        "https://admin.ssa-916.workers.dev,http://localhost:9001,http://127.0.0.1:9001"
       ),
       BETTER_AUTH_URL: bindings.text("https://admin.ssa-916.workers.dev"),
       // R2 bucket `documentos` is created once R2 is enabled on the SSA
@@ -31,5 +31,17 @@ export default defineConfig({
       TREINOS_CRON_SECRET: bindings.text(""),
     },
     name: "admin",
+    // Cron schedules (UTC) — invoked by an external scheduler that POSTs to
+    // /api/public/cron/*. Each endpoint is protected by TREINOS_CRON_SECRET
+    // (see src/lib/cron-route.ts). The vinext worker entry only exposes
+    // `fetch()`, so Cloudflare Cron Triggers (which invoke a `scheduled()`
+    // handler) cannot target these routes directly. Use an external scheduler
+    // (e.g., a CF Worker with a `scheduled()` handler, GitHub Actions cron,
+    // or similar) to POST to each endpoint with a Bearer token.
+    //   ordenados          0 5 * * *
+    //   faturas            0 6 1 * *
+    //   mensalidades       30 6 1 * *
+    //   lembretes          0 7 * * *
+    //   lembretes-pessoais 15 7 * * *
   }),
 });

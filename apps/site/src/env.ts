@@ -10,7 +10,7 @@ export const env = {
   CONTACT_EMAIL_FROM: cfEnv.CONTACT_EMAIL_FROM,
   CONTACT_EMAIL_TO: cfEnv.CONTACT_EMAIL_TO,
   KV: cfEnv.KV,
-  NEXT_PUBLIC_APP_URL: cfEnv.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000",
+  NEXT_PUBLIC_APP_URL: cfEnv.NEXT_PUBLIC_APP_URL ?? "http://localhost:9000",
   NEXT_PUBLIC_GA_MEASUREMENT_ID: cfEnv.NEXT_PUBLIC_GA_MEASUREMENT_ID,
   NODE_ENV: (cfEnv.NODE_ENV ?? "development") as
     | "development"

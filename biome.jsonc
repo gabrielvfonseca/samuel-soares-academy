@@ -13,9 +13,7 @@
       "!**/node_modules",
       "!**/next-env.d.ts",
       "!**/*.svg",
-      "!pnpm-lock.yaml",
-      "!supabase/migrations",
-      "!apps/admin/src/integrations/supabase/types.ts"
+      "!pnpm-lock.yaml"
     ]
   },
   "linter": {

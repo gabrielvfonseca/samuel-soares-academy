@@ -2,7 +2,7 @@
   "$schema": "node_modules/wrangler/config-schema.json",
   "name": "ssa-db",
   "main": "noop.js",
-  "compatibility_date": "2026-01-01",
+  "compatibility_date": "2026-11-02",
   "d1_databases": [
     {
       "binding": "DB",

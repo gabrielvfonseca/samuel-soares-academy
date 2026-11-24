@@ -11,11 +11,12 @@
   "scripts": {
     "check-types": "tsc --noEmit",
     "db:check": "drizzle-kit check",
-    "db:deploy": "wrangler d1 migrations apply treninos-db",
-    "db:deploy:preview": "wrangler d1 migrations apply treninos-db --remote=false",
+    "db:deploy": "wrangler d1 migrations apply ssa-db",
+    "db:deploy:preview": "wrangler d1 migrations apply ssa-db --remote=false",
     "db:generate": "drizzle-kit generate",
-    "db:local": "wrangler d1 migrations apply treninos-db --local",
-    "db:studio": "wrangler d1 execute treninos-db --command='SELECT 1'",
+    "db:local": "wrangler d1 migrations apply ssa-db --local",
+    "db:smoke": "wrangler d1 execute ssa-db --command='SELECT 1'",
+    "db:studio": "drizzle-kit studio",
     "transit": "echo transit"
   },
   "dependencies": {

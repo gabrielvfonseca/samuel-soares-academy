@@ -1,0 +1,13 @@
+{
+  // Recommended extensions for this repo.
+  "recommendations": [
+    "biomejs.biome",
+    "dbaeumer.vscode-eslint",
+    "esbenp.prettier-vscode",
+    "bradlc.vscode-tailwindcss",
+    "cloudflare.cloudflare",
+    "eamodio.gitlens",
+    "editorconfig.editorconfig",
+    "editorconfig-tools"
+  ]
+}
