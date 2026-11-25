@@ -403,29 +403,24 @@ packages/cloudflare/
 ```diff
 - import { env as cfEnv } from "cloudflare:workers";
 + import { getEnv } from "@ssa/cloudflare";
++ const cfEnv = getEnv();
 
  export const env = {
--  CONTACT_EMAIL_FROM: cfEnv.CONTACT_EMAIL_FROM,
-+  CONTACT_EMAIL_FROM: getEnv().CONTACT_EMAIL_FROM,
--  CONTACT_EMAIL_TO: cfEnv.CONTACT_EMAIL_TO,
-+  CONTACT_EMAIL_TO: getEnv().CONTACT_EMAIL_TO,
--  KV: cfEnv.KV,
-+  KV: getEnv().KV,
--  NEXT_PUBLIC_APP_URL: cfEnv.NEXT_PUBLIC_APP_URL ?? "http://localhost:9000",
-+  NEXT_PUBLIC_APP_URL: getEnv().NEXT_PUBLIC_APP_URL ?? "http://localhost:9000",
--  NEXT_PUBLIC_GA_MEASUREMENT_ID: cfEnv.NEXT_PUBLIC_GA_MEASUREMENT_ID,
-+  NEXT_PUBLIC_GA_MEASUREMENT_ID: getEnv().NEXT_PUBLIC_GA_MEASUREMENT_ID,
+   CONTACT_EMAIL_FROM: cfEnv.CONTACT_EMAIL_FROM,
+   ...
 -  NODE_ENV: (cfEnv.NODE_ENV ?? "development") as ...
-+  NODE_ENV: (getEnv().NODE_ENV ?? "development") as ...
--  RESEND_API_KEY: cfEnv.RESEND_API_KEY,
-+  RESEND_API_KEY: getEnv().RESEND_API_KEY,
--  WHATSAPP_PHONE: cfEnv.WHATSAPP_PHONE,
-+  WHATSAPP_PHONE: getEnv().WHATSAPP_PHONE,
++  NODE_ENV: (process.env.NODE_ENV ?? "development") as ...
+   ...
  };
 ```
 
 > `@/env` is still exported so `redis.ts` and `rate-limit.ts` don't change their import
 > source. The `cloudflare:workers` import is now internal to `@ssa/cloudflare`.
+>
+> **`NODE_ENV` reads from `process.env`**, not from `cfEnv` — the site's
+> `cloudflare.config.ts` does not declare a `NODE_ENV` binding, so it is absent from the
+> inferred `Cloudflare.Env`. In the worker runtime `process.env.NODE_ENV` is set by the
+> platform.
 
 #### 4b. `src/lib/redis.ts`
 
@@ -459,13 +454,13 @@ No change — still imports `env` from `@/env`.
 
 ### Step 6 — Remove Duplicate / Local Setup
 
-- [x] **`packages/database/src/client.ts`** — now a thin re-export (no logic)
+- [x] **`packages/database/src/client.ts`** — **deleted** (client moved to `@ssa/cloudflare`)
 - [x] **`apps/admin/src/app/api/storage/[...all]/route.ts`** — local `R2Object`/`R2Bucket`
-  interfaces deleted
+  interfaces deleted (replaced by app-local `R2BucketLike` + one cast)
 - [x] **`apps/admin/src/integrations/db/client.server.ts`** — no longer creates its own
   env access; uses `@ssa/cloudflare`
 - [x] Both apps no longer import `cloudflare:workers` directly (all routed through
-  `@ssa/cloudflare/env`)
+  `@ssa/cloudflare`)
 
 ### Step 7 — Verify
 
@@ -474,11 +469,10 @@ No change — still imports `env` from `@/env`.
 - [x] `pnpm check-types` — all three workspaces type-check
 - [x] `pnpm dev` in both apps — dev servers start
 - [x] `pnpm build` in both apps — production build succeeds
-- [x] Grep for `cloudflare:workers` — only `packages/cloudflare/src/env.ts` should match
-- [x] Grep for `@cloudflare/workers-types` — only `packages/cloudflare/src/types.ts` and
-  the two `.d.ts` files (via `@ssa/cloudflare/types`) should match
-- [x] Grep for `createDb` — all call sites import from `@ssa/cloudflare` (or
-  `@ssa/database` which re-exports)
+- [x] Grep for `cloudflare:workers` — only `packages/cloudflare/src/{env.ts,cloudflare-workers.d.ts}` match
+- [x] Grep for `@cloudflare/workers-types` — only `packages/cloudflare/src/types.ts` +
+  two explanatory comments in the storage route
+- [x] Grep for `createDb` — all call sites import from `@ssa/cloudflare` (database no longer re-exports)
 
 ---
 
