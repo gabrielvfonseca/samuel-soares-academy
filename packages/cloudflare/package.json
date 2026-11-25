@@ -1,0 +1,26 @@
+{
+  "name": "@ssa/cloudflare",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./client": "./src/client.ts",
+    "./env": "./src/env.ts",
+    "./types": "./src/types.ts"
+  },
+  "scripts": {
+    "check-types": "tsc-rs --noEmit"
+  },
+  "dependencies": {
+    "@cloudflare/workers-types": "catalog:",
+    "@ssa/database": "workspace:*",
+    "drizzle-orm": "catalog:"
+  },
+  "devDependencies": {
+    "@ssa/typescript-config": "workspace:*",
+    "@types/node": "catalog:",
+    "tsc-rs": "catalog:",
+    "typescript": "catalog:"
+  }
+}

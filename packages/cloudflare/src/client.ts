@@ -1,10 +1,6 @@
-import type {
-  D1Database,
-  D1PreparedStatement,
-  D1Response,
-} from "@cloudflare/workers-types";
+import * as schema from "@ssa/database/schema";
 import { drizzle } from "drizzle-orm/d1";
-import * as schema from "./schema";
+import type { D1Database, D1PreparedStatement, D1Response } from "./types";
 
 const emptyMeta = {
   changed_db: false,
@@ -66,7 +62,7 @@ function makeD1TransactionSafe(d1: D1Database): D1Database {
 /**
  * Create a Drizzle client over a Cloudflare D1 binding. Server-side only
  * (never import in browser bundles). The binding comes from
- * `import { env } from "cloudflare:workers"` in the worker runtime.
+ * `import { getEnv } from "@ssa/cloudflare/env"` in the worker runtime.
  */
 export function createDb(d1: D1Database) {
   return drizzle(makeD1TransactionSafe(d1), { schema });

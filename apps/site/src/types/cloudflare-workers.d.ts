@@ -5,6 +5,8 @@
  * with the plain-string env vars that are set via the CF dashboard / `cf` CLI
  * rather than as typed bindings in `cloudflare.config.ts`.
  */
+import type { ImagesBinding, KVNamespace } from "@ssa/cloudflare/types";
+
 declare namespace Cloudflare {
   interface Env {
     /** Static assets binding. */
@@ -14,9 +16,9 @@ declare namespace Cloudflare {
     /** Recipient address for contact form notifications. */
     CONTACT_EMAIL_TO: string;
     /** Cloudflare Images binding. */
-    IMAGES: import("@cloudflare/workers-types").ImageBinding;
+    IMAGES: ImagesBinding;
     /** KV namespace for caching and rate limiting. */
-    KV: import("@cloudflare/workers-types").KVNamespace;
+    KV: KVNamespace;
     /** Public origin of this app. */
     NEXT_PUBLIC_APP_URL: string;
     /** Google Analytics measurement ID. */
@@ -26,7 +28,7 @@ declare namespace Cloudflare {
     /** Resend API key for sending emails. */
     RESEND_API_KEY: string;
     /** KV namespace used by vinext for its internal cache. */
-    VINEXT_KV_CACHE: import("@cloudflare/workers-types").KVNamespace;
+    VINEXT_KV_CACHE: KVNamespace;
     /** WhatsApp Business phone number. */
     WHATSAPP_PHONE: string;
   }

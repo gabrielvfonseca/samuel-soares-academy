@@ -164,6 +164,9 @@ settings:
 
 catalogs:
   default:
+    '@cloudflare/workers-types':
+      specifier: ^4.20250109.0
+      version: 4.20260702.1
     '@react-email/components':
       specifier: ^1.0.7
       version: 1.0.12
@@ -271,6 +274,9 @@ importers:
 
   apps/admin:
     dependencies:
+      '@ssa/cloudflare':
+        specifier: workspace:*
+        version: link:../../packages/cloudflare
       '@ssa/database':
         specifier: workspace:*
         version: link:../../packages/database
@@ -368,6 +374,9 @@ importers:
       '@formatjs/intl-localematcher':
         specifier: ^0.8.0
         version: 0.8.14
+      '@ssa/cloudflare':
+        specifier: workspace:*
+        version: link:../../packages/cloudflare
       '@ssa/email':
         specifier: workspace:*
         version: link:../../packages/email
@@ -478,15 +487,37 @@ importers:
         specifier: ^8.0.0
         version: 8.3.8(@types/node@22.20.5)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1)
 
+  packages/cloudflare:
+    dependencies:
+      '@cloudflare/workers-types':
+        specifier: 'catalog:'
+        version: 4.20260702.1
+      '@ssa/database':
+        specifier: workspace:*
+        version: link:../database
+      drizzle-orm:
+        specifier: 'catalog:'
+        version: 0.45.4(@cloudflare/workers-types@4.20260702.1)(@upstash/redis@1.41.0)(kysely@0.29.9)(postgres@3.4.9)
+    devDependencies:
+      '@ssa/typescript-config':
+        specifier: workspace:*
+        version: link:../typescript-config
+      '@types/node':
+        specifier: 'catalog:'
+        version: 22.20.5
+      tsc-rs:
+        specifier: 'catalog:'
+        version: 0.8.0
+      typescript:
+        specifier: 'catalog:'
+        version: 5.9.3
+
   packages/database:
     dependencies:
       drizzle-orm:
         specifier: 'catalog:'
         version: 0.45.4(@cloudflare/workers-types@4.20260702.1)(@upstash/redis@1.41.0)(kysely@0.29.9)(postgres@3.4.9)
     devDependencies:
-      '@cloudflare/workers-types':
-        specifier: ^4.20250109.0
-        version: 4.20260702.1
       '@ssa/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
@@ -504,7 +535,7 @@ importers:
         version: 5.9.3
       wrangler:
         specifier: ^4.43.0
-        version: 4.164.0(@cloudflare/workers-types@4.20260702.1)(@types/node@22.20.5)
+        version: 4.164.0(@types/node@22.20.5)
 
   packages/email:
     dependencies:
@@ -10780,7 +10811,7 @@ snapshots:
       '@cloudflare/workerd-linux-arm64': 1.20261118.1
       '@cloudflare/workerd-windows-64': 1.20261118.1
 
-  wrangler@4.164.0(@cloudflare/workers-types@4.20260702.1)(@types/node@22.20.5):
+  wrangler@4.164.0(@types/node@22.20.5):
     dependencies:
       '@cloudflare/kv-asset-handler': 0.5.0
       '@cloudflare/unenv-preset': 2.16.2(unenv@2.0.0-rc.24)(workerd@1.20261117.1)
@@ -10792,7 +10823,6 @@ snapshots:
       unenv: 2.0.0-rc.24
       workerd: 1.20261117.1
     optionalDependencies:
-      '@cloudflare/workers-types': 4.20260702.1
       fsevents: 2.3.3
     transitivePeerDependencies:
       - '@types/node'

@@ -1,5 +1,4 @@
-import { env } from "cloudflare:workers";
-import { createDb } from "@ssa/database/client";
+import { createDb, getEnv } from "@ssa/cloudflare";
 // biome-ignore lint/performance/noNamespaceImport: dynamic table access requires a namespace import
 import * as schema from "@ssa/database/schema";
 import { and, asc, desc, eq, gte, inArray } from "drizzle-orm";
@@ -189,7 +188,7 @@ export async function POST(request: Request) {
   }
   const { camelToSnake, snakeToCamel } = keyMap(table);
 
-  const db = createDb(env.DB);
+  const db = createDb(getEnv().DB);
   const now = new Date().toISOString();
 
   try {

@@ -1,4 +1,4 @@
-import { env } from "cloudflare:workers";
+import { getEnv } from "@ssa/cloudflare";
 import { requireAuth } from "@/integrations/auth/server";
 
 /**
@@ -10,17 +10,19 @@ import { requireAuth } from "@/integrations/auth/server";
  * cloudflare.config.ts for the admin app).
  */
 
-interface R2Object {
-  arrayBuffer: () => Promise<ArrayBuffer>;
-  httpEtag: string;
-  key: string;
-  size: number;
-  uploaded: Date;
-}
-
-interface R2Bucket {
+// Minimal structural surface of the R2 bucket we actually use. This is a
+// *supertype* of the real R2 bucket (each method's parameter is `unknown`,
+// its return a subtype), so `getEnv().BUCKET` is assignable to it. It is
+// typed against the ambient globals the admin app actually uses (matching
+// the generated `.cloudflare/types`), rather than the pinned
+// `@cloudflare/workers-types` `R2Bucket` whose stream/`Blob` signatures are
+// out of sync with this lib combo.
+interface R2BucketLike {
   delete: (keys: string[]) => Promise<void>;
-  get: (key: string) => Promise<R2Object | null>;
+  get: (key: string) => Promise<{
+    arrayBuffer: () => Promise<ArrayBuffer>;
+    size: number;
+  } | null>;
   list: (opts?: {
     delimiter?: string;
     limit?: number;
@@ -36,14 +38,23 @@ interface R2Bucket {
   }>;
   put: (
     key: string,
-    value: BodyInit,
-    opts?: {
-      httpMetadata?: Record<string, string>;
-    }
-  ) => Promise<R2Object | null>;
+    value:
+      | string
+      | ArrayBuffer
+      | ArrayBufferView
+      | ReadableStream
+      | Blob
+      | null,
+    opts?: { httpMetadata?: Record<string, string> }
+  ) => Promise<unknown>;
 }
 
-const bucket = () => env.BUCKET as unknown as R2Bucket;
+// `getEnv().BUCKET` is typed by the pinned `@cloudflare/workers-types`
+// `R2Bucket`, whose `put` references that package's own `Blob`/`ReadableStream`.
+// Those are structurally out of sync with the global DOM lib this app uses
+// (a `getReader` arity mismatch), so a direct structural assignment fails.
+// The object *is* a real R2 bucket at runtime, so we cast once here.
+const bucket = (): R2BucketLike => getEnv().BUCKET as unknown as R2BucketLike;
 
 /** Strip the `documentos/`-style bucket prefix if present. R2 keys are
  * bucket-relative, so we store paths without the leading bucket name. */
@@ -102,7 +113,10 @@ export async function POST(request: Request) {
     if (!(file instanceof File)) {
       return Response.json({ error: "no file" }, { status: 400 });
     }
-    await bucket().put(path, file, {
+    // R2's `put` accepts a `ReadableStream` (the most permissive overload),
+    // which sidesteps the structural mismatch between the DOM `File`/`Blob`
+    // and the workers-types `Blob`. Content type is carried via httpMetadata.
+    await bucket().put(path, file.stream(), {
       httpMetadata: { "Content-Type": file.type },
     });
     return Response.json({ path });

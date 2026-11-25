@@ -1,7 +1,6 @@
 import "server-only";
 
-import { env } from "cloudflare:workers";
-import { createDb } from "@ssa/database/client";
+import { createDb, getEnv } from "@ssa/cloudflare";
 import {
   betterAuthAccount,
   betterAuthSession,
@@ -14,10 +13,11 @@ import { headers } from "next/headers";
 
 /**
  * Create the Better Auth instance for the admin app, backed by D1.
- * The D1 binding comes from the Cloudflare Workers runtime (`cloudflare:workers`).
+ * The D1 binding comes from the Cloudflare Workers runtime.
  * Better Auth is stateless — each request creates its own instance.
  */
 export function getInstance() {
+  const env = getEnv();
   const db = createDb(env.DB);
   return betterAuth({
     baseURL: env.BETTER_AUTH_URL ?? "http://localhost:9001",

@@ -1,7 +1,6 @@
 "use server";
 
-import { env } from "cloudflare:workers";
-import { createDb } from "@ssa/database/client";
+import { createDb, getEnv } from "@ssa/cloudflare";
 import { betterAuthUser } from "@ssa/database/schema";
 import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
@@ -99,6 +98,7 @@ export async function entrarComCodigo(input: {
     return { erro: "Código de acesso em falta", ok: false };
   }
 
+  const env = getEnv();
   const esperado = env.INTERNAL_ACCESS_CODE;
   if (!esperado) {
     throw new Error("Código de acesso não configurado");

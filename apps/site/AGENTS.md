@@ -15,7 +15,7 @@ src/
   styles/            globals.css (Tailwind v4)
   utils/             contact-utils, whatsapp-message
   types/             cloudflare-workers.d.ts (typed env bindings)
-  env.ts             typed env (reads from cloudflare:workers)
+  env.ts             typed env (reads from @ssa/cloudflare)
   proxy.ts           middleware (locale negotiation)
 public/              Static assets (images, favicons, og images)
 ```
@@ -44,7 +44,8 @@ public/              Static assets (images, favicons, og images)
 ## Environment
 
 - Env vars are typed in `src/types/cloudflare-workers.d.ts` and read from
-  `cloudflare:workers` (the Cloudflare Workers runtime). The
+  `@ssa/cloudflare` (the shared Cloudflare package, which wraps the Workers
+  runtime). The
   `bindings.text("placeholder")` values in `cloudflare.config.ts` are
   **local-dev only** — real values are set in the CF dashboard after deploy.
 - Public origin (`NEXT_PUBLIC_APP_URL`) is inlined into the browser bundle at
