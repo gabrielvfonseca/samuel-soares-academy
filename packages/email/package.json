@@ -21,7 +21,7 @@
   "devDependencies": {
     "@ssa/typescript-config": "workspace:*",
     "@types/react": "catalog:",
-    "react-email": "^5.2.8",
+    "react-email": "^6.11.16",
     "tsc-rs": "catalog:",
     "typescript": "catalog:"
   }
