@@ -40,12 +40,12 @@ jobs:
         env:
           NEXT_PUBLIC_APP_URL: http://localhost:3000
           RESEND_API_KEY: re_ci_placeholder
-          WHATSAPP_BUSINESS_PHONE: "+351900000000"
+          WHATSAPP_PHONE: "+351900000000"
           CONTACT_EMAIL_FROM: ci@example.com
           CONTACT_EMAIL_TO: ci@example.com
           BETTER_AUTH_SECRET: ci_placeholder
-          CODIGO_ACESSO_INTERNO: ci_placeholder
-          TREINOS_CRON_SECRET: ci_placeholder
+          INTERNAL_ACCESS_CODE: ci_placeholder
+          CRON_SECRET: ci_placeholder
 
   database:
     name: Database schema check

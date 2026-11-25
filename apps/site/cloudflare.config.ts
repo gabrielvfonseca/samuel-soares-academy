@@ -22,7 +22,7 @@ export default defineConfig({
         id: "da9b99744fed4650a2c1240a3924e230",
       }),
       WHATSAPP_ACCESS_TOKEN: bindings.text(""),
-      WHATSAPP_BUSINESS_PHONE: bindings.text("+351912345678"),
+      WHATSAPP_PHONE: bindings.text("+351912345678"),
       WHATSAPP_PHONE_NUMBER_ID: bindings.text(""),
     },
     name: "site",

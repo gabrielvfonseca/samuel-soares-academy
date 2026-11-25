@@ -20,7 +20,7 @@ export async function ContactSection({
   const raw = dictionary.web.sections.contact;
 
   // Get WhatsApp business phone
-  const whatsappPhone = env.WHATSAPP_BUSINESS_PHONE;
+  const whatsappPhone = env.WHATSAPP_PHONE;
 
   // Validate WhatsApp business phone
   if (!whatsappPhone) {

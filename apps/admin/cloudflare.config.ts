@@ -25,14 +25,14 @@ export default defineConfig({
       BUCKET: bindings.r2({
         name: "documentos",
       }),
-      CODIGO_ACESSO_INTERNO: bindings.text(""),
+      CRON_SECRET: bindings.text(""),
       DB: bindings.d1({ id: "69ad2764-ee50-487e-8816-205fbd6b512f" }),
+      INTERNAL_ACCESS_CODE: bindings.text(""),
       LOVABLE_API_KEY: bindings.text(""),
-      TREINOS_CRON_SECRET: bindings.text(""),
     },
     name: "admin",
     // Cron schedules (UTC) — invoked by an external scheduler that POSTs to
-    // /api/public/cron/*. Each endpoint is protected by TREINOS_CRON_SECRET
+    // /api/public/cron/*. Each endpoint is protected by CRON_SECRET
     // (see src/lib/cron-route.ts). The vinext worker entry only exposes
     // `fetch()`, so Cloudflare Cron Triggers (which invoke a `scheduled()`
     // handler) cannot target these routes directly. Use an external scheduler

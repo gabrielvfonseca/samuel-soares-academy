@@ -9,7 +9,7 @@ import { getInstance } from "@/integrations/auth/server";
 
 /**
  * Acesso restrito: a plataforma é interna e a única forma de entrar é o
- * código de acesso da academia (secret CODIGO_ACESSO_INTERNO).
+ * código de acesso da academia (secret INTERNAL_ACCESS_CODE).
  * O código é validado no servidor e a sessão da conta interna é gravada
  * num cookie first-party (Better Auth), lido de volta em cada pedido.
  */
@@ -99,7 +99,7 @@ export async function entrarComCodigo(input: {
     return { erro: "Código de acesso em falta", ok: false };
   }
 
-  const esperado = env.CODIGO_ACESSO_INTERNO;
+  const esperado = env.INTERNAL_ACCESS_CODE;
   if (!esperado) {
     throw new Error("Código de acesso não configurado");
   }

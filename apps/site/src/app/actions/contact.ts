@@ -46,7 +46,7 @@ export async function submitContactForm(
     const encodedMessage = encodeURIComponent(
       buildWhatsappMessage(result.data)
     );
-    const whatsappUrl = `https://wa.me/${env.WHATSAPP_BUSINESS_PHONE.replace(/[^\d]/gu, "")}?text=${encodedMessage}`;
+    const whatsappUrl = `https://wa.me/${env.WHATSAPP_PHONE.replace(/[^\d]/gu, "")}?text=${encodedMessage}`;
 
     const { contactMethod, name, email } = result.data;
     const templates = dictionary.web.sections.contact.form.templates;

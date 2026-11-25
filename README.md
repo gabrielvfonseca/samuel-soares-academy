@@ -38,7 +38,7 @@ pnpm dev:admin             # http://localhost:9001
 | `pnpm --filter @repo/ui add x` | Add a dependency to one workspace      |
 | `pnpm changeset`               | Record a change for versioning         |
 
-Site builds need `NEXT_PUBLIC_APP_URL`, `RESEND_API_KEY`, `WHATSAPP_BUSINESS_PHONE`,
+Site builds need `NEXT_PUBLIC_APP_URL`, `RESEND_API_KEY`, `WHATSAPP_PHONE`,
 `CONTACT_EMAIL_FROM`, `CONTACT_EMAIL_TO` (see `apps/site/.env.example`).
 
 ## Database (single D1 DB)

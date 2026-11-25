@@ -13,17 +13,17 @@ declare namespace Cloudflare {
     BETTER_AUTH_URL: string;
     /** R2 bucket for profile documents (PDFs / images). */
     BUCKET: import("@cloudflare/workers-types").R2Bucket;
-    /** Shared secret required for the restricted internal login. */
-    CODIGO_ACESSO_INTERNO: string;
+    /** Secret required by the cron trigger routes. */
+    CRON_SECRET: string;
     /** D1 database binding (see `packages/database/wrangler.jsonc`). */
     DB: import("@cloudflare/workers-types").D1Database;
+    /** Shared secret required for the restricted internal login. */
+    INTERNAL_ACCESS_CODE: string;
     /** Lovable AI gateway API key. */
     LOVABLE_API_KEY: string;
     /** Node environment. */
     NODE_ENV?: string;
     /** Resend API key. */
     RESEND_API_KEY: string;
-    /** Secret required by the cron trigger routes. */
-    TREINOS_CRON_SECRET: string;
   }
 }

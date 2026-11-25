@@ -17,5 +17,5 @@ export const env = {
     | "production"
     | "test",
   RESEND_API_KEY: cfEnv.RESEND_API_KEY,
-  WHATSAPP_BUSINESS_PHONE: cfEnv.WHATSAPP_BUSINESS_PHONE,
+  WHATSAPP_PHONE: cfEnv.WHATSAPP_PHONE,
 };

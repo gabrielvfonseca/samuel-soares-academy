@@ -28,6 +28,6 @@ declare namespace Cloudflare {
     /** KV namespace used by vinext for its internal cache. */
     VINEXT_KV_CACHE: import("@cloudflare/workers-types").KVNamespace;
     /** WhatsApp Business phone number. */
-    WHATSAPP_BUSINESS_PHONE: string;
+    WHATSAPP_PHONE: string;
   }
 }

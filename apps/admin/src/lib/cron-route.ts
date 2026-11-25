@@ -3,9 +3,9 @@ import "server-only";
 import { env } from "cloudflare:workers";
 import { createHash, timingSafeEqual } from "node:crypto";
 
-/** Bearer-token check shared by every `/api/public/cron/*` handler (secret: TREINOS_CRON_SECRET). */
+/** Bearer-token check shared by every `/api/public/cron/*` handler (secret: CRON_SECRET). */
 function authenticate(request: Request): Response | null {
-  const secret = env.TREINOS_CRON_SECRET;
+  const secret = env.CRON_SECRET;
   if (!secret) {
     return new Response("Server configuration error", { status: 500 });
   }
