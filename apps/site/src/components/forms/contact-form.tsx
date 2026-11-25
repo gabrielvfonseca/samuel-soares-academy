@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@repo/ui/components/button";
+import { Button } from "@ssa/ui/components/button";
 import {
   Form,
   FormControl,
@@ -8,17 +8,17 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@repo/ui/components/form";
-import { Input } from "@repo/ui/components/input";
-import { toast } from "@repo/ui/components/sonner";
-import { Tabs, TabsList, TabsTrigger } from "@repo/ui/components/tabs";
-import { ArrowRight, Loader2, Mail, MessageCircle } from "@repo/ui/icons";
-import { zodResolver } from "@repo/ui/lib/hookform-resolvers-zod";
-import { useForm } from "@repo/ui/lib/react-hook-form";
+} from "@ssa/ui/components/form";
+import { Input } from "@ssa/ui/components/input";
+import { toast } from "@ssa/ui/components/sonner";
+import { Tabs, TabsList, TabsTrigger } from "@ssa/ui/components/tabs";
+import { ArrowRight, Loader2, Mail, MessageCircle } from "@ssa/ui/icons";
+import { zodResolver } from "@ssa/ui/lib/hookform-resolvers-zod";
+import { useForm } from "@ssa/ui/lib/react-hook-form";
 import type {
   ContactFormProps,
   ContactSubmitResult,
-} from "@repo/validation/contact";
+} from "@ssa/validation/contact";
 import { startTransition, useOptimistic, useState } from "react";
 import { submitContactForm } from "@/app/actions/contact";
 import {

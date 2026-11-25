@@ -1,6 +1,6 @@
 ---
-"@repo/database": patch
-"@repo/validation": patch
+"@ssa/database": patch
+"@ssa/validation": patch
 ---
 
 Add missing repo structure and fix configuration gaps.
@@ -11,7 +11,7 @@ Add missing repo structure and fix configuration gaps.
 - Add `packages/database/noop.js` (required `main` for `wrangler d1` commands)
 - Fix `packages/database/wrangler.jsonc` `compatibility_date` to match the apps (`2026-11-02`)
 - Rename the misnamed `db:studio` script (was running `SELECT 1`) to `db:smoke`; add a real `db:studio` via `drizzle-kit studio`
-- Add Vitest + a real test suite for `@repo/validation` (`contact.test.ts`)
+- Add Vitest + a real test suite for `@ssa/validation` (`contact.test.ts`)
 - Add the `test` task to `turbo.json` and the root `test` script
 - Add the dead `next` catalog entry removal and a `vitest` catalog entry
 - Add the missing env vars to `.env.example` (`WHATSAPP_ACCESS_TOKEN`, `WHATSAPP_PHONE_NUMBER_ID`, `BETTER_AUTH_TRUSTED_ORIGINS`)

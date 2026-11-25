@@ -1,10 +1,10 @@
 "use server";
 
-import { createMailer } from "@repo/email/mailer";
-import { ContactConfirmationEmail } from "@repo/email/templates/contact-confirmation";
-import { ContactNotificationEmail } from "@repo/email/templates/contact-notification";
-import type { ContactSubmitResult } from "@repo/validation/contact";
-import { type Locale, localeSchema } from "@repo/validation/locale";
+import { createMailer } from "@ssa/email/mailer";
+import { ContactConfirmationEmail } from "@ssa/email/templates/contact-confirmation";
+import { ContactNotificationEmail } from "@ssa/email/templates/contact-notification";
+import type { ContactSubmitResult } from "@ssa/validation/contact";
+import { type Locale, localeSchema } from "@ssa/validation/locale";
 import consola from "consola";
 import { env } from "@/env";
 import { parseError } from "@/lib/error";

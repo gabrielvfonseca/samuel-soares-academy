@@ -1,7 +1,7 @@
 import "server-only";
 
 import { env } from "cloudflare:workers";
-import { createDb } from "@repo/database/client";
+import { createDb } from "@ssa/database/client";
 
 /**
  * Server-side D1 Drizzle client. Replaces the old Supabase service-role

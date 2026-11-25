@@ -1,12 +1,12 @@
 import "server-only";
 
-import { clubs, monthlyFees, students } from "@repo/database/schema";
+import { clubs, monthlyFees, students } from "@ssa/database/schema";
 import {
   envelopeEmail,
   estiloTabela,
   estiloTd,
   estiloTh,
-} from "@repo/email/layout";
+} from "@ssa/email/layout";
 import { eq, lt } from "drizzle-orm";
 import { getDb } from "@/integrations/db/client.server";
 import { getConfig, mesNoFuso } from "./db-helpers.server";

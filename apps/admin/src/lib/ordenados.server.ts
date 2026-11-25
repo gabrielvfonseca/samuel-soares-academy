@@ -1,12 +1,12 @@
 import "server-only";
 
-import { coaches, trainings } from "@repo/database/schema";
+import { coaches, trainings } from "@ssa/database/schema";
 import {
   envelopeEmail,
   estiloTabela,
   estiloTd,
   estiloTh,
-} from "@repo/email/layout";
+} from "@ssa/email/layout";
 import { ne } from "drizzle-orm";
 import { getDb } from "@/integrations/db/client.server";
 import { eurosDeCents, getConfig, mesNoFuso } from "./db-helpers.server";

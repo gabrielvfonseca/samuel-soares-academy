@@ -1,21 +1,21 @@
 "use client";
 
-import { Badge } from "@repo/ui/components/badge";
-import { Button } from "@repo/ui/components/button";
+import { Badge } from "@ssa/ui/components/badge";
+import { Button } from "@ssa/ui/components/button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@repo/ui/components/card";
-import { toast } from "@repo/ui/components/sonner";
+} from "@ssa/ui/components/card";
+import { toast } from "@ssa/ui/components/sonner";
 import {
   CalendarClock,
   GraduationCap,
   Plus,
   Trash2,
   Users,
-} from "@repo/ui/icons";
+} from "@ssa/ui/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { TreinoDialog } from "@/components/treino-dialog";

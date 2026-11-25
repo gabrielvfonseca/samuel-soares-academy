@@ -1,13 +1,13 @@
 import "server-only";
 
 import { env } from "cloudflare:workers";
-import { createDb } from "@repo/database/client";
+import { createDb } from "@ssa/database/client";
 import {
   betterAuthAccount,
   betterAuthSession,
   betterAuthUser,
   betterAuthVerification,
-} from "@repo/database/schema";
+} from "@ssa/database/schema";
 import { betterAuth } from "better-auth";
 import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { headers } from "next/headers";

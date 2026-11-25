@@ -1,18 +1,18 @@
 "use client";
 
-import { Badge } from "@repo/ui/components/badge";
-import { Button } from "@repo/ui/components/button";
-import { Card, CardContent } from "@repo/ui/components/card";
+import { Badge } from "@ssa/ui/components/badge";
+import { Button } from "@ssa/ui/components/button";
+import { Card, CardContent } from "@ssa/ui/components/card";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@repo/ui/components/select";
-import { toast } from "@repo/ui/components/sonner";
-import { Tabs, TabsList, TabsTrigger } from "@repo/ui/components/tabs";
-import { ChevronLeft, ChevronRight, Plus, Trash2 } from "@repo/ui/icons";
+} from "@ssa/ui/components/select";
+import { toast } from "@ssa/ui/components/sonner";
+import { Tabs, TabsList, TabsTrigger } from "@ssa/ui/components/tabs";
+import { ChevronLeft, ChevronRight, Plus, Trash2 } from "@ssa/ui/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { TreinoDialog } from "@/components/treino-dialog";

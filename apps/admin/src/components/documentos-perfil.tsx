@@ -1,21 +1,21 @@
 "use client";
 
-import { Button } from "@repo/ui/components/button";
+import { Button } from "@ssa/ui/components/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@repo/ui/components/card";
+} from "@ssa/ui/components/card";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
-} from "@repo/ui/components/dialog";
-import { toast } from "@repo/ui/components/sonner";
-import { Download, Eye, Trash2, Upload } from "@repo/ui/icons";
+} from "@ssa/ui/components/dialog";
+import { toast } from "@ssa/ui/components/sonner";
+import { Download, Eye, Trash2, Upload } from "@ssa/ui/icons";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/data/client";

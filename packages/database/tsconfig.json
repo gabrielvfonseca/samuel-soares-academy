@@ -1,4 +1,4 @@
 {
-  "extends": "@repo/typescript-config/node-library.json",
+  "extends": "@ssa/typescript-config/node-library.json",
   "include": ["src", "drizzle.config.ts"]
 }

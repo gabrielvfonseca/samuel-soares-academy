@@ -1,4 +1,4 @@
-import type { ContactInfoFallbacks } from "@repo/validation/contact";
+import type { ContactInfoFallbacks } from "@ssa/validation/contact";
 import { z } from "zod";
 import { type ContactSection, contactSectionSchema } from "@/models/contact";
 

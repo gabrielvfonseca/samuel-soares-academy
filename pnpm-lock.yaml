@@ -221,6 +221,9 @@ catalogs:
     tailwindcss:
       specifier: ^4.1.9
       version: 4.3.5
+    tsc-rs:
+      specifier: ^0.8.0
+      version: 0.8.0
     tw-animate-css:
       specifier: ^1.3.4
       version: 1.4.0
@@ -253,6 +256,9 @@ importers:
       lint-staged:
         specifier: ^16.2.7
         version: 16.4.0
+      tsc-rs:
+        specifier: 'catalog:'
+        version: 0.8.0
       turbo:
         specifier: ^2.11.10
         version: 2.11.10
@@ -265,13 +271,13 @@ importers:
 
   apps/admin:
     dependencies:
-      '@repo/database':
+      '@ssa/database':
         specifier: workspace:*
         version: link:../../packages/database
-      '@repo/email':
+      '@ssa/email':
         specifier: workspace:*
         version: link:../../packages/email
-      '@repo/ui':
+      '@ssa/ui':
         specifier: workspace:*
         version: link:../../packages/ui
       '@tanstack/react-query':
@@ -308,7 +314,7 @@ importers:
       '@cloudflare/vite-plugin':
         specifier: ^2.0.0-rc.2
         version: 2.0.0-rc.2(@types/node@22.20.5)(vite@8.3.8(@types/node@22.20.5)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))(workerd@1.20261118.1)
-      '@repo/typescript-config':
+      '@ssa/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
       '@tailwindcss/postcss':
@@ -341,6 +347,9 @@ importers:
       tailwindcss:
         specifier: 'catalog:'
         version: 4.3.5
+      tsc-rs:
+        specifier: 'catalog:'
+        version: 0.8.0
       tw-animate-css:
         specifier: 'catalog:'
         version: 1.4.0
@@ -359,13 +368,13 @@ importers:
       '@formatjs/intl-localematcher':
         specifier: ^0.8.0
         version: 0.8.14
-      '@repo/email':
+      '@ssa/email':
         specifier: workspace:*
         version: link:../../packages/email
-      '@repo/ui':
+      '@ssa/ui':
         specifier: workspace:*
         version: link:../../packages/ui
-      '@repo/validation':
+      '@ssa/validation':
         specifier: workspace:*
         version: link:../../packages/validation
       autoprefixer:
@@ -414,7 +423,7 @@ importers:
       '@cloudflare/vite-plugin':
         specifier: ^2.0.0-rc.2
         version: 2.0.0-rc.2(@types/node@22.20.5)(vite@8.3.8(@types/node@22.20.5)(esbuild@0.28.2)(jiti@2.7.0)(terser@5.51.2)(tsx@4.23.15)(yaml@2.9.1))(workerd@1.20261118.1)
-      '@repo/typescript-config':
+      '@ssa/typescript-config':
         specifier: workspace:*
         version: link:../../packages/typescript-config
       '@tailwindcss/postcss':
@@ -453,6 +462,9 @@ importers:
       tailwindcss:
         specifier: 'catalog:'
         version: 4.3.5
+      tsc-rs:
+        specifier: 'catalog:'
+        version: 0.8.0
       tw-animate-css:
         specifier: 'catalog:'
         version: 1.4.0
@@ -475,7 +487,7 @@ importers:
       '@cloudflare/workers-types':
         specifier: ^4.20250109.0
         version: 4.20260702.1
-      '@repo/typescript-config':
+      '@ssa/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@types/node':
@@ -484,6 +496,9 @@ importers:
       drizzle-kit:
         specifier: 'catalog:'
         version: 0.31.11
+      tsc-rs:
+        specifier: 'catalog:'
+        version: 0.8.0
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -503,7 +518,7 @@ importers:
         specifier: 'catalog:'
         version: 6.37.0(@react-email/render@2.0.6(react-dom@19.3.1(react@19.3.1))(react@19.3.1))
     devDependencies:
-      '@repo/typescript-config':
+      '@ssa/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@types/react':
@@ -512,6 +527,9 @@ importers:
       react-email:
         specifier: ^5.2.8
         version: 5.2.11(supports-color@10.2.2)
+      tsc-rs:
+        specifier: 'catalog:'
+        version: 0.8.0
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -650,7 +668,7 @@ importers:
         specifier: ^1.1.2
         version: 1.1.2(@types/react-dom@19.3.0(@types/react@19.3.0))(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
     devDependencies:
-      '@repo/typescript-config':
+      '@ssa/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
       '@types/react':
@@ -665,6 +683,9 @@ importers:
       react-dom:
         specifier: 'catalog:'
         version: 19.3.1(react@19.3.1)
+      tsc-rs:
+        specifier: 'catalog:'
+        version: 0.8.0
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -675,9 +696,12 @@ importers:
         specifier: 'catalog:'
         version: 4.6.7
     devDependencies:
-      '@repo/typescript-config':
+      '@ssa/typescript-config':
         specifier: workspace:*
         version: link:../typescript-config
+      tsc-rs:
+        specifier: 'catalog:'
+        version: 0.8.0
       typescript:
         specifier: 'catalog:'
         version: 5.9.3
@@ -3396,6 +3420,42 @@ packages:
       '@types/react':
         optional: true
 
+  '@tsc-rs/darwin-arm64@0.8.0':
+    resolution: {integrity: sha512-1aGCULRzd7KXIFh72Ja1K+35bQ1AeW9P3F3S36MXXhp5EQCezqxeXKkL3kQ3kH+ebfI/wA2gxyus34rllF1keQ==}
+    engines: {node: '>=16.20.0'}
+    cpu: [arm64]
+    os: [darwin]
+
+  '@tsc-rs/darwin-x64@0.8.0':
+    resolution: {integrity: sha512-FFFoxnJwszgsM/u4XLH2FB0mzqg+TCCvy+NPCL6fYZv3sbJjoekB4w5gw8Esg9/IPjHbV1rBqNlXYnyCiKYkkQ==}
+    engines: {node: '>=16.20.0'}
+    cpu: [x64]
+    os: [darwin]
+
+  '@tsc-rs/linux-arm64@0.8.0':
+    resolution: {integrity: sha512-mo8qBCCgvMv7jYJrYSbHjc5CBVkzMQiJFOVF6oL4nP7sp/QjywskFZwUduw8Yn1MX83fR1zbJbhAkKtlwRZ3hg==}
+    engines: {node: '>=16.20.0'}
+    cpu: [arm64]
+    os: [linux]
+
+  '@tsc-rs/linux-x64@0.8.0':
+    resolution: {integrity: sha512-c1DPPfJ6F8HkScESepl42p4Cph8BcKcd3dBakYLBPyWiKZD8q3bw/kDNoAQoTnO3k8Zkv5FFbI85ot4y6gNQuA==}
+    engines: {node: '>=16.20.0'}
+    cpu: [x64]
+    os: [linux]
+
+  '@tsc-rs/win32-arm64@0.8.0':
+    resolution: {integrity: sha512-JNycrZs0LcZ8Rx1+Ik3z9R7YkNIKE2ZQjWKmI6os3EpGrMpfSztFYhbuI0whiZpFfL0AqaVu4o0F1+oR0Z8YDQ==}
+    engines: {node: '>=16.20.0'}
+    cpu: [arm64]
+    os: [win32]
+
+  '@tsc-rs/win32-x64@0.8.0':
+    resolution: {integrity: sha512-oWSjfTaOhdZjC8C0gJoa/LdF4TiH729UHKUYm7t2mvdBtPoC85NxvhTIC8ZFjaKs+bvzZ6uMOi8N2EWK2LCV3Q==}
+    engines: {node: '>=16.20.0'}
+    cpu: [x64]
+    os: [win32]
+
   '@turbo/darwin-64@2.11.10':
     resolution: {integrity: sha512-By4idRap5+nLnMuRzLB4qkOPRlvNdyY1ne4VJYDyUoUB11H94k7uif9mbe3JT8JSNXs1D68uMcBj6hJ/jMQRvA==}
     cpu: [x64]
@@ -5559,6 +5619,11 @@ packages:
   to-regex-range@5.0.1:
     resolution: {integrity: sha512-65P7iz6X5yEr1cwcgvQxbbIw7Uk3gOy5dIdtZ4rDveLqhrdJP+Li/Hx6tyK0NEb+2GCyneCMJiGqrADCSNk8sQ==}
     engines: {node: '>=8.0'}
+
+  tsc-rs@0.8.0:
+    resolution: {integrity: sha512-W8S1FKujMD7PDEWFdC/SmoT8uUgY7VEdUi0rcSbUNux5beVSVMFm0EaW4BkFJklZFgFEbDyNALcQpUEldDCvLQ==}
+    engines: {node: '>=16.20.0'}
+    hasBin: true
 
   tsconfig-paths@4.2.0:
     resolution: {integrity: sha512-NoZ4roiN7LnbKn9QqE1amc9DJfzvZXxF4xDavcOWt1BPkdx+m+0gJuPM+S0vCe7zTJMYUP0R8pO2XMr+Y8oLIg==}
@@ -8181,6 +8246,24 @@ snapshots:
     optionalDependencies:
       '@types/react': 19.3.0
 
+  '@tsc-rs/darwin-arm64@0.8.0':
+    optional: true
+
+  '@tsc-rs/darwin-x64@0.8.0':
+    optional: true
+
+  '@tsc-rs/linux-arm64@0.8.0':
+    optional: true
+
+  '@tsc-rs/linux-x64@0.8.0':
+    optional: true
+
+  '@tsc-rs/win32-arm64@0.8.0':
+    optional: true
+
+  '@tsc-rs/win32-x64@0.8.0':
+    optional: true
+
   '@turbo/darwin-64@2.11.10':
     optional: true
 
@@ -10260,6 +10343,15 @@ snapshots:
   to-regex-range@5.0.1:
     dependencies:
       is-number: 7.0.0
+
+  tsc-rs@0.8.0:
+    optionalDependencies:
+      '@tsc-rs/darwin-arm64': 0.8.0
+      '@tsc-rs/darwin-x64': 0.8.0
+      '@tsc-rs/linux-arm64': 0.8.0
+      '@tsc-rs/linux-x64': 0.8.0
+      '@tsc-rs/win32-arm64': 0.8.0
+      '@tsc-rs/win32-x64': 0.8.0
 
   tsconfig-paths@4.2.0:
     dependencies:

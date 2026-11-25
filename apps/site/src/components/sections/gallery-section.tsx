@@ -1,4 +1,4 @@
-import { localeSchema } from "@repo/validation/locale";
+import { localeSchema } from "@ssa/validation/locale";
 import Image from "next/image";
 import { getDictionary } from "@/lib/i18n";
 import type { SectionProps } from "@/types";

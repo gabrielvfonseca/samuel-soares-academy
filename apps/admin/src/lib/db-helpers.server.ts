@@ -1,9 +1,6 @@
 import "server-only";
 
-import {
-  notificationSettings as configTable,
-  now,
-} from "@repo/database/schema";
+import { notificationSettings as configTable, now } from "@ssa/database/schema";
 import { eq } from "drizzle-orm";
 import { getDb } from "@/integrations/db/client.server";
 

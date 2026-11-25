@@ -1,9 +1,9 @@
-# @repo/ui
+# @ssa/ui
 
 Shared UI primitives for both apps. Third-party UI libraries (lucide-react,
 sonner, react-hook-form, next-themes, radix-ui, tailwind-merge,
 class-variance-authority, clsx) are dependencies of **this** package only —
-apps import them through the `@repo/ui` re-exports and must not add them
+apps import them through the `@ssa/ui` re-exports and must not add them
 directly.
 
 ## Layout
@@ -20,10 +20,10 @@ components.json  shadcn CLI config
 ## Imports
 
 ```ts
-import { buttonVariants } from "@repo/ui/components/button";
-import { useToast } from "@repo/ui/hooks/use-toast";
-import { cn } from "@repo/ui/lib/utils";
-import { X } from "@repo/ui/icons";
+import { buttonVariants } from "@ssa/ui/components/button";
+import { useToast } from "@ssa/ui/hooks/use-toast";
+import { cn } from "@ssa/ui/lib/utils";
+import { X } from "@ssa/ui/icons";
 ```
 
 Each subpath maps 1:1 to a file — there is no barrel `index.ts`.
@@ -41,4 +41,4 @@ Each subpath maps 1:1 to a file — there is no barrel `index.ts`.
 - One component per file, kebab-case filename (`button.tsx`,
   `sidebar-provider.tsx`).
 - PascalCase component names.
-- Use `cn()` from `@repo/ui/lib/utils` to merge class names.
+- Use `cn()` from `@ssa/ui/lib/utils` to merge class names.

@@ -1,5 +1,5 @@
 {
-  "extends": "@repo/typescript-config/nextjs.json",
+  "extends": "@ssa/typescript-config/nextjs.json",
   "compilerOptions": {
     "noImplicitOverride": true,
     "noImplicitReturns": true,

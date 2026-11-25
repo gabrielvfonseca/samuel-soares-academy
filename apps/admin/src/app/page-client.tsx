@@ -1,16 +1,16 @@
 "use client";
 
-import { Button } from "@repo/ui/components/button";
+import { Button } from "@ssa/ui/components/button";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@repo/ui/components/card";
-import { Input } from "@repo/ui/components/input";
-import { Label } from "@repo/ui/components/label";
-import { toast } from "@repo/ui/components/sonner";
-import { BellRing, CalendarClock, ShieldCheck } from "@repo/ui/icons";
+} from "@ssa/ui/components/card";
+import { Input } from "@ssa/ui/components/input";
+import { Label } from "@ssa/ui/components/label";
+import { toast } from "@ssa/ui/components/sonner";
+import { BellRing, CalendarClock, ShieldCheck } from "@ssa/ui/icons";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/data/client";

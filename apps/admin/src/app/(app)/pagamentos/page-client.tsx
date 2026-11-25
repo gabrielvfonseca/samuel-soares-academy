@@ -1,28 +1,28 @@
 "use client";
 
-import { Badge } from "@repo/ui/components/badge";
+import { Badge } from "@ssa/ui/components/badge";
 import {
   Card,
   CardContent,
   CardHeader,
   CardTitle,
-} from "@repo/ui/components/card";
-import { Input } from "@repo/ui/components/input";
-import { Label } from "@repo/ui/components/label";
+} from "@ssa/ui/components/card";
+import { Input } from "@ssa/ui/components/input";
+import { Label } from "@ssa/ui/components/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@repo/ui/components/select";
-import { toast } from "@repo/ui/components/sonner";
+} from "@ssa/ui/components/select";
+import { toast } from "@ssa/ui/components/sonner";
 import {
   Tabs,
   TabsContent,
   TabsList,
   TabsTrigger,
-} from "@repo/ui/components/tabs";
+} from "@ssa/ui/components/tabs";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useMemo, useState } from "react";
 import { supabase } from "@/integrations/data/client";

@@ -1,5 +1,5 @@
 {
-  "name": "@repo/email",
+  "name": "@ssa/email",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -9,7 +9,7 @@
     "./templates/*": "./src/templates/*.tsx"
   },
   "scripts": {
-    "check-types": "tsc --noEmit",
+    "check-types": "tsc-rs --noEmit",
     "dev": "email dev --dir src/templates --port 3030",
     "transit": "echo transit"
   },
@@ -19,9 +19,10 @@
     "resend": "catalog:"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
+    "@ssa/typescript-config": "workspace:*",
     "@types/react": "catalog:",
     "react-email": "^5.2.8",
+    "tsc-rs": "catalog:",
     "typescript": "catalog:"
   }
 }

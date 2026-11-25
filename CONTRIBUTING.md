@@ -25,14 +25,14 @@ pnpm dev                   # both apps
 
 ```
 apps/
-  site/      @repo/site      Marketing site (pt/en)
-  admin/     @repo/admin     Internal management app (Better Auth + D1)
+  site/      @ssa/site      Marketing site (pt/en)
+  admin/     @ssa/admin     Internal management app (Better Auth + D1)
 packages/
-  ui/                @repo/ui                shadcn/ui components, hooks, cn
-  database/          @repo/database          Drizzle schema, client, migrations (source of truth)
-  email/             @repo/email             React Email templates, Resend client
-  validation/        @repo/validation        shared zod schemas
-  typescript-config/ @repo/typescript-config shared tsconfigs
+  ui/                @ssa/ui                shadcn/ui components, hooks, cn
+  database/          @ssa/database          Drizzle schema, client, migrations (source of truth)
+  email/             @ssa/email             React Email templates, Resend client
+  validation/        @ssa/validation        shared zod schemas
+  typescript-config/ @ssa/typescript-config shared tsconfigs
 ```
 
 ## Common commands
@@ -115,7 +115,7 @@ This repo uses [Changesets](https://github.com/changesets/changesets).
 - Merging that PR bumps versions, updates the changelogs, and (for public
   packages) publishes to the registry.
 
-All `@repo/*` packages are currently `private: true` and `version: 0.0.0`;
+All `@ssa/*` packages are currently `private: true` and `version: 0.0.0`;
 the tooling is wired so publishing can be enabled by flipping `private` to
 `false` and setting an `access` in `.changeset/config.json`.
 

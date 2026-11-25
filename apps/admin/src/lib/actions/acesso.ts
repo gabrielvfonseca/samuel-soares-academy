@@ -1,8 +1,8 @@
 "use server";
 
 import { env } from "cloudflare:workers";
-import { createDb } from "@repo/database/client";
-import { betterAuthUser } from "@repo/database/schema";
+import { createDb } from "@ssa/database/client";
+import { betterAuthUser } from "@ssa/database/schema";
 import { eq } from "drizzle-orm";
 import { cookies } from "next/headers";
 import { getInstance } from "@/integrations/auth/server";

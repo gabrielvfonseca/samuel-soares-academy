@@ -1,4 +1,4 @@
-import { localeSchema } from "@repo/validation/locale";
+import { localeSchema } from "@ssa/validation/locale";
 import { FaqAccordionClient } from "@/components/sections/faq-accordion-client";
 import { getDictionary } from "@/lib/i18n";
 import { JsonLd } from "@/lib/json-ld";

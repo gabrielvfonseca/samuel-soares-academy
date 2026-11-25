@@ -1,7 +1,7 @@
 "use client";
 
-import { Button } from "@repo/ui/components/button";
-import { Menu, X } from "@repo/ui/icons";
+import { Button } from "@ssa/ui/components/button";
+import { Menu, X } from "@ssa/ui/icons";
 import Link from "next/link";
 import { type JSX, useState } from "react";
 import type { Header as HeaderData } from "@/models/header";

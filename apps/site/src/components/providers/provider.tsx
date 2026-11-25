@@ -1,4 +1,4 @@
-import { ThemeProvider } from "@repo/ui/lib/next-themes";
+import { ThemeProvider } from "@ssa/ui/lib/next-themes";
 import type { JSX, ReactNode } from "react";
 import { AnalyticsProvider } from "./analytics-provider";
 

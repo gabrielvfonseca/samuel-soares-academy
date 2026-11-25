@@ -1,11 +1,11 @@
 {
-  "name": "@repo/site",
+  "name": "@ssa/site",
   "version": "0.1.0",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "check-types": "pnpm build && tsc --noEmit",
+    "check-types": "pnpm build && tsc-rs --noEmit",
     "deploy": "vinext-cloudflare deploy",
     "dev": "vite dev --port 9000",
     "start": "vinext start --port 9000",
@@ -14,9 +14,9 @@
   },
   "dependencies": {
     "@formatjs/intl-localematcher": "^0.8.0",
-    "@repo/email": "workspace:*",
-    "@repo/ui": "workspace:*",
-    "@repo/validation": "workspace:*",
+    "@ssa/email": "workspace:*",
+    "@ssa/ui": "workspace:*",
+    "@ssa/validation": "workspace:*",
     "autoprefixer": "^10.4.20",
     "consola": "^3.4.2",
     "lodash.merge": "^4.6.2",
@@ -34,7 +34,7 @@
   "devDependencies": {
     "@cloudflare/config": "1.0.0-rc.2",
     "@cloudflare/vite-plugin": "^2.0.0-rc.2",
-    "@repo/typescript-config": "workspace:*",
+    "@ssa/typescript-config": "workspace:*",
     "@tailwindcss/postcss": "catalog:",
     "@types/lodash.merge": "^4.6.9",
     "@types/negotiator": "^0.6.4",
@@ -47,6 +47,7 @@
     "cf": "1.0.0-rc.2",
     "postcss": "catalog:",
     "tailwindcss": "catalog:",
+    "tsc-rs": "catalog:",
     "tw-animate-css": "catalog:",
     "typescript": "catalog:",
     "vinext": "^1.4.6",

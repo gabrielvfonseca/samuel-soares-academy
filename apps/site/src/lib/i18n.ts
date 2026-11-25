@@ -1,6 +1,6 @@
 import "server-only";
 import { match as matchLocale } from "@formatjs/intl-localematcher";
-import { localeSchema } from "@repo/validation/locale";
+import { localeSchema } from "@ssa/validation/locale";
 import Negotiator from "negotiator";
 import type { NextRequest } from "next/server";
 import { createI18nMiddleware } from "next-international/middleware";

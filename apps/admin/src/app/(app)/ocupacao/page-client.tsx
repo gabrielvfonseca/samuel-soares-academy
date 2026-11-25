@@ -1,24 +1,24 @@
 "use client";
 
-import { Badge } from "@repo/ui/components/badge";
-import { Button } from "@repo/ui/components/button";
+import { Badge } from "@ssa/ui/components/badge";
+import { Button } from "@ssa/ui/components/button";
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "@repo/ui/components/card";
-import { Label } from "@repo/ui/components/label";
+} from "@ssa/ui/components/card";
+import { Label } from "@ssa/ui/components/label";
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@repo/ui/components/select";
-import { toast } from "@repo/ui/components/sonner";
-import { CalendarCheck, MapPin, Sparkles, Users } from "@repo/ui/icons";
+} from "@ssa/ui/components/select";
+import { toast } from "@ssa/ui/components/sonner";
+import { CalendarCheck, MapPin, Sparkles, Users } from "@ssa/ui/icons";
 import { useQuery } from "@tanstack/react-query";
 import Link from "next/link";
 import { useMemo, useState } from "react";

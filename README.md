@@ -4,14 +4,14 @@ Turborepo monorepo: public website, management app and a single Cloudflare D1 (S
 
 ```
 apps/
-  site/      @repo/site     Next.js 16 marketing site (pt/en)
-  admin/     @repo/admin   Next.js management app (Better Auth + D1 data)
+  site/      @ssa/site     Next.js 16 marketing site (pt/en)
+  admin/     @ssa/admin   Next.js management app (Better Auth + D1 data)
 packages/
-  ui/                @repo/ui                shadcn/ui components, hooks, `cn`
-  database/          @repo/database               Drizzle schema, client, drizzle-kit (source of truth)
-  email/             @repo/email             React Email templates, email layout, Resend client
-  validation/        @repo/validation        shared zod schemas
-  typescript-config/ @repo/typescript-config shared tsconfigs
+  ui/                @ssa/ui                shadcn/ui components, hooks, `cn`
+  database/          @ssa/database               Drizzle schema, client, drizzle-kit (source of truth)
+  email/             @ssa/email             React Email templates, email layout, Resend client
+  validation/        @ssa/validation        shared zod schemas
+  typescript-config/ @ssa/typescript-config shared tsconfigs
 ```
 
 ## Getting started
@@ -35,7 +35,7 @@ pnpm dev:admin             # http://localhost:9001
 | `pnpm build`                   | Build everything (cached by Turborepo) |
 | `pnpm check` / `pnpm fix`      | Biome + Ultracite lint/format check / auto-fix    |
 | `pnpm check-types`             | Type-check every workspace                        |
-| `pnpm --filter @repo/ui add x` | Add a dependency to one workspace      |
+| `pnpm --filter @ssa/ui add x` | Add a dependency to one workspace      |
 | `pnpm changeset`               | Record a change for versioning         |
 
 Site builds need `NEXT_PUBLIC_APP_URL`, `RESEND_API_KEY`, `WHATSAPP_PHONE`,
@@ -57,9 +57,9 @@ pnpm db:studio
 Notes:
 
 - The database is a single Cloudflare D1 (`ssa-db`) bound as `DB` in both apps'
-  `cloudflare.config.ts`. The schema is modelled in Drizzle (`@repo/database`).
+  `cloudflare.config.ts`. The schema is modelled in Drizzle (`@ssa/database`).
 - `apps/admin` talks to the database through a Supabase-shaped query chain
   (`@/integrations/data/client`) that POSTs to `/api/pg`; server code uses
-  `@repo/database` (`createDb()`, server-side only) directly.
+  `@ssa/database` (`createDb()`, server-side only) directly.
 - Always diff the Drizzle schema against the real database before the first
   production migration (`pnpm db:check`).

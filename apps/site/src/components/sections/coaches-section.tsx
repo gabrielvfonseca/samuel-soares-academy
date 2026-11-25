@@ -1,4 +1,4 @@
-import { localeSchema } from "@repo/validation/locale";
+import { localeSchema } from "@ssa/validation/locale";
 import Image from "next/image";
 import type { JSX } from "react";
 import { getDictionary } from "@/lib/i18n";

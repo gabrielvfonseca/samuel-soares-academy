@@ -1,6 +1,6 @@
 "use client";
 
-import { Button } from "@repo/ui/components/button";
+import { Button } from "@ssa/ui/components/button";
 import {
   Bot,
   Building2,
@@ -16,8 +16,8 @@ import {
   Users,
   Users2,
   Wallet,
-} from "@repo/ui/icons";
-import { cn } from "@repo/ui/lib/utils";
+} from "@ssa/ui/icons";
+import { cn } from "@ssa/ui/lib/utils";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { type ReactNode, useCallback, useEffect, useState } from "react";

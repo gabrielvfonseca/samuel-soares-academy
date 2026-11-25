@@ -1,4 +1,4 @@
-# @repo/email
+# @ssa/email
 
 React Email templates + a thin Resend client. Both apps send transactional
 mail (contact-form confirmation, admin notifications) through this package.
@@ -18,9 +18,9 @@ src/
 ## Imports
 
 ```ts
-import { send } from "@repo/email/mailer";
-import { Layout } from "@repo/email/layout";
-import { ContactConfirmation } from "@repo/email/templates/contact-confirmation";
+import { send } from "@ssa/email/mailer";
+import { Layout } from "@ssa/email/layout";
+import { ContactConfirmation } from "@ssa/email/templates/contact-confirmation";
 ```
 
 ## Commands
@@ -33,8 +33,8 @@ import { ContactConfirmation } from "@repo/email/templates/contact-confirmation"
 ## Adding a template
 
 1. Create `src/templates/<name>.tsx` exporting a default React component.
-2. Wrap it in `<Layout>` from `@repo/email/layout` for consistent branding.
-3. Use the `<send>` helper from `@repo/email/mailer` to dispatch it.
+2. Wrap it in `<Layout>` from `@ssa/email/layout` for consistent branding.
+3. Use the `<send>` helper from `@ssa/email/mailer` to dispatch it.
 
 Keep templates **server-only** — they are rendered by the app's server code
 and never shipped to the browser.

@@ -4,8 +4,8 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@repo/ui/components/dialog";
-import { ScrollArea } from "@repo/ui/components/scroll-area";
+} from "@ssa/ui/components/dialog";
+import { ScrollArea } from "@ssa/ui/components/scroll-area";
 import type { JSX } from "react";
 import { BRAND_NAME, CONTACT_INFO } from "@/globals/constants";
 

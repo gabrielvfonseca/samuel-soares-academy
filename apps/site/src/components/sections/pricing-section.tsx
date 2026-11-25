@@ -1,7 +1,7 @@
-import { Button } from "@repo/ui/components/button";
-import { Check } from "@repo/ui/icons";
-import { cn } from "@repo/ui/lib/utils";
-import { localeSchema } from "@repo/validation/locale";
+import { Button } from "@ssa/ui/components/button";
+import { Check } from "@ssa/ui/icons";
+import { cn } from "@ssa/ui/lib/utils";
+import { localeSchema } from "@ssa/validation/locale";
 import Link from "next/link";
 import { getDictionary } from "@/lib/i18n";
 import type { SectionProps } from "@/types";

@@ -7,8 +7,8 @@ import {
   reminderHistory,
   students,
   trainings,
-} from "@repo/database/schema";
-import { envelopeEmail } from "@repo/email/layout";
+} from "@ssa/database/schema";
+import { envelopeEmail } from "@ssa/email/layout";
 import { asc, eq } from "drizzle-orm";
 import { getDb } from "@/integrations/db/client.server";
 import { dataNoFuso, getConfig, upsertConfig } from "./db-helpers.server";

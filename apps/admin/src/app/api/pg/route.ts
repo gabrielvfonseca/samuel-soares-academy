@@ -1,7 +1,7 @@
 import { env } from "cloudflare:workers";
-import { createDb } from "@repo/database/client";
+import { createDb } from "@ssa/database/client";
 // biome-ignore lint/performance/noNamespaceImport: dynamic table access requires a namespace import
-import * as schema from "@repo/database/schema";
+import * as schema from "@ssa/database/schema";
 import { and, asc, desc, eq, gte, inArray } from "drizzle-orm";
 import { requireAuth } from "@/integrations/auth/server";
 

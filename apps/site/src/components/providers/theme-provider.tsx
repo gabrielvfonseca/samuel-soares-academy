@@ -3,7 +3,7 @@
 import {
   ThemeProvider as NextThemesProvider,
   type ThemeProviderProps as NextThemesProviderProps,
-} from "@repo/ui/lib/next-themes";
+} from "@ssa/ui/lib/next-themes";
 import type { JSX } from "react";
 
 export function ThemeProvider({

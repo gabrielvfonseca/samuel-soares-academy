@@ -1,5 +1,5 @@
 {
-  "name": "@repo/validation",
+  "name": "@ssa/validation",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -8,7 +8,7 @@
     "./contact": "./src/contact.ts"
   },
   "scripts": {
-    "check-types": "tsc --noEmit",
+    "check-types": "tsc-rs --noEmit",
     "test": "vitest run",
     "transit": "echo transit"
   },
@@ -16,7 +16,8 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*",
+    "@ssa/typescript-config": "workspace:*",
+    "tsc-rs": "catalog:",
     "typescript": "catalog:",
     "vitest": "catalog:"
   }

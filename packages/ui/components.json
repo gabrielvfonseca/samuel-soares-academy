@@ -11,10 +11,10 @@
   },
   "iconLibrary": "lucide",
   "aliases": {
-    "components": "@repo/ui/components",
-    "ui": "@repo/ui/components",
-    "utils": "@repo/ui/lib/utils",
-    "hooks": "@repo/ui/hooks",
-    "lib": "@repo/ui/lib"
+    "components": "@ssa/ui/components",
+    "ui": "@ssa/ui/components",
+    "utils": "@ssa/ui/lib/utils",
+    "hooks": "@ssa/ui/hooks",
+    "lib": "@ssa/ui/lib"
   }
 }

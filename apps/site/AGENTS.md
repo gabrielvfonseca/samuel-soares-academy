@@ -1,4 +1,4 @@
-# @repo/site
+# @ssa/site
 
 Public marketing site (pt/en). Built with vinext (Next.js 16 on Vite) and
 deployed to Cloudflare Workers. Monorepo rules live in the root `AGENTS.md`.
@@ -27,7 +27,7 @@ public/              Static assets (images, favicons, og images)
 | `pnpm dev`           | Vite dev server on http://localhost:9000      |
 | `pnpm build`         | Production build (vite build)                 |
 | `pnpm start`         | Run the built app (vinext start, :9000)       |
-| `pnpm check-types`   | Build + `tsc --noEmit`                        |
+| `pnpm check-types`   | Build + `tsc-rs --noEmit`                     |
 | `pnpm deploy`        | Deploy to Cloudflare (vinext-cloudflare)      |
 | `pnpm check` (root)  | Biome + Ultracite lint/format                 |
 | `pnpm fix` (root)    | Auto-fix style issues                         |
@@ -36,7 +36,7 @@ public/              Static assets (images, favicons, og images)
 
 - 2-space indent (Biome). Kebab-case filenames, PascalCase components,
   camelCase functions/variables.
-- UI primitives come from `@repo/ui` — do not add UI libraries (lucide,
+- UI primitives come from `@ssa/ui` — do not add UI libraries (lucide,
   sonner, radix, ...) directly to this app.
 - Content is driven by the typed models in `src/models/` and the
   dictionaries in `src/dictionaries/`.

@@ -16,6 +16,7 @@ catalog:
   "@types/react": ^19
   "@types/react-dom": ^19
   "@types/node": ^22
+  tsc-rs: ^0.8.0
   typescript: ^5.8.3
   zod: ^4.5.4
   tailwindcss: ^4.1.9
@@ -38,4 +39,5 @@ overrides:
 allowBuilds:
   esbuild: true
   sharp: true
+  tsc-rs: true
   workerd: true

@@ -1,7 +1,7 @@
-# @repo/database
+# @ssa/database
 
 Single source of truth for the Cloudflare D1 (SQLite) schema, Drizzle client,
-and migrations. Both apps (`@repo/site`, `@repo/admin`) bind to the same D1
+and migrations. Both apps (`@ssa/site`, `@ssa/admin`) bind to the same D1
 database (`ssa-db`) at runtime.
 
 ## Layout

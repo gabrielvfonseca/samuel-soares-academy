@@ -1,6 +1,6 @@
-import { Button } from "@repo/ui/components/button";
-import { ArrowRight } from "@repo/ui/icons";
-import { localeSchema } from "@repo/validation/locale";
+import { Button } from "@ssa/ui/components/button";
+import { ArrowRight } from "@ssa/ui/icons";
+import { localeSchema } from "@ssa/validation/locale";
 import Image from "next/image";
 import type { JSX } from "react";
 import { getDictionary } from "@/lib/i18n";

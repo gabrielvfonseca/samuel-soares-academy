@@ -1,7 +1,7 @@
 import "server-only";
 
-import { personalReminders } from "@repo/database/schema";
-import { envelopeEmail } from "@repo/email/layout";
+import { personalReminders } from "@ssa/database/schema";
+import { envelopeEmail } from "@ssa/email/layout";
 import { and, asc, eq, lte } from "drizzle-orm";
 import { getDb } from "@/integrations/db/client.server";
 import { getConfig } from "./db-helpers.server";

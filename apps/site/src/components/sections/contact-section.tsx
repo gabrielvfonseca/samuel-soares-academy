@@ -1,4 +1,4 @@
-import { type Locale, localeSchema } from "@repo/validation/locale";
+import { type Locale, localeSchema } from "@ssa/validation/locale";
 import type { JSX } from "react";
 import { ContactForm } from "@/components/forms/contact-form";
 import { env } from "@/env";

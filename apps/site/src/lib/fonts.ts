@@ -1,4 +1,4 @@
-import { cn } from "@repo/ui/lib/utils";
+import { cn } from "@ssa/ui/lib/utils";
 import { Inconsolata, Inter, Montserrat } from "next/font/google";
 
 const inter = Inter({

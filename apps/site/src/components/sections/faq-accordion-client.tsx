@@ -5,7 +5,7 @@ import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@repo/ui/components/accordion";
+} from "@ssa/ui/components/accordion";
 import { ClientOnly } from "@/components/client-only";
 import type { FaqSection } from "@/models/faq";
 

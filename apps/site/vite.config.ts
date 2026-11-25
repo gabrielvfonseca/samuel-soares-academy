@@ -9,7 +9,7 @@ const uiRequire = createRequire(
 );
 
 /**
- * next-themes is a dependency of @repo/ui, not of this app. In the rsc
+ * next-themes is a dependency of @ssa/ui, not of this app. In the rsc
  * environment Vite's dep optimizer injects a `?v=<browserHash>` query string
  * into node_modules file paths during resolution. The Cloudflare worker
  * runner then tries to import() that path with the query string still

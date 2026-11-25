@@ -1,4 +1,4 @@
-import { localeSchema } from "@repo/validation/locale";
+import { localeSchema } from "@ssa/validation/locale";
 import { FooterClient } from "@/components/footer-client";
 import { getDictionary } from "@/lib/i18n";
 import type { SectionProps } from "@/types";

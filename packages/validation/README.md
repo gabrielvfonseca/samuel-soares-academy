@@ -1,4 +1,4 @@
-# @repo/validation
+# @ssa/validation
 
 Shared [Zod](https://zod.dev/) schemas. Both apps import from here so the
 runtime shape of shared payloads (contact form, locale, ...) stays in one
@@ -15,13 +15,13 @@ src/
 ## Imports
 
 ```ts
-import { localeSchema, type Locale } from "@repo/validation/locale";
+import { localeSchema, type Locale } from "@ssa/validation/locale";
 import {
   contactFormPropsSchema,
   contactSubmitResultSchema,
   type ContactFormProps,
   type ContactSubmitResult,
-} from "@repo/validation/contact";
+} from "@ssa/validation/contact";
 ```
 
 ## Conventions

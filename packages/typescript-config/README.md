@@ -1,7 +1,7 @@
-# @repo/typescript-config
+# @ssa/typescript-config
 
 Shared TypeScript config. Each workspace extends one of the base configs
-here via `"extends": "@repo/typescript-config/<name>.json"`.
+here via `"extends": "@ssa/typescript-config/<name>.json"`.
 
 ## Configs
 

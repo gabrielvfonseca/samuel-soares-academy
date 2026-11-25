@@ -1,4 +1,4 @@
-# @repo/admin
+# @ssa/admin
 
 Internal management app (vinext on Cloudflare Workers + D1). Monorepo rules live in the root `AGENTS.md`.
 
@@ -12,5 +12,5 @@ Internal management app (vinext on Cloudflare Workers + D1). Monorepo rules live
   (`src/lib/cron-route.ts`). They are invoked by an external scheduler that POSTs a Bearer token
   (the vinext worker entry only exposes `fetch()`, so Cloudflare Cron Triggers cannot target them
   directly). Schedules are documented in `cloudflare.config.ts`. Keep their paths stable.
-- Icons, toasts, form hooks and UI primitives come from `@repo/ui` (`@repo/ui/icons`,
-  `@repo/ui/components/sonner`, ...); do not add those libraries to this app.
+- Icons, toasts, form hooks and UI primitives come from `@ssa/ui` (`@ssa/ui/icons`,
+  `@ssa/ui/components/sonner`, ...); do not add those libraries to this app.

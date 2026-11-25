@@ -1,5 +1,5 @@
 {
-  "name": "@repo/database",
+  "name": "@ssa/database",
   "version": "0.0.0",
   "private": true,
   "type": "module",
@@ -9,7 +9,7 @@
     "./schema": "./src/schema/index.ts"
   },
   "scripts": {
-    "check-types": "tsc --noEmit",
+    "check-types": "tsc-rs --noEmit",
     "db:check": "drizzle-kit check",
     "db:deploy": "wrangler d1 migrations apply ssa-db",
     "db:deploy:preview": "wrangler d1 migrations apply ssa-db --remote=false",
@@ -24,9 +24,10 @@
   },
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250109.0",
-    "@repo/typescript-config": "workspace:*",
+    "@ssa/typescript-config": "workspace:*",
     "@types/node": "catalog:",
     "drizzle-kit": "catalog:",
+    "tsc-rs": "catalog:",
     "typescript": "catalog:",
     "wrangler": "^4.43.0"
   }

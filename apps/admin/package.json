@@ -1,19 +1,19 @@
 {
-  "name": "@repo/admin",
+  "name": "@ssa/admin",
   "private": true,
   "type": "module",
   "scripts": {
     "build": "vite build",
-    "check-types": "pnpm build && tsc --noEmit",
+    "check-types": "pnpm build && tsc-rs --noEmit",
     "deploy": "vinext-cloudflare deploy",
     "dev": "vite dev --port 9001",
     "start": "vinext start --port 9001",
     "transit": "echo transit"
   },
   "dependencies": {
-    "@repo/database": "workspace:*",
-    "@repo/email": "workspace:*",
-    "@repo/ui": "workspace:*",
+    "@ssa/database": "workspace:*",
+    "@ssa/email": "workspace:*",
+    "@ssa/ui": "workspace:*",
     "@tanstack/react-query": "^5.101.1",
     "better-auth": "catalog:",
     "drizzle-orm": "catalog:",
@@ -27,7 +27,7 @@
   "devDependencies": {
     "@cloudflare/config": "1.0.0-rc.2",
     "@cloudflare/vite-plugin": "^2.0.0-rc.2",
-    "@repo/typescript-config": "workspace:*",
+    "@ssa/typescript-config": "workspace:*",
     "@tailwindcss/postcss": "catalog:",
     "@types/node": "catalog:",
     "@types/react": "catalog:",
@@ -38,6 +38,7 @@
     "cf": "1.0.0-rc.2",
     "postcss": "catalog:",
     "tailwindcss": "catalog:",
+    "tsc-rs": "catalog:",
     "tw-animate-css": "catalog:",
     "typescript": "catalog:",
     "vinext": "^1.4.6",
