@@ -23,12 +23,12 @@
     "drizzle-orm": "catalog:"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20250109.0",
+    "@cloudflare/workers-types": "^5.20261121.1",
     "@ssa/typescript-config": "workspace:*",
     "@types/node": "catalog:",
     "drizzle-kit": "catalog:",
     "tsc-rs": "catalog:",
     "typescript": "catalog:",
-    "wrangler": "^4.43.0"
+    "wrangler": "^4.166.0"
   }
 }
