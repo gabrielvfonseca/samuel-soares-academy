@@ -27,6 +27,6 @@
     "drizzle-kit": "catalog:",
     "tsc-rs": "catalog:",
     "typescript": "catalog:",
-    "wrangler": "^4.43.0"
+    "wrangler": "^4.167.0"
   }
 }
